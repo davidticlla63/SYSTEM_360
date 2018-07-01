@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Manual Usuario</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="content-header">
+				<h1 class="pull-left">
+					MANUAL DE USUARIO <small>Detalle del uso del sistema</small>
+				</h1>
+				<div class="pull-right">
+					<ol class="breadcrumb">
+						<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+							style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+						<li><a
+							href="#{request.contextPath}/pages/ayuda/manual_usuario.xhtml"
+							style="color: #0090FF; font-size: 12px;">Ayuda</a></li>
+						<li class="active" style="font-size: 12px;">Manual Usuario</li>
+					</ol>
+				</div>
+			</section>
+			<section class="main-content">
+				<section class="main-content">
+					<div class="row">
+						<div class="col-md-12">
+							<div id="page-invoice">
+								<div class="invoice">
+									<div class="invoice-company">
+										<span class="pull-right hidden-print"><a
+											href="#{request.contextPath}/resources/file/ManualdeUsuarioSIGA.pdf" class="btn btn-sm btn-success mbm"><i
+												class="fa fa-download mrs"></i>Exportar como PDF</a></span>
+										<h3>#{sessionMain.empresaLogin.razonSocial}</h3>
+									</div>
+
+									<div class="invoice-content">
+										<div class="table-responsive">
+											<table class="table table-striped table-border-none">
+												<thead>
+													<tr>
+														<th></th>
+
+													</tr>
+												</thead>
+												<tbody>
+
+													<object type="application/pdf"
+														data="#{request.contextPath}/resources/file/ManualdeUsuarioSIGA.pdf?pfdrid_c=true"
+														height="1190px" width="100%" internalinstanceid="4">
+														<a>Your browser can't display pdf</a>
+													</object>
+
+												</tbody>
+											</table>
+										</div>
+
+									</div>
+									<div class="invoice-note">
+										* Manual para el uso óptimo del sistema. <br />
+										* Para mayor comodidad puede descargar este manual en formato pdf <br />
+										
+									</div>
+									<div class="invoice-footer">
+										<p class="text-center mbs">QBIT SRL</p>
+										<p class="text-center">
+											<span class="mrm"><i class="fa fa-globe"></i>
+												qbit.com.bo</span><span class="mrm"><i class="fa fa-phone"></i>
+												Tel:330-5619</span><span class="mrm"><i class="fa fa-envelope"></i>
+												info@qbit.com.bo</span>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			</section>
+		</div>
+
+		<!--END CONTENT-->
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>

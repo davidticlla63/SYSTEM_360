@@ -1,0 +1,1274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="head">
+		<title>Cliente</title>
+		<h:outputScript name="js/validator.js" library="mbr" />
+		<script
+			src="http://maps.google.com/maps/api/js?key=AIzaSyBzMKwTQZLtVIeeBm769EkB8EaPnieWiF4"
+			type="text/javascript"></script>
+		<script type="text/javascript">
+			//<!--key=AIzaSyBzMKwTQZLtVIeeBm769EkB8EaPnieWiF4 -->
+		    var currentMarker = null;
+		 
+		    function handlePointClick(event) {
+		        if(currentMarker === null) {
+		            document.getElementById('lat').value = event.latLng.lat();
+		            document.getElementById('lng').value = event.latLng.lng();
+		 
+		            currentMarker = new google.maps.Marker({
+		                position:new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+		            });
+		 
+		            PF('gmap').addOverlay(currentMarker);
+		 
+		            PF('dlg').show();
+		        }   
+		    }
+		 
+		    function markerAddComplete() {
+		        var title = document.getElementById('title');
+		        currentMarker.setTitle(title.value);
+		        title.value = "";
+		 
+		        currentMarker = null;
+		        PF('dlg').hide();
+		    }
+		 
+		    function cancel() {
+		        PF('dlg').hide();
+		        currentMarker.setMap(null);
+		        currentMarker = null;
+		        return false;
+		    }
+
+		    function geocode() {
+		    	alert( " 1 ");
+		    	var data = document.getElementById('address');
+		    	alert( "No Geolocation: "+data);
+		        PF('gmap').geocode(document.getElementById('address').value);
+		    }
+		</script>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+				<h:form id="form001">
+					<!-- BEGIN BUTTONS -->
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											rendered="#{clienteController.modificar or clienteController.registrar}"
+											update="form001" style="height:31px; padding:center"
+											immediate="true"
+											actionListener="#{clienteController.actualizarFormReg()}">
+										</p:commandLink>
+										<p:commandLink id="buttonCrear1" value="&#160; Nuevo Cliente"
+											styleClass="btn btn-success ion-plus-round"
+											style="height:31px;" rendered="#{clienteController.crear}"
+											update="form001"
+											action="#{clienteController.cambiarAspecto()}">
+										</p:commandLink>
+										<p:commandLink id="buttonRegistrar" value="&#160; Registrar"
+											styleClass="btn btn-success ion-checkmark"
+											style="height:31px; padding:center"
+											rendered="#{clienteController.registrar}" update="form001"
+											actionListener="#{clienteController.registrar()}">
+										</p:commandLink>
+										<p:commandLink id="buttonModificar" value="&#160; Modificar"
+											styleClass="btn btn-primary ion-edit"
+											rendered="#{clienteController.modificar}"
+											style="height:31px; padding:center" update="form001"
+											action="#{clienteController.modificar()}">
+										</p:commandLink>
+										<p:commandLink id="buttonEliminar" value="&#160; Eliminar"
+											styleClass="btn btn-danger ion-close"
+											style="height:31px; padding:center"
+											rendered="#{clienteController.modificar}" update="form001"
+											action="#{clienteController.eliminar()}">
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/formulario/clientes.xhtml"
+										style="color: #0090FF; font-size: 12px;">Venta</a></li>
+									<li class="active" style="font-size: 12px;">Cliente</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- END BUTTONS -->
+
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+						<ui:fragment
+							rendered="#{clienteController.modificar or clienteController.registrar}">
+							<div class="col-md-4">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Datos Cliente</h3>
+									</div>
+									<div class="panel-body">
+										<!-- start here register -->
+										<div class="row">
+											<div class="col-md-12 box-content form-horizontal">
+												<div class="form-group ">
+													<div class="col-md-4">
+														<h:outputLabel value="Tipo Cliente" for="tipoPersona" />
+													</div>
+													<div class="col-md-8">
+														<h:selectOneMenu id="tipoPersona"
+															value="#{clienteController.newCliente.tipo}"
+															styleClass="form-control">
+															<p:ajax event="change" update="form001" immediate="true"></p:ajax>
+															<f:selectItem itemValue="NATURAL" itemLabel="NATURAL" />
+															<f:selectItem itemValue="JURIDICO" itemLabel="JURIDICO" />
+														</h:selectOneMenu>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Código</div>
+													<div class="col-md-8">
+														<h:inputText
+															value="#{clienteController.newCliente.codigo}"
+															style=" color: #555555; background-image: none;"
+															onkeypress="return validateOnlyNumber(event)"
+															styleClass="input-sm form-control ">
+															<p:ajax event="change" />
+														</h:inputText>
+													</div>
+												</div>
+												<ui:fragment
+													rendered="#{clienteController.newCliente.tipo.equals('JURIDICO')}">
+													<div class="form-group ">
+														<div class="col-md-4">Nit</div>
+														<div class="col-md-8">
+															<h:inputText value="#{clienteController.newCliente.nit}"
+																style=" color: #555555; background-image: none;"
+																onkeypress="return validateOnlyNumber(event)"
+																styleClass="input-sm form-control ">
+																<p:ajax event="change" />
+															</h:inputText>
+														</div>
+													</div>
+													<div class="form-group ">
+														<div class="col-md-4">Razon Social</div>
+														<div class="col-md-8">
+															<h:inputText
+																value="#{clienteController.newCliente.razonSocial}"
+																style=" color: #555555; background-image: none;"
+																styleClass="input-sm form-control ">
+																<p:ajax event="change" />
+															</h:inputText>
+														</div>
+													</div>
+												</ui:fragment>
+												<ui:fragment
+													rendered="#{clienteController.newCliente.tipo.equals('NATURAL')}">
+													<div class="form-group ">
+														<div class="col-md-4">Doc. Identidad</div>
+														<div class="col-md-8">
+															<h:inputText value="#{clienteController.newCliente.ci}"
+																style=" color: #555555; background-image: none;"
+																styleClass="input-sm form-control ">
+																<p:ajax event="change" />
+															</h:inputText>
+														</div>
+													</div>
+													<div class="form-group ">
+														<div class="col-md-4">Nombre(s)</div>
+														<div class="col-md-8">
+															<h:inputText
+																value="#{clienteController.newCliente.nombres}"
+																style=" color: #555555; background-image: none;"
+																styleClass="input-sm form-control">
+																<p:ajax event="change" />
+															</h:inputText>
+														</div>
+													</div>
+													<div class="form-group ">
+														<div class="col-md-4">Apellidos</div>
+														<div class="col-md-8">
+															<h:inputText
+																value="#{clienteController.newCliente.apellidos}"
+																style=" color: #555555; background-image: none;"
+																styleClass="input-sm form-control">
+																<p:ajax event="change" />
+															</h:inputText>
+														</div>
+													</div>
+													<div class="form-group ">
+														<div class="col-md-4">Celular 1</div>
+														<div class="col-md-8">
+															<h:inputText
+																value="#{clienteController.newCliente.celular1}"
+																style=" color: #555555; background-image: none;"
+																onkeypress="return validateOnlyNumber(event)"
+																styleClass="input-sm form-control">
+																<p:ajax event="change" />
+															</h:inputText>
+														</div>
+													</div>
+													<div class="form-group ">
+														<div class="col-md-4">Celular 2</div>
+														<div class="col-md-8">
+															<h:inputText
+																value="#{clienteController.newCliente.celular2}"
+																style=" color: #555555; background-image: none;"
+																onkeypress="return validateOnlyNumber(event)"
+																styleClass="input-sm form-control">
+																<p:ajax event="change" />
+															</h:inputText>
+														</div>
+													</div>
+												</ui:fragment>
+												<div class="form-group ">
+													<div class="col-md-4">Telefono</div>
+													<div class="col-md-8">
+														<h:inputText
+															value="#{clienteController.newCliente.telefono}"
+															style=" color: #555555; background-image: none;"
+															onkeypress="return validateOnlyNumber(event)"
+															styleClass="input-sm form-control">
+															<p:ajax event="change" />
+														</h:inputText>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Correo</div>
+													<div class="col-md-8">
+														<h:inputText
+															value="#{clienteController.newCliente.correo}"
+															style=" color: #555555; background-image: none;"
+															styleClass="input-sm form-control">
+															<p:ajax event="change" />
+														</h:inputText>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Dirección</div>
+													<div class="col-md-8">
+														<p:inputTextarea id="descripcionID"
+															style="padding: 0 10px;" styleClass="form-control"
+															size="40"
+															value="#{clienteController.newCliente.direccion}"
+															maxlength="250" rows="5">
+															<p:ajax event="change" />
+														</p:inputTextarea>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Estado</div>
+													<div class="col-md-8">
+														<h:selectOneMenu id="roles"
+															styleClass="input-sm form-control"
+															style=" color: #555555; height:25px; font-size:11px;"
+															disabled="#{clienteController.newCliente.estado =='SUPER'}"
+															immediate="true"
+															value="#{clienteController.nombreEstado}">
+															<f:ajax />
+															<f:selectItems value="#{clienteController.listEstado}" />
+														</h:selectOneMenu>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Fotografía</div>
+													<div class="col-md-6">
+														<p:graphicImage id="imgClienteId" rendered="true"
+															value="#{dynamicResourceClienteController.streamedContentImage}"
+															cache="false" width="50%">
+															<f:param name="param"
+																value="#{clienteController.newCliente.id}" />
+														</p:graphicImage>
+													</div>
+													<div class="col-md-2">
+														<center>
+															<p:commandLink styleClass="btn btn-primary ion-camera"
+																style="height:31px;" immediate="true"
+																oncomplete="PF('dlgphotoCam').show();">
+															</p:commandLink>
+															<p:commandLink
+																styleClass="btn btn-primary  ion-android-folder"
+																update="form001" style="height:31px; padding:center"
+																action="#{clienteController.loadDialogImage()}">
+															</p:commandLink>
+														</center>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- end here register -->
+									</div>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Detalle Cliente</h3>
+									</div>
+									<div class="panel-body">
+										<p:tabView>
+											
+											<p:tab title="Datos Personales"
+												rendered="#{clienteController.newCliente.tipo.equals('NATURAL')}">
+												<div class="panel panel-default">
+													<div class="panel-body">
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">1. Hijo(a)</div>
+																</h4>
+															</div>
+														</div>
+														<div class="row">
+															<div class="box-content form-horizontal">
+																<div class="form-group ">
+																	<div class="col-md-2">Nombre Compl.</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.nombreCompletoHijo1}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Edad</div>
+																	<div class="col-md-2">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.edadHijo1}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-2">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telfHijo1}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+																<div class="form-group ">
+																	<div class="col-md-2">Colegio Estudio</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.colegioEstudioHijo1}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-2">Dirección Colegio</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.direccionColegioHijo1}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+																<div class="form-group ">
+																	<div class="col-md-2">Teléfono Colegio</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonoColegioHijo1}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">2. Hijo(a)</div>
+																</h4>
+															</div>
+														</div>
+														<div class="row">
+															<div class="box-content form-horizontal">
+																<div class="form-group ">
+																	<div class="col-md-2">Nombre Compl.</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.nombreCompletoHijo2}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Edad</div>
+																	<div class="col-md-2">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.edadHijo2}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-2">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telfHijo2}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+																<div class="form-group ">
+																	<div class="col-md-2">Colegio Estudio</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.colegioEstudioHijo2}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-2">Dirección Colegio</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.direccionColegioHijo2}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+																<div class="form-group ">
+																	<div class="col-md-2">Teléfono Colegio</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonoColegioHijo2}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">Esposo(a) ó Conyugue</div>
+																</h4>
+															</div>
+														</div>
+														<div class="row">
+															<div class="box-content form-horizontal">
+																<div class="form-group ">
+																	<div class="col-md-2">Nombre Compl.</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.nombreCompletoConyugue}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-2">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonoConyugue}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Correo</div>
+																	<div class="col-md-2">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.correoConyugue}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+																<div class="form-group ">
+																	<div class="col-md-2">Empresa</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.empresaConyugue}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-2">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonoEmpresaConyugue}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+																<div class="form-group ">
+																	<div class="col-md-2">Dirección</div>
+																	<div class="col-md-4">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.direccionLaboralConyugue}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Antiguedad</div>
+																	<div class="col-md-2">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.antiguedadLaboralConyugue}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+
+															</div>
+														</div>
+													</div>
+												</div>
+											</p:tab>
+											<p:tab title="Datos Laborales"
+												rendered="#{clienteController.newCliente.tipo.equals('NATURAL')}">
+												<div class="panel panel-default">
+													<div class="panel-body">
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">Datos Empresa</div>
+																</h4>
+															</div>
+														</div>
+														<div class="row">
+															<div class="box-content form-horizontal">
+																<div class="form-group ">
+																	<div class="col-md-1">Nombre</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.empresaLaboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonoLaboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Dirección</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.direccionLaboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+															</div>
+														</div>
+
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">Cargo en la Empresa</div>
+																</h4>
+															</div>
+														</div>
+														<div class="row">
+															<div class="box-content form-horizontal">
+																<div class="form-group ">
+																	<div class="col-md-1">Cargo</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.cargoLaboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Area</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.areaLaboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Antiguedad</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.antiguedadLaboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+															</div>
+														</div>
+
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">Colegas Trabajo</div>
+																</h4>
+															</div>
+														</div>
+
+														<div class="row">
+															<div class="box-content form-horizontal">
+																<div class="form-group ">
+																	<div class="col-md-1">Nombre Compl.</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.nombreCompletoColega1Laboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonoColega1Laboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Dirección</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.direccionColega1Laboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+																<div class="form-group ">
+																	<div class="col-md-1">Nombre Compl.</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.nombreCompletoColega2Laboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonoColega2Laboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Dirección</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.direccionColega2Laboral}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+															</div>
+														</div>
+
+													</div>
+												</div>
+											</p:tab>
+											<p:tab title="Datos Adicionales"
+												rendered="#{clienteController.newCliente.tipo.equals('NATURAL')}">
+												<div class="panel panel-default">
+													<div class="panel-body">
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">Datos Padre</div>
+																</h4>
+															</div>
+														</div>
+														<div class="row">
+															<div class="box-content form-horizontal">
+																<div class="form-group ">
+																	<div class="col-md-1">Nombre</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.nombreCompletoPadre}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonoPadre}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Dirección</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.direccionPadre}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">Datos Madre</div>
+																</h4>
+															</div>
+														</div>
+														<div class="row">
+															<div class="box-content form-horizontal">
+																<div class="form-group ">
+																	<div class="col-md-1">Nombre</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.nombreCompletoMadre}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonoMadre}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Dirección</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.direccionMadre}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">Datos Hermano(a)</div>
+																</h4>
+															</div>
+														</div>
+														<div class="row">
+															<div class="box-content form-horizontal">
+																<div class="form-group ">
+																	<div class="col-md-1">Nombre</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.nombreCompletoHermano1}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonotoHermano1}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Dirección</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.direccionHermano1}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">Datos Hermano(a)</div>
+																</h4>
+															</div>
+														</div>
+														<div class="row">
+															<div class="box-content form-horizontal">
+																<div class="form-group ">
+																	<div class="col-md-1">Nombre</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.nombreCompletoHermano2}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Teléfono</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.telefonotoHermano2}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																	<div class="col-md-1">Dirección</div>
+																	<div class="col-md-3">
+																		<h:inputText
+																			value="#{clienteController.newClienteAdicional.direccionHermano2}"
+																			style=" color: #555555; background-image: none;"
+																			styleClass="input-sm form-control">
+																			<p:ajax event="change" />
+																		</h:inputText>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</p:tab>
+
+											<p:tab title="Adjuntos">
+												<div class="panel panel-default">
+													<div class="panel-body">
+
+														<div class="row">
+															<div class="col-md-12"
+																style="padding-left: 0px; padding-right: 30px;">
+																<h4 class="pbm border-bottom">
+																	<div class="">
+																		Lista de Adjunto
+																		<div class="pull-right">
+																			<p:commandLink id="buttonAdjuntar"
+																				styleClass="btn btn-success btn-outlined ion-android-folder"
+																				style="height:31px; padding:center" type="submit"
+																				oncomplete="PF('dlgUpload').show();">
+																			</p:commandLink>
+																		</div>
+																	</div>
+																</h4>
+															</div>
+														</div>
+														<div class="row">
+															<p:scrollPanel mode="native"
+																style="width:100%; height:300px;">
+																<ui:repeat id="dataListAdjunto"
+																	value="#{clienteController.listAdjunto}" var="serv">
+																	<div class="row">
+																		<div class="col-md-12 box-content form-horizontal">
+																			<div class="col-md-1">
+																				<div class="form-group">
+																					<h:graphicImage name="ic_report.png" library="gfx"
+																						width="25" height="25" />
+																				</div>
+																			</div>
+																			<div class="col-md-7">
+																				<div class="form-group">
+																					<p:commandLink id="adjDownload"
+																						value="#{serv.nameFile.length()>60?serv.nameFile.substring(0,57).concat('...'):serv.nameFile}"
+																						immediate="true" ajax="false">
+																						<p:fileDownload
+																							value="#{clienteController.getStreamedAdjunto(serv.path)}" />
+																					</p:commandLink>
+
+																				</div>
+																			</div>
+																			<div class="col-md-2">
+																				<p:outputLabel id="adjUsuario" rendered="false"
+																					value="#{serv.usuario.nombre}">
+																				</p:outputLabel>
+																			</div>
+																			<div class="col-md-2">
+																				<div class="form-group">
+																					<p:outputLabel id="adjFechaReg"
+																						value="#{serv.fechaRegistro}">
+																						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+																					</p:outputLabel>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</ui:repeat>
+															</p:scrollPanel>
+														</div>
+													</div>
+												</div>
+											</p:tab>
+											<p:tab id="tabUbiacionGeografica"
+												title="Ubicación Geográfica">
+												<div class="row">
+													<div class="box-content form-horizontal">
+														<div class="form-group ">
+															<div class="col-md-2">
+																<p:outputLabel for="address" value="Dirección:" />
+															</div>
+															<div class="col-md-6">
+																<p:inputText id="address" value="#{clienteController.mapAddress}">
+																<p:ajax event="change"/>
+																</p:inputText>
+															</div>
+															<div class="col-md-4">
+																<p:commandButton value="Geocode" icon="ui-icon-search"
+																	 type="button" onclick="geocode()">
+																	
+																	</p:commandButton>
+															</div>
+														</div>
+														<div class="form-group ">
+															<div class="col-md-12">
+																<p:gmap id="gmap" widgetVar="gmap" center="-17.781291, -63.166525"
+																	zoom="15" type="TERRAIN"
+																	style="width:100%;height:400px"
+																	model="#{clienteController.emptyModel}"
+																	mapTypeControl="false" navigationControl="false"
+																	onPointClick="handlePointClick(event);">
+																	<p:ajax event="geocode" listener="#{clienteController.onGeocode}" update="@this" />
+																	<p:ajax event="overlaySelect"
+																		listener="#{clienteController.onMarkerSelect}" />
+
+																	<p:gmapInfoWindow id="infoWindow">
+																		<p:outputPanel
+																			style="text-align: center; display: block; margin: auto">
+																			<p:graphicImage id="dlgImageId"
+																				value="#{dynamicResourceController.streamedContentImage}"
+																				cache="false" width="150px">
+																				<f:param name="param"
+																					value="#{clienteController.newClienteAdicional.id}" />
+																			</p:graphicImage>
+																			<br />
+																			<center>
+																				#{clienteController.newClienteAdicional.ubicacionTitulo}
+																			</center>
+
+																		</p:outputPanel>
+
+																	</p:gmapInfoWindow>
+																</p:gmap>
+															</div>
+														</div>
+														<div class="form-group ">
+															<div class="col-md-1">Latitud</div>
+															<div class="col-md-3">
+																<h:inputText
+																	value="#{clienteController.newClienteAdicional.ubicacionLatitud}"
+																	style=" color: #555555; background-image: none;"
+																	styleClass="input-sm form-control ">
+																	<p:ajax event="change" />
+																</h:inputText>
+															</div>
+															<div class="col-md-1">Longitud</div>
+															<div class="col-md-3">
+																<h:inputText
+																	value="#{clienteController.newClienteAdicional.ubicacionLongitud}"
+																	style=" color: #555555; background-image: none;"
+																	styleClass="input-sm form-control ">
+																	<p:ajax event="change" />
+																</h:inputText>
+															</div>
+															<div class="col-md-3">
+																<p:commandLink id="buttonActualizar"
+																	value="&#160; Cargar "
+																	styleClass="btn btn-primary ion-navigate"
+																	style="height:31px; padding:center" update="form001"
+																	actionListener="#{clienteController.addMarker()}">
+																</p:commandLink>
+															</div>
+															<div class="col-md-1"></div>
+														</div>
+													</div>
+												</div>
+											</p:tab>
+										</p:tabView>
+									</div>
+								</div>
+							</div>
+						</ui:fragment>
+					</div>
+					<!-- BEGIN PANEL TABLE -->
+					<div class="row">
+						<ui:fragment rendered="#{clienteController.crear}">
+							<div class="col-md-12">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Lista Clientes</h3>
+									</div>
+									<!-- start here datatable -->
+									<p:dataTable id="dataTableCliente" var="item"
+										widgetVar="clientesTable"
+										value="#{clienteController.listClientes}"
+										selectionMode="single"
+										style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+										emptyMessage="No se encontraron clientes" rows="20"
+										paginator="true" paginatorPosition="top"
+										selection="#{clienteController.selectedCliente}"
+										rowKey="#{item.id}" reflow="true">
+										<p:ajax event="rowSelect"
+											listener="#{clienteController.onRowSelect}" update="form001" />
+										<p:column width="8%" headerText="Código"
+											filterStyle="width: 100%; height:25px;"
+											style="text-align:center;" filterBy="#{item.codigo}">
+											<h:outputText value="#{item.codigo}" />
+										</p:column>
+										<p:column headerText="Nombre / Razón Social"
+											filterStyle="width: 100%; height:25px;"
+											filterBy="#{item.nombres}">
+											<h:outputText value="#{item.nombres} #{item.apellidos}"
+												rendered="#{item.tipo.equals('NATURAL')}" />
+											<h:outputText value="#{item.razonSocial}"
+												rendered="#{item.tipo.equals('JURIDICO')}" />
+										</p:column>
+										<p:column headerText="Ci / Nit"
+											filterStyle="width: 100%; height:25px;" filterBy="#{item.ci}">
+											<h:outputText value="#{item.ci}"
+												rendered="#{item.tipo.equals('NATURAL')}" />
+											<h:outputText value="#{item.nit}"
+												rendered="#{item.tipo.equals('JURIDICO')}" />
+										</p:column>
+										<p:column headerText="Telefono" width="10%"
+											filterStyle="width: 100%; height:25px;"
+											filterBy="#{item.telefono}">
+											<h:outputText value="#{item.telefono}" />
+										</p:column>
+										<p:column width="10%" filterStyle="width: 100%; height:25px;"
+											headerText="Estado" style="text-align:center;"
+											filterBy="#{item.estado}">
+											<span class="label label-success"><h:outputText
+													rendered="#{item.estado=='AC'}" value="Activo" /></span>
+											<span class="label label-danger"><h:outputText
+													rendered="#{item.estado=='IN'}" value="Inactivo" /></span>
+										</p:column>
+										<p:column width="10%" filterStyle="width: 100%; height:25px;"
+											style="text-align:center;" headerText="Usuario Reg."
+											filterBy="#{item.usuarioRegistro}">
+											<h:outputText value="#{item.usuarioRegistro}" />
+										</p:column>
+										<p:column width="10%" headerText="Fecha Reg."
+											style="text-align:center;"
+											filterStyle="width: 100%; height:25px;"
+											filterBy="#{item.fechaRegistro}">
+											<h:outputText value="#{item.fechaRegistro}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{clienteController.listClientes.size()} Registros en Total" />
+										</f:facet>
+									</p:dataTable>
+									<!-- end here datatable -->
+									<div class="panel-body"></div>
+								</div>
+							</div>
+						</ui:fragment>
+					</div>
+					<!-- END PANEL TABLE -->
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<!-- DIALOG TITLE MARKER -->
+		<p:dialog widgetVar="dlg" width="350px" showEffect="fade"
+			header="Ubicación" closable="false">
+			<h:form id="formDlgMarker" prependId="false">
+				<div class="row">
+					<div class="box-content">
+						<div class="form-group ">
+							<div class="col-md-4">
+								<h:outputLabel for="title" value="Titulo:" />
+							</div>
+							<div class="col-md-8">
+								<p:inputText id="title"
+									value="#{clienteController.newClienteAdicional.ubicacionTitulo}" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div class="row">
+					<div class="form-group ">
+						<div class="col-md-12">
+							<center>
+								<p:graphicImage id="dlgImageId"
+									value="#{dynamicResourceController.streamedContentImage}"
+									cache="false" width="100px">
+									<f:param name="param"
+										value="#{clienteController.newClienteAdicional.id}" />
+								</p:graphicImage>
+							</center>
+						</div>
+						<div class="col-md-12">
+							<p:fileUpload rendered="true" immediate="true"
+								fileUploadListener="#{dynamicResourceController.handleFileUpload}"
+								mode="advanced" update="dlgImageId" auto="true"
+								sizeLimit="900000" allowTypes="/(\.|\/)(jpe?g|png)$/"
+								label="Agregar Imagen">
+							</p:fileUpload>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="box-content">
+						<div class="form-group ">
+							<div class="col-md-6">
+								<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+									styleClass="btn btn-warning ion-minus-circled"
+									onclick="return cancel()" style="height:31px; padding:center">
+								</p:commandLink>
+							</div>
+							<div class="col-md-6">
+								<p:commandLink id="buttonRegistrar" value="&#160; Agregar"
+									styleClass="btn btn-success ion-checkmark" style="height:31px;"
+									actionListener="#{clienteController.addMarker}"
+									update="form001" oncomplete="markerAddComplete()">
+								</p:commandLink>
+							</div>
+						</div>
+					</div>
+				</div>
+				<h:inputHidden id="lat"
+					value="#{clienteController.newClienteAdicional.ubicacionLatitud}" />
+				<h:inputHidden id="lng"
+					value="#{clienteController.newClienteAdicional.ubicacionLongitud}" />
+			</h:form>
+		</p:dialog>
+
+		<!-- DIALOG IMPORT ADJUNTO-->
+		<p:dialog header="SUBIR ADJUNTO" widgetVar="dlgUpload" modal="true"
+			visible="#{not empty facesContext.maximumSeverity}" resizable="false"
+			position="center" width="500px">
+			<h:form id="formDialogImport" enctype="multipart/form-data">
+			   Seleccione el archivo :
+			   <br />
+				<p:fileUpload uploadLabel="test" label="SELECCIONAR ARCHIVO"
+					fileUploadListener="#{clienteController.handleFileUpload}"
+					mode="advanced" update="display,form001" auto="true"
+					sizeLimit="10000000"
+					invalidSizeMessage="Sólo para archivos con tamaño máximo de 10 MB" />
+				<p:growl id="display" showDetail="true" />
+
+			</h:form>
+		</p:dialog>
+
+		<!-- DIALOG CAMERA-->
+		<p:dialog header="TOMAR FOTO" widgetVar="dlgphotoCam" modal="true"
+			width="27%" height="100%">
+			<h:form id="formphotoCam">
+				<p:focus context="formphotoCam" />
+				<div class="row">
+					<div class="col-md-12">
+						<p:photoCam widgetVar="pc"
+							listener="#{clienteController.oncapture}" update="form001" />
+						<p:commandLink value="&#160; Capturar"
+							styleClass="btn btn-success ion-camera"
+							onclick="PF('pc').capture()">
+						</p:commandLink>
+					</div>
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+		<!-- IMAGE CLIENTS -->
+		<p:dialog header="Agregar Imagen" widgetVar="dlgImagenCliente"
+			position="center" modal="true" resizable="false" width="400">
+			<h:form id="dlgImagenCliente" enctype="multipart/form-data">
+				<div class="row">
+					<p:fileUpload rendered="true" immediate="true"
+						fileUploadListener="#{dynamicResourceClienteController.handleFileUpload}"
+						mode="advanced" update="dlgImageId" auto="true" sizeLimit="900000"
+						allowTypes="/(\.|\/)(jpe?g|png)$/" label="Agregar Imagen">
+					</p:fileUpload>
+					<p:graphicImage id="dlgImageId"
+						value="#{dynamicResourceClienteController.streamedContentImage}"
+						cache="false" width="160px">
+						<f:param name="param" value="#{clienteController.newCliente.id}" />
+					</p:graphicImage>
+				</div>
+				<br />
+				<div class="row">
+					<div class="col-md-6"></div>
+					<div class="col-md-6">
+						<p:commandLink value="&#160; Aceptar"
+							styleClass="btn btn-success btn-block ion-checkmark"
+							update="form001" style="height:31px; padding:center"
+							oncomplete="PF('dlgImagenCliente').hide();">
+						</p:commandLink>
+					</div>
+				</div>
+				<p:growl id="msgs1" showDetail="true" />
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

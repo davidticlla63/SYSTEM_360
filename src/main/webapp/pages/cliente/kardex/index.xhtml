@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="head">
+		<title>Kardex Cliente</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+				<h:form id="form001">
+					<!-- BEGIN BUTTONS -->
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/cliente/kardex/index.xhtml"
+										style="color: #0090FF; font-size: 12px;">Cliente</a></li>
+									<li class="active" style="font-size: 12px;">Kardex</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- END BUTTONS -->
+
+					<!-- BEGIN PANEL TABLE -->
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">Kardex de Cliente</h3>
+								</div>
+								<!-- start here datatable -->
+								<div class="panel-body box-content no-padding">
+									<div class="row">
+										<div class="form-group">
+											<div class="col-md-1" style="padding-right: 0px;">
+												<p:outputLabel id="labelCliente" value="Cliente" />
+											</div>
+											<div class="col-md-3" style="padding-right: 0px;">
+												<p:autoComplete id="nombreCliente" style="width: 100%"
+													converter="clienteConverter"
+													inputStyle="width: 100%; color: #555555; background-image: none; padding: 4px 10px;"
+													value="#{kardexClienteController.selectedCliente}"
+													completeMethod="#{kardexClienteController.completeCliente}"
+													minQueryLength="1" required="true"
+													requiredMessage="Nombre Cliente Requerido."
+													forceSelection="true" var="_var"
+													itemLabel="#{_var.razonSocial}"
+													itemValue="#{_var}"
+													placeholder="Escriba Nit o Nombre cliente " maxResults="10">
+
+													<p:ajax event="itemSelect" update="form001"
+														listener="#{kardexClienteController.onRowSelectCliente2Click}" />
+
+													<p:column>
+														<h:outputText value="#{_var.codigo}" />
+													</p:column>
+													<p:column>
+														<h:outputText value="#{_var.nit}" />
+													</p:column>
+													<p:column>
+														<h:outputText
+															value="#{_var.razonSocial}" />
+													</p:column>
+
+												</p:autoComplete>
+											</div>
+										</div>
+									</div>
+									<br />
+									<div class="row">
+										<p:dataTable id="dataTableUser" var="item"
+											value="#{kardexClienteController.listKardexCliente}"
+											reflow="true"
+											style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+											rowKey="#{item.id}" rowIndexVar="rowIndex"
+											emptyMessage="No se encontraron registros" rows="20"
+											paginator="true" paginatorPosition="top">
+
+											<p:column width="6%" headerText="Fecha"
+												style="text-align:center;">
+												<h:outputText value="#{item.fechaRegistro}" rendered="#{item.id>0}">
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+												</h:outputText>
+											</p:column>
+
+											<p:column width="10%" headerText="Movimiento"
+												style="text-align:center;">
+												<h:outputText value="#{item.tipo}" />
+											</p:column>
+
+											<p:column width="25%" headerText="Detalle"
+												style="text-align:center;">
+												<h:outputText value="#{item.motivo}" />
+											</p:column>
+
+											<p:column headerText="Ingreso ( $us)" width="10%"
+												style="text-align:center;">
+												<h:outputText value="#{item.totalImporteExtranjero}"
+													rendered="#{item.tipo.equals('INGRESO')}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+												<h:outputText value="0"
+													rendered="#{item.tipo.equals('EGRESO')}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+											</p:column>
+
+											<p:column headerText="Egreso ( $us)" width="10%"
+												style="text-align:center;">
+												<h:outputText value="#{item.totalImporteExtranjero}"
+													rendered="#{item.tipo.equals('EGRESO')}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+												<h:outputText value="0"
+													rendered="#{item.tipo.equals('INGRESO')}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+											</p:column>
+
+											<p:column headerText="Saldo" width="10%"
+												style="text-align:center;" >
+												<h:outputText 
+												value="#{item.saldo}" >
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+											</p:column>
+
+											<f:facet name="footer">
+												<h:outputText
+													value="#{kardexClienteController.listKardexCliente.size()} Registros en Total" />
+											</f:facet>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END PANEL TABLE -->
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+	</ui:define>
+</ui:composition>

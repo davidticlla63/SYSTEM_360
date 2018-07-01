@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Tipo Cambio</h3>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12 box-content form-horizontal">
+								<p:schedule id="schedule1"
+									value="#{tipoCambioController.eventModelTipoCambio}"
+									locale="tr" widgetVar="myschedule1" timeZone="GMT-4">
+								</p:schedule>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</ui:composition>

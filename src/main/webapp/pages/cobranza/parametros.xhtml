@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Parámetros Cobranza</title>
+		<f:event listener="#{parametroCobranzaController.initConversation}"
+			type="preRenderView"></f:event>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+
+				<h:form id="form001">
+
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											update="form001" rendered="false"
+											style="height:31px; padding:center">
+										</p:commandLink>
+										<p:commandLink id="buttonRegistrar" value="&#160; Modificar" disabled="true"
+											styleClass="btn btn-success ion-checkmark" immediate="true"
+											style="height:31px; padding:center" rendered="true">
+											<p:ajax update="formGrowl"
+												listener="#{parametroCobranzaController.modificarParametroCobranza()}" />
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/cobranza/parametros.xhtml"
+										style="color: #0090FF; font-size: 12px;">Cobranza</a></li>
+									<li class="active" style="font-size: 12px;">Parámetros</li>
+								</ol>
+							</div>
+
+						</section>
+					</div>
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">PARAMETROS DE COBRANZA</h3>
+								</div>
+								<div class="panel-body">
+									<p:tabView>
+										<p:tab title="Salida de Inventario por Sucursal">
+											<div class="row">
+												<div class="col-md-12"
+													style="padding-left: 30px; padding-right: 30px;">
+													<h4 class="pbm border-bottom">
+														<div class="">
+															Las ventas disminuyen el stock de un Producto de Un
+															Almacen.
+															<div class="pull-right">
+																<p:outputLabel id="question2" value="?" />
+															</div>
+														</div>
+														<p:tooltip for="question2" value=".">
+
+															<div class="panel">
+																<div class="panel-heading">
+																	<h3 class="panel-title">
+																		<strong class="text-uppercase text-orange">Ayuda</strong>
+																	</h3>
+																</div>
+																<div class="panel-body">
+																	<p class="mbl">La configuración de estos parametros
+																		es referencial.</p>
+																</div>
+															</div>
+
+														</p:tooltip>
+													</h4>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<div class="col-md-12">
+														<div class="note note-success">
+															<p>
+																- Seleccione la opción <strong>Generar Varias
+																	Orden de Salida</strong> para que el proceso de realizar la
+																venta, genere diferentes Orden de Salida para cada
+																almacen de donde pertenecen los productos.
+															</p>
+															<p>
+																- Seleccione la opción <strong>Generar Ordenes
+																	de Traspaso</strong> para que el proceso de realizar la venta,
+																genere Ordenes de Traspaso de los productos a un solo
+																almacen y generar una sola Orden de Salida.
+															</p>
+														</div>
+														<div class="form-group ">
+															<div class="col-md-2">Tipo de Salida de Almacén</div>
+															<div class="col-md-10">
+																<p:selectOneRadio id="oneMenuTipoSalida"
+																	value="#{parametroCobranzaController.selectedParametroCobranza.tipoDisminucionStock}">
+																	<p:ajax update="form001" />
+																	<f:selectItem
+																		itemLabel="&#160; Generar Varias Orden de Salida  &#160;"
+																		itemValue="VOS" />
+																	<f:selectItem
+																		itemLabel="&#160; Generar Ordenes de Traspaso &#160;"
+																		itemValue="OT" itemDisabled="false" />
+																</p:selectOneRadio>
+															</div>
+															<div class="col-md-12">
+																<FONT SIZE="1" COLOR="#848484">* [ Tomar en
+																	cuenta que la opción selecionada sólo se aplicará
+																	cuando la venta tenga varios productos de diferentes
+																	almacenes. ]</FONT>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</p:tab>
+									</p:tabView>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+					<!-- END PANEL -->
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>

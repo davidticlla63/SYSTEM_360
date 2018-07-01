@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="head">
+		<title>Cuentas Por Cobrar</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+				<h:form id="form001">
+					<!-- BEGIN BUTTONS -->
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/cliente/cuenta_cobrar/index.xhtml"
+										style="color: #0090FF; font-size: 12px;">Cliente</a></li>
+									<li class="active" style="font-size: 12px;">Cuentas por cobrar</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- END BUTTONS -->
+
+					<!-- BEGIN PANEL TABLE -->
+					<div class="row">
+							<div class="col-md-12">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Cuentas Por Cobrar Cliente</h3>
+									</div>
+									<!-- start here datatable -->
+									<div class="panel-body">
+									<p:dataTable id="cuentasCobrarTable" var="item"
+										value="#{cuentaCobrarController.cuentasPorCobrar}"
+										paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+										rowKey="#{item.id}" paginatorPosition="top" lazy="true"
+										loadingmessage="Realizando operación espere.."
+										style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+										paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+										<p:ajax event="rowSelect" update="form001"
+											listener="#{cuentaCobrarController.onRowSelect}" />
+											
+										<p:column headerText="Cod. Cliente" width="7%"
+											style="text-align:center;">
+											<h:outputText
+												value="#{item.notaVenta.cliente.codigo}" />
+										</p:column>
+
+										<p:column headerText="Cliente" width="25%">
+											<h:outputText rendered="#{item.notaVenta != null}"
+												value="#{item.notaVenta.cliente.razonSocial}" />
+										</p:column>
+										<p:column headerText="Saldo" width="15%"
+											style="text-align:center;">
+											<h:outputText rendered="#{item.moneda.equals('BOLIVIANOS')}" value="#{item.saldoNacional}" >
+											<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+											</h:outputText>
+											<h:outputText rendered="#{item.moneda.equals('DOLAR')}" value="#{item.saldoExtranjero}" >
+											<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+											</h:outputText>
+											<span class="label label-success"> <p:outputLabel
+													value=" $us." rendered="#{item.moneda.equals('DOLAR')}" />
+												<p:outputLabel value=" Bs."
+													rendered="#{item.moneda.equals('BOLIVIANOS')}" />
+											</span>
+										</p:column>
+										<p:column width="9%" headerText="Estado"
+											style="text-align:center;">
+											<span class="label label-success"><h:outputText
+													rendered="#{item.estado=='AC'}" value="Activo" /></span>
+											<span class="label label-danger"><h:outputText
+													rendered="#{item.estado=='IN'}" value="Inactivo" /></span>
+											<span class="label orange"><h:outputText
+													rendered="#{item.estado=='PN'}" value="Pendiente" /></span>
+										</p:column>
+										<p:column width="8%" headerText="Fecha "
+											style="text-align:center;" >
+											<h:outputText value="#{item.fechaRegistro}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{cuentaCobrarController.sizeList} Registros en Total" />
+										</f:facet>
+									</p:dataTable>
+									</div>
+								</div>
+							</div>
+					</div>
+					<!-- END PANEL TABLE -->
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+	</ui:define>
+</ui:composition>

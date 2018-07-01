@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- BEGIN BUTTONS -->
+	<div class="row" style="background-color: #f9fafa;">
+		<section class="content-header">
+		<div class="pull-left" style="padding-top: 8px; padding-left: 15px;">
+			<div class="btn-group-demo">
+				<div class="btn-group">
+					<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+						styleClass="btn btn-warning ion-minus-circled"
+						rendered="#{notasVentasController.selected}"
+						style="height:31px; padding:center" immediate="true">
+						<p:ajax update="form001"
+							listener="#{notasVentasController.loadDefault()}" />
+					</p:commandLink>
+
+					<p:splitButton value="Nueva Venta" icon="ui-icon-plusthick"
+						rendered="#{!notasVentasController.selected}"
+						onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/venta/nota_venta/nota_venta.xhtml';">
+						
+						<p:menuitem value="Cotización" icon="ui-icon-document"
+							disabled="false"
+							actionListener="#{notasVentasController.newQuotation()}"/>
+					</p:splitButton>
+
+					<p:commandLink id="buttonModificar" value="&#160; Ver Detalle"
+						styleClass="btn btn-primary" style="height:31px;"
+						rendered="#{notasVentasController.selected}">
+						<p:ajax update="form001"
+							listener="#{notasVentasController.prepareViewDetail()}" />
+					</p:commandLink>
+					
+					<p:commandLink id="buttonNotaCargo" value="&#160; Nota Cargo"
+						styleClass="btn btn-success ion-plus-round" style="height:31px;"
+						rendered="#{notasVentasController.notaVenta.estadoPago.equals('RE')}">
+						<p:ajax update="form001" listener="#{notasVentasController.showDialogNotaCargo()}" />
+					</p:commandLink>
+
+					<p:commandLink id="buttonVerReporte" value="&#160; Reporte"
+						styleClass="btn btn-info ion-printer" rendered="false"
+						disabled="true" style="height:31px; padding:center">
+						<p:ajax update="form001"
+							listener="#{notasVentasController.prepareReport()}" />
+					</p:commandLink>
+					
+					<p:commandLink id="buttonAnular" value="&#160; Anular"
+						styleClass="btn orange ion-alert" style="height:31px; padding:center" 
+						rendered="#{notasVentasController.notaVenta.estadoPago.equals('PN')}">
+						<p:ajax update="form001"
+							listener="#{notasVentasController.prepareCancellationSalesNote()}" />
+					</p:commandLink>
+					
+				</div>
+			</div>
+		</div>
+		<div class="pull-right">
+			<ol class="breadcrumb">
+				<li><a href="#{request.contextPath}/index"
+					style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+				<li><a href="#{request.contextPath}/user"
+					style="color: #0090FF; font-size: 12px;">Venta</a></li>
+				<li class="active" style="font-size: 12px;">Notas de Ventas</li>
+			</ol>
+		</div>
+		</section>
+	</div>
+	<!-- END BUTTONS -->
+
+	<!-- BEGIN PANEL TABLE -->
+	<div class="row">
+
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Notas de Ventas</h3>
+				</div>
+				<div class="form-group">
+
+					<p:dataTable id="ventasTable" var="item" value="#{notasVentasController.notaVentas}"
+						paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+						selectionMode="single"
+						selection="#{notasVentasController.notaVenta}" 
+						rowKey="#{item.id}" paginatorPosition="top" lazy="true"
+						loadingmessage="Realizando operación espere.."
+						style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+						<p:ajax event="rowSelect"
+							listener="#{notasVentasController.onRowSelect}" update="form001" />
+
+						<p:column headerText="Nº Nota Venta" width="10%"
+							style="text-align:center;"
+							filterStyle="width: 100%; height:25px;" filterBy="#{item.codigo}"
+							filterMatchMode="contains">
+							<h:outputText value="#{item.codigo}" />
+						</p:column>
+
+						<p:column headerText="Código Cliente" width="10%"
+							style="text-align:center;"
+							filterStyle="width: 100%; height:25px;"
+							filterMatchMode="contains" filterBy="#{item.cliente.codigo}">
+							<h:outputText value="#{item.cliente.codigo}" />
+						</p:column>
+
+						<p:column headerText="Nombre Cliente" width="25%"
+							filterStyle="width: 100%; height:25px;"
+							filterMatchMode="contains" filterBy="#{item.cliente.razonSocial}">
+							<h:outputText value="#{item.cliente.razonSocial}" />
+						</p:column>
+						<p:column headerText="Total Monto" width="15%"
+							style="text-align:center;">
+							<h:outputText rendered="#{item.moneda.equals('DOLAR')}"
+								value="#{item.montoTotalExtranjero}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern="#0.00" />
+							</h:outputText>
+							<span class="label label-success"> <p:outputLabel
+									value=" $us." />
+							</span>
+						</p:column>
+
+						<p:column headerText="Forma Pago" width="8%"
+							style="text-align:center;"
+							filterStyle="width: 100%; height:25px;"
+							filterMatchMode="contains">
+							<h:outputText value="#{item.formaPago}" />
+						</p:column>
+
+						<p:column headerText="Tipo" width="8%" style="text-align:center;"
+							filterStyle="width: 100%; height:25px;"
+							filterMatchMode="contains">
+							<h:outputText value="#{item.tipoVenta}" />
+						</p:column>
+
+						<p:column width="12%" headerText="Estado"
+							filterStyle="width: 100%; height:25px;"
+							style="text-align:center;" filterBy="#{item.estado}">
+							<span class="label label-warning"><h:outputText
+									rendered="#{item.estadoPago=='PN'}" value="Pago Pendiente" /></span>
+							<span class="label label-success"><h:outputText
+									rendered="#{item.estadoPago=='PG'}"
+									value="Pagado Completamente" /></span>
+							<span class="label label-success"><h:outputText
+									rendered="#{item.estadoPago=='PR'}"
+									value="Pagado Completamente" /></span>
+							<span class="label label-grey"><h:outputText
+									rendered="#{item.estadoPago=='PGP'}"
+									value="Pagado Parcialmente" /></span>
+							<span class="label label orange"><h:outputText
+									rendered="#{item.estadoPago=='AN'}" value="Anulada" /></span>
+							<span class="label label-primary"><h:outputText
+									rendered="#{item.estadoPago=='CO'}" value="Cotización Venta" /></span>
+						</p:column>
+						<p:column width="8%" headerText="Fecha "
+							filterStyle="width: 100%; height:25px;"
+							style="text-align:center;" filterBy="#{item.fechaRegistro}">
+							<h:outputText value="#{item.fechaRegistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<f:facet name="footer">
+							<h:outputText
+								value="#{notasVentasController.sizeList} Registros en Total" />
+						</f:facet>
+					</p:dataTable>
+				</div>
+				<div class="panel-body"></div>
+			</div>
+		</div>
+
+	</div>
+	<!-- END PANEL TABLE -->
+	
+	<div id="m-r-01" tabindex="-1" role="dialog" data-keyboard="false"
+			data-backdrop="static" aria-labelledby="myModalLabel"
+			aria-hidden="true" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<h:form id="formModalPago">
+						<div class="modal-header">
+							<!-- INIT HEADER -->
+							<h4 id="myModalLabel" class="modal-title">
+								<strong>Nota Cargo - Cliente</strong>
+							</h4>
+							<!-- END HEADER -->
+						</div>
+						<div class="modal-body">
+							<!-- INIT BODY -->
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div class="col-md-5">Total</div>
+										<div class="col-md-7">
+											<h:inputText id="total"
+												value="#{notasVentasController.notaVenta.montoTotalExtranjero}"
+												style=" color: #555555; background-image: none;"
+												readonly="true" styleClass="input-sm form-control">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:inputText>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div class="col-md-5">Monto de Cargo $us</div>
+										<div class="col-md-7">
+											<h:inputText id="montoCargo"
+												value="#{notasVentasController.montoNotaCargoAPagar}"
+												style=" color: #555555; background-image: none;"
+												styleClass="input-sm form-control">
+												<p:ajax event="change" update="formModalPago" />
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:inputText>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<!-- INIT FOOTER -->
+							<div class="row">
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonCancelar03" value="&#160; Cancelar"
+										styleClass="btn btn-warning btn-block ion-minus-circled"
+										update="form001" immediate="true"
+										style="height:31px; padding:center"
+										actionListener="#{notasVentasController.hideDialogNotaCargo()}">
+									</p:commandLink>
+								</div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonRegistrar03" value="&#160; Registrar"
+										styleClass="btn btn-success btn-block ion-checkmark" disabled="true"
+										update="form001" style="height:31px; padding:center"
+										immediate="true">
+									</p:commandLink>
+								</div>
+							</div>
+							<!-- END FOOTER -->
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+		<!-- END MODAL -->
+
+</ui:composition>

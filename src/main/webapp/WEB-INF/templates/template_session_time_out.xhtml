@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<p:idleMonitor onactive="PF('sessionTimeOutDialog').show();"
+		timeout="#{ 899999 }" />
+
+	<p:dialog header="Sesión Caducada" widgetVar="sessionTimeOutDialog"
+		modal="true" fixedCenter="true" closable="false" width="35%"
+		>
+		<h:form id="formSessionTimeOut">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<div class="col-md-12">
+							<h:outputText
+								value="La sesión ha caducado, tiempo de inactividad 15 minutos." />
+						</div>
+					</div>
+
+					<br />
+
+					<div class="form-group">
+						<div class="col-md-6"></div>
+						<div class="col-md-6">
+							<p:commandLink id="confirmBackToLogin"
+								value="&#160; Volver a la Aplicación."
+								styleClass="btn btn-primary ion-checkmark"
+								style="height:31px; padding:center"
+								onclick="window.location='#{facesContext.externalContext.requestContextPath}/logoutServlet';">
+							</p:commandLink>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+	</p:dialog>
+
+</ui:composition>

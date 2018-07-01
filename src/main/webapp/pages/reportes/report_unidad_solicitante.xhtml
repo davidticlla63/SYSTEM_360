@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Reporte Unidad</title>
+		<f:event listener="#{reportTotalUnidadProyectoController.initConversation}"
+			type="preRenderView"></f:event>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="content-header">
+				<div class="pull-left" style="padding-top: 8px;">
+					<h:form id="formBotonesHeader" style="padding-left: 10px;">
+						<div class="btn-group-demo">
+							<div class="btn-group">
+								<p:commandLink id="buttonAtras" value="&#160; Atras"
+									styleClass="btn btn-warning ion-minus-circled"
+									update="formFilterProducto, formBotonesHeader"
+									rendered="#{reportTotalUnidadProyectoController.verReporte}"
+									style="height:31px; padding:center"
+									action="#{reportTotalUnidadProyectoController.init()}">
+								</p:commandLink>
+								<p:commandLink id="buttonProcesar" value="&#160; Procesar"
+									styleClass="btn btn-info ion-ios7-loop-strong"
+									rendered="false"
+									style="height:31px; padding:center"
+									update=" formFilterProducto,formBotonesHeader"
+									action="#{reportTotalUnidadProyectoController.procesarConsulta()}">
+								</p:commandLink>
+
+								<p:commandLink id="buttonVerReporte" value="&#160; Ver Reporte"
+									styleClass="btn btn-info ion-printer"
+									rendered="true"
+									style="height:31px; padding:center"
+									update="formFilterProducto ,formBotonesHeader"
+									action="#{reportTotalUnidadProyectoController.cargarReporte()}">
+								</p:commandLink>
+							</div>
+						</div>
+					</h:form>
+				</div>
+				<div class="pull-right">
+					<ol class="breadcrumb">
+						<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+							style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+						<li><a
+							href="#{request.contextPath}/pages/reportes/report_unidad_solicitante.xhtml"
+							style="color: #0090FF; font-size: 12px;">Reporte</a></li>
+						<li class="active" style="font-size: 12px;">Total Gastos de Unidad segun proyecto</li>
+					</ol>
+				</div>
+			</section>
+			<section class="main-content">
+				<section class="main-content">
+					<div class="row">
+						<h:form id="formFilterProducto" styleClass="form-horizontal">
+
+							
+								<div class="col-md-12">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<h3 class="panel-title">Filtro Unidad</h3>
+										</div>
+										<!-- start here datatable -->
+										<div class="panel-body">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group ">
+														<div class="col-md-12">Fecha Inicial</div>
+														<div class="col-md-12">
+															<p:calendar pattern="dd/MM/yyyy" id="fechaInicial"
+																locale="es"
+																value="#{reportTotalUnidadProyectoController.fechaInicial}"
+																onkeypress="return permiteKey(event, 'none')"
+																style=" color: #555555; background-image: none;">
+																<p:ajax event="dateSelect" />
+															</p:calendar>
+														</div>
+													</div>
+													<div class="form-group ">
+														<div class="col-md-12">Fecha Final</div>
+														<div class="col-md-12">
+															<p:calendar pattern="dd/MM/yyyy" id="fechaFinal"
+																locale="es"
+																value="#{reportTotalUnidadProyectoController.fechaFinal}"
+																onkeypress="return permiteKey(event, 'none')"
+																style=" color: #555555; background-image: none;">
+																<p:ajax event="dateSelect" />
+															</p:calendar>
+														</div>
+													</div>
+													<div class="form-group ">
+														<div class="col-md-12">Buscar Unidad</div>
+														<div class="col-md-12">
+															<p:selectOneRadio id="oneMenuTipoConsulta"
+																value="#{reportTotalUnidadProyectoController.tipoConsulta}">
+																<p:ajax update="@form" />
+																<f:selectItem
+																	itemLabel="&#160; Todos	&#160; &#160; &#160;"
+																	itemValue="T" />
+																<f:selectItem itemLabel="&#160; Seleccionar"
+																	itemValue="S" />
+															</p:selectOneRadio>
+														</div>
+													</div>
+													<ui:fragment
+														rendered="#{ reportTotalUnidadProyectoController.tipoConsulta.equals('S')}">
+														<div class="form-group ">
+															<div class="col-md-12">Unidad</div>
+															<div class="col-md-4">
+																<p:autoComplete id="unidadID" style="width: 93%"
+																	inputStyle="width: 93%; color: #555555; background-image: none;"
+																	value="#{reportTotalUnidadProyectoController.selectedDetalleUnidad.nombre}"
+																	completeMethod="#{reportTotalUnidadProyectoController.completeUnidad}"
+																	minQueryLength="3" dropdown="true" required="true"
+																	requiredMessage="Partida Requerido."
+																	forceSelection="true" var="_var" itemLabel="#{_var}"
+																	itemValue="#{_var.nombre}"
+																	placeholder="[Escriba Partida]" maxResults="10">
+
+																	<p:ajax event="itemSelect"
+																		listener="#{reportTotalUnidadProyectoController.onRowSelectUnidadClick}"
+																		update="unidadID" />
+																	<p:column>
+																		<h:outputText value="#{_var.nombre}" />
+																	</p:column>
+																</p:autoComplete>
+
+															</div>
+														</div>
+													</ui:fragment>
+
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+								
+
+							<ui:fragment
+								rendered="true">
+								<div class="col-md-12">
+									<div class="panel panel-default">
+										<div class="panel-body" style="text-align: center;">
+											<p:media player="pdf" rendered="true"
+												value="#{reportTotalUnidadProyectoController.urlTotalUnidadProyecto}"
+												width="800px" height="1125px" />
+										</div>
+									</div>
+								</div>
+							</ui:fragment>
+
+
+						</h:form>
+
+					</div>
+				</section>
+			</section>
+		</div>
+
+		<!--END CONTENT-->
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>

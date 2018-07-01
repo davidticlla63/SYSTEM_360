@@ -1,0 +1,1573 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<div class="row" style="background-color: #f9fafa;">
+		<section class="content-header">
+		<div class="pull-left" style="padding-top: 8px; padding-left: 15px;">
+			<div class="btn-group-demo">
+				<div class="btn-group">
+					<p:commandLink id="buttonAtras" value="&#160; Cancelar"
+						styleClass="btn btn-warning ion-minus-circled"
+						rendered="#{ ! notaVentaController.verReporte}"
+						style="height:31px; padding:center">
+						<p:ajax update="form001"
+							listener="#{notaVentasController.loadDefault()}" />
+					</p:commandLink>
+					<p:commandLink id="buttonRegistrar" value="&#160; Registrar"
+						styleClass="btn btn-success ion-checkmark" immediate="true"
+						style="height:31px; padding:center"
+						disabled="#{notaVentaController.modoVista}"
+						rendered="#{ ! notaVentaController.verReporte}">
+						<p:ajax update="form001"
+							listener="#{notaVentasController.preparePayRegister()}" />
+					</p:commandLink>
+					<p:commandLink id="buttonRegistrar2" value="&#160; Plan Pago"
+						styleClass="btn btn-primary ion-navicon-round" immediate="true"
+						disabled="#{notaVentaController.modoVista}"
+						style="height:31px; padding:center">
+						<p:ajax update="form001"
+							listener="#{notaVentasController.prepareloadPayPlan()}" />
+					</p:commandLink>
+				</div>
+			</div>
+		</div>
+		<div class="pull-right">
+			<ol class="breadcrumb">
+				<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+					style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+				<li><a
+					href="#{request.contextPath}/pages/venta/nota_venta.xhtml"
+					style="color: #0090FF; font-size: 12px;">Venta</a></li>
+				<li class="active" style="font-size: 12px;">Nota Venta</li>
+			</ol>
+		</div>
+		</section>
+	</div>
+	<!-- BEGIN PANEL REGISTER -->
+	<div class="row" style="padding-top: 10px;">
+		<div class="col-md-12">
+			<div id="page-invoice">
+				<div class="invoice">
+					<div class="invoice-company">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="pull-left">
+									Nota de Venta
+								</div>
+								<div class="pull-right">
+									<div class="form-group">
+										<div class="col-md-4" style="font-size: 16px;">Publicador</div>
+										<div class="col-md-8">
+											<h:selectOneMenu id="publicador"
+												styleClass="input-sm form-control"
+												style=" color: #555555; height:25px; font-size:11px;"
+												immediate="true"
+												value="#{notaVentasController.notaVenta.publisher.id}">
+												<p:ajax event="change" />
+												<f:selectItems value="#{notaVentasController.publishers}"
+													var="item" itemLabel="#{item.nombres} #{item.apellidos}"
+													itemValue="#{item.id}" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-md-4" style="font-size: 16px;">Vendedor</div>
+										<div class="col-md-8">
+											<h:selectOneMenu id="vendedor"
+												styleClass="input-sm form-control"
+												style=" color: #555555; height:25px; font-size:11px;"
+												immediate="true"
+												value="#{notaVentasController.notaVenta.encargadoVenta.id}">
+												<p:ajax event="change" />
+												<f:selectItems value="#{notaVentasController.sellers}"
+													var="item" itemLabel="#{item.nombres} #{item.apellidos}"
+													itemValue="#{item.id}" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="invoice-header">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<div class="col-md-2" style="padding-right: 0px;">
+										<p:outputLabel id="labelCliente" value="Cliente" />
+									</div>
+									<div class="col-md-9" style="padding-right: 0px;">
+										<p:autoComplete id="nombreCliente" style="width: 100%"
+											converter="clienteConverter"
+											inputStyle="width: 100%; color: #555555; background-image: none; padding: 4px 10px;"
+											value="#{notaVentasController.notaVenta.cliente}"
+											completeMethod="#{notaVentasController.completeCustomer}"
+											minQueryLength="1" required="true"
+											requiredMessage="Nombre Cliente Requerido."
+											forceSelection="true" var="_var"
+											itemLabel="#{_var.nombres}#{_var.apellidos}#{_var.razonSocial}"
+											itemValue="#{_var}"
+											placeholder="Escriba Ci o Nombre cliente " maxResults="10">
+
+											<p:ajax event="itemSelect" update="nombreCliente,tooltipId1"
+												listener="#{notaVentasController.onRowSelectCustomer}" />
+
+											<p:column>
+												<h:outputText value="#{_var.codigo}" />
+											</p:column>
+											<p:column>
+												<h:outputText value="#{_var.ci}#{_var.nit}" />
+											</p:column>
+											<p:column>
+												<h:outputText
+													value="#{_var.nombres} #{_var.apellidos}#{_var.razonSocial}" />
+											</p:column>
+
+										</p:autoComplete>
+										<p:tooltip id="tooltipId1" for="labelCliente" value="."
+											rendered="true">
+
+											<div class="panel">
+												<div class="panel-heading">
+													<h3 class="panel-title">
+														<strong class="text-uppercase text-orange">Datos
+															Cliente</strong>
+													</h3>
+												</div>
+												<div class="panel-body">
+													<div class="row">
+														<div class="col-md-12">
+															<div class="form-group ">
+																<div class="col-md-4">Código:</div>
+																<div class="col-md-8">
+																	<p:outputLabel
+																		value="#{notaVentasController.notaVenta.cliente.codigo}" />
+																</div>
+															</div>
+															<div class="form-group ">
+																<div class="col-md-4">Ci:</div>
+																<div class="col-md-8">
+																	<p:outputLabel
+																		value="#{notaVentasController.notaVenta.cliente.ci}" />
+																</div>
+															</div>
+															<div class="form-group ">
+																<div class="col-md-4">Nombres:</div>
+																<div class="col-md-8">
+																	<p:outputLabel
+																		value="#{notaVentasController.notaVenta.cliente.nombres}" />
+																</div>
+															</div>
+															<div class="form-group ">
+																<div class="col-md-4">Apellidos:</div>
+																<div class="col-md-8">
+																	<p:outputLabel
+																		value="#{notaVentasController.notaVenta.cliente.apellidos}" />
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</p:tooltip>
+									</div>
+									<div class="col-md-1">
+										<p:commandLink value="&#160; " rendered="false"
+											disabled="#{notaVentaController.modoVista}"
+											styleClass="btn btn-default ion-plus" immediate="true"
+											style="height:27px;  width: 23px; padding: 5px 4px; ">
+											<p:ajax
+												listener="#{notaVentaController.actionNuevoCliente()}" />
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-2">
+								<div class="form-group ">
+									<div class="col-md-4">Fecha</div>
+									<div class="col-md-8">
+										<p:calendar id="fechaCompra" readonly="true"
+											value="#{notaVentasController.notaVenta.fechaRegistro}"
+											locale="es" styleClass="myWid100" required="true"
+											requiredMessage="Fecha requerido" pattern="dd/MM/yyyy">
+											<p:ajax event="dateSelect" />
+										</p:calendar>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group ">
+									<div class="col-md-5">Tipo Cambio</div>
+									<div class="col-md-7">
+										<h:inputText id="tipoCambio"
+											value="#{notaVentasController.notaVenta.tipoCambio}"
+											style=" color: #555555; background-image: none;"
+											styleClass="input-sm form-control" disabled="true">
+											<p:ajax event="keyup" update="form001"
+												listener="#{notaVentaController.actionChangeTipoCambio()}" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group ">
+									<div class="col-md-3" style="padding-right: 0px;">Tipo
+										Venta</div>
+									<div class="col-md-9" style="padding-right: 0px;">
+										<p:selectOneRadio id="oneMenuTipoVenta"
+											value="#{notaVentasController.notaVenta.tipoVenta}">
+											<p:ajax update="form001"
+												listener="#{notaVentasController.changeSalesType()}" />
+											<f:selectItem itemLabel="&#160; CREDITO &#160;"
+												itemValue="CREDITO" />
+											<f:selectItem itemLabel="&#160; CONTADO &#160;"
+												itemValue="CONTADO" />
+										</p:selectOneRadio>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<div class="col-md-1">Concepto</div>
+									<div class="col-md-11" style="padding-left: 29px;">
+										<p:inputTextarea id="descripcionID" style="padding: 0 10px;"
+											styleClass="form-control" size="40"
+											value="#{notaVentasController.notaVenta.concepto}"
+											maxlength="250" rows="2">
+											<p:ajax event="change" />
+										</p:inputTextarea>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<div class="col-md-2" style="padding-left: 30px;">Moneda</div>
+									<div class="col-md-4">
+										<h:selectOneMenu id="roles" disabled="true"
+											styleClass="input-sm form-control"
+											style=" color: #555555; height:25px; font-size:11px;"
+											immediate="true"
+											value="#{notaVentasController.notaVenta.moneda}">
+											<p:ajax event="change" update="form001"
+												listener="#{notaVentasController.changeTipoCambio()}" />
+											<f:selectItem itemValue="DOLAR" itemLabel="DOLAR" />
+											<f:selectItem itemValue="BOLIVIANOS" itemLabel="BOLIVIANOS" />
+										</h:selectOneMenu>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="invoice-content">
+						<div class="table-responsive">
+							<br />
+							<div class="row">
+								<div class="col-md-12"
+									style="padding-left: 30px; padding-right: 30px;">
+									<h4 class="pbm border-bottom">
+
+										Agregar Detalle
+										<div class="pull-right">
+											<p:outputLabel id="question1" value="?" />
+										</div>
+
+										<p:tooltip for="question1" value=".">
+											<div class="panel">
+												<div class="panel-heading">
+													<h3 class="panel-title">
+														<strong class="text-uppercase text-orange">Ayuda</strong>
+													</h3>
+												</div>
+												<div class="panel-body">
+													<p class="mbl">Agregar los productos con su precio y
+														cantidad respectiva.</p>
+												</div>
+											</div>
+										</p:tooltip>
+									</h4>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<div class="col-md-2" style="padding-right: 0px;">
+											<p:outputLabel id="labelProducto" value="Producto" />
+											<p:tooltip id="tooltipId2" for="labelProducto" value="."
+												rendered="true">
+												<div class="panel">
+													<div class="panel-heading">
+														<h3 class="panel-title">
+															<strong class="text-uppercase text-orange">Datos
+																Producto</strong>
+														</h3>
+													</div>
+													<div class="panel-body">
+														<div class="row">
+															<div class="col-md-12">
+																<div class="form-group ">
+																	<div class="col-md-4">Código:</div>
+																	<div class="col-md-8">
+																		<p:outputLabel
+																			value="#{notaVentasController.detailSaleNote.producto.codigo}" />
+																	</div>
+																</div>
+																<div class="form-group ">
+																	<div class="col-md-4">Nombre:</div>
+																	<div class="col-md-8">
+																		<p:outputLabel
+																			value="#{notaVentasController.detailSaleNote.producto.nombre}" />
+																	</div>
+																</div>
+																<div class="form-group ">
+																	<div class="col-md-4">Descripción:</div>
+																	<div class="col-md-8">
+																		<p:outputLabel
+																			value="#{notaVentasController.detailSaleNote.producto.descripcion}" />
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</p:tooltip>
+										</div>
+										<div class="col-md-10" style="padding-right: 0px;">
+											<p:autoComplete id="nombreProducto" style="width: 100%"
+												converter="productoConverter"
+												inputStyle="width: 95%; color: #555555; background-image: none; padding: 4px 10px;"
+												value="#{notaVentasController.detailSaleNote.producto}"
+												completeMethod="#{notaVentasController.completeProduct}"
+												minQueryLength="1" required="true"
+												requiredMessage="Nombre Producto Requerido."
+												forceSelection="true" var="_var"
+												itemLabel="#{_var.nombre}#{_var.descripcion}"
+												itemValue="#{_var}" placeholder="Código o Nombre Producto "
+												maxResults="10">
+
+												<p:ajax event="itemSelect" update="form001"
+													listener="#{notaVentasController.onRowSelectProduct}" />
+												<p:column>
+													<h:outputText value="#{_var.codigo}" />
+												</p:column>
+												<p:column>
+													<h:outputText value="#{_var.nombre}" />
+												</p:column>
+												<p:column>
+													<h:outputText value="#{_var.descripcion}" />
+												</p:column>
+
+											</p:autoComplete>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<div class="col-md-2">Precio Venta</div>
+										<div class="col-md-2">
+											<h:inputText id="precioUnitarioID"
+												rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+												value="#{notaVentasController.detailSaleNote.precio}"
+												style=" color: #555555; background-image: none;"
+												styleClass="input-sm form-control" disabled="false">
+												<p:ajax event="change" update="form001"
+													listener="#{notaVentasController.loadDetailSaleNote()}" />
+											</h:inputText>
+											<h:inputText id="precioUnitarioExtranjeroID"
+												rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}"
+												value="#{notaVentasController.detailSaleNote.precioExtranjero}"
+												style=" color: #555555; background-image: none;"
+												styleClass="input-sm form-control" disabled="false">
+												<p:ajax event="change" update="form001"
+													listener="#{notaVentasController.loadDetailSaleNote()}" />
+											</h:inputText>
+										</div>
+										<div class="col-md-2">Cantidad</div>
+										<div class="col-md-2">
+											<h:inputText id="cantidadProductoID"
+												value="#{notaVentasController.detailSaleNote.cantidad}"
+												style=" color: #555555; background-image: none;"
+												styleClass="input-sm form-control">
+												<p:ajax event="keyup" update="importeID"
+													listener="#{notaVentasController.loadDetailSaleNote}" />
+											</h:inputText>
+										</div>
+										<div class="col-md-2">Importe</div>
+										<div class="col-md-2">
+											<h:inputText id="importeID"
+												rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+												value="#{notaVentasController.notaVenta.montoTotal}"
+												style=" color: #555555; background-image: none;"
+												styleClass="input-sm form-control" readonly="true">
+											</h:inputText>
+											<h:inputText id="importeExtranjeroID"
+												rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}"
+												value="#{notaVentasController.notaVenta.montoTotalExtranjero}"
+												style=" color: #555555; background-image: none;"
+												styleClass="input-sm form-control" readonly="true">
+											</h:inputText>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<div class="col-md-12">
+											<p:commandLink id="buttonAceptarDialog1wsdf"  value="Agregar"
+												styleClass="btn btn-success btn-block" immediate="true">
+												<p:ajax update="form001"
+													listener="#{notaVentasController.addDetailSaleNote()}" />
+											</p:commandLink>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group ">
+										<div class="col-md-12">
+											<p:dataTable id="table001" var="var" rendered="true"
+												value="#{notaVentasController.notaVenta.detailSalesNotes}"
+												emptyMessage="Agregue Detalles." reflow="true"
+												style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;">
+												<f:facet name="header">
+           											Detalle Productos
+       											</f:facet>
+
+												<p:column width="10%" headerText="Código"
+													disabledSelection="true" style="text-align:center;">
+													<h:outputText value="#{var.producto.codigo}" />
+												</p:column>
+
+												<p:column width="35%" headerText="Producto">
+													<h:outputText
+														value="#{var.producto.nombre} #{var.producto.descripcion}" />
+
+												</p:column>
+												<p:column width="10%" headerText="Cantidad"
+													style="text-align:center;">
+													<h:outputText value="#{var.cantidad}" />
+												</p:column>
+
+												<p:column width="10%" headerText="Precio Venta"
+													style="text-align:center;">
+
+													<h:outputText value="#{var.precioContadoNacional}"
+														rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS') and notaVentasController.notaVenta.tipoVenta.equals('CONTADO')}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+													<h:outputText value="#{var.precioContadoExtranjero}"
+														rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR') and notaVentasController.notaVenta.tipoVenta.equals('CONTADO')}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+													<h:outputText value="#{var.precio}"
+														rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS') and notaVentasController.notaVenta.tipoVenta.equals('CREDITO')}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+													<h:outputText value="#{var.precioExtranjero}"
+														rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR') and notaVentasController.notaVenta.tipoVenta.equals('CREDITO')}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+													<span class="label label-success"> <p:outputLabel
+															value=" $us."
+															rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}" />
+														<p:outputLabel value=" Bs."
+															rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}" />
+													</span>
+												</p:column>
+
+												<p:column width="10%" headerText="Sub Total"
+													style="text-align:center;">
+													<h:outputText
+														rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+														value="#{var.precio * var.cantidad}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+													<h:outputText
+														rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}"
+														value="#{var.precioExtranjero * var.cantidad}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+													<span class="label label-success"> <p:outputLabel
+															value=" $us."
+															rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}" />
+														<p:outputLabel value=" Bs."
+															rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}" />
+													</span>
+												</p:column>
+
+												<p:column width="6%" headerText="Acción"
+													style="text-align:center;">
+													<div class="row">
+														<div class="btn-group-demo">
+															<div class="btn-group">
+																<p:commandLink id="buttonModificarDetalle"
+																	value="&#160;" styleClass="btn ion-edit"
+																	style="padding-left: 5px; padding-right: 5px;"
+																	immediate="true"
+																	actionListener="#{notaVentaController.actionModificarDetalleNotaVenta(var.id)}" />
+																<p:commandLink id="buttonEliminarDetalle"
+																	style="padding-left: 5px; padding-right: 5px;"
+																	value="&#160;" styleClass="btn ion-trash-b"
+																	immediate="true"
+																	actionListener="#{notaVentaController.eliminarDetalleNotaVenta(var.id)}" />
+															</div>
+														</div>
+													</div>
+												</p:column>
+											</p:dataTable>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+						<div class="invoice-price">
+							<div class="invoice-price-left">
+								<div class="invoice-price-row">
+									<div class="sub-price">
+										<div class="form-group ">
+											<div class="col-md-12">
+												<small>SUBTOTAL</small>
+											</div>
+										</div>
+										<ui:fragment
+											rendered="#{notaVentasController.notaVenta.tipoVenta.equals('CREDITO')}">
+											<div class="form-group ">
+												<div class="col-md-9">
+													<p:outputLabel value="Cuota Inicial Bs."
+														rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}" />
+													<p:outputLabel value="Cuota Inicial $us."
+														rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}" />
+												</div>
+												<div class="col-md-3">
+													<h:outputText id="montoCuotaInicialSubTotalNacional"
+														rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+														value="#{notaVentasController.notaVenta.cuotaInicial}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+													<h:outputText id="montoCuotaInicialSubTotalExtranjero"
+														rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
+														value="#{notaVentasController.notaVenta.cuotaInicialExtranjero}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+												</div>
+											</div>
+
+											<div class="form-group ">
+												<div class="col-md-9">
+													<p:outputLabel value="Plan Pago Bs."
+														rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}" />
+													<p:outputLabel value="Plan Pago $us."
+														rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}" />
+												</div>
+												<div class="col-md-3">
+													<h:outputText
+														rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+														value="#{notaVentasController.notaVenta.montoTotal - notaVentasController.notaVenta.cuotaInicial}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+													<h:outputText
+														rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}"
+														value="#{notaVentasController.notaVenta.montoTotalExtranjero - notaVentasController.notaVenta.cuotaInicialExtranjero}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+												</div>
+											</div>
+										</ui:fragment>
+										<ui:fragment
+											rendered="#{notaVentasController.notaVenta.tipoVenta.equals('CONTADO')}">
+											<div class="form-group ">
+												<div class="col-md-9">
+													<p:outputLabel value="Venta Bs."
+														rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}" />
+													<p:outputLabel value="Venta $us."
+														rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}" />
+												</div>
+												<div class="col-md-3">
+													<h:outputText id="montoCuotaInicialSubTotalNacional2"
+														rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+														value="#{notaVentasController.notaVenta.cuotaInicial}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+													<h:outputText id="montoCuotaInicialSubTotalExtranjero2"
+														rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}"
+														value="#{notaVentasController.notaVenta.cuotaInicialExtranjero}">
+														<f:convertNumber type="number" groupingUsed="true"
+															minFractionDigits="2" pattern="#0.00" />
+													</h:outputText>
+												</div>
+											</div>
+										</ui:fragment>
+									</div>
+								</div>
+							</div>
+							<div class="invoice-price-right">
+								<div class="form-group ">
+									<div class="col-md-12">
+										<small>TOTAL</small>
+									</div>
+								</div>
+								<div class="form-group ">
+									<div class="col-md-8">
+										<p:outputLabel value="Venta Bs."
+											rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}" />
+										<p:outputLabel value="Venta $us."
+											rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}" />
+									</div>
+									<div class="col-md-4">
+										<h:outputText
+											rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+											value="#{notaVentasController.notaVenta.montoTotal}">
+											<f:convertNumber type="number" groupingUsed="true"
+												minFractionDigits="2" pattern="#0.00" />
+										</h:outputText>
+										<h:outputText
+											rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}"
+											value="#{notaVentasController.notaVenta.montoTotalExtranjero}">
+											<f:convertNumber type="number" groupingUsed="true"
+												minFractionDigits="2" pattern="#0.00" />
+										</h:outputText>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="invoice-footer">
+						<p class="text-center">
+							<span class="mrm"><i class="fa fa-globe"></i>
+								www.teds.com.bo</span><span class="mrm"><i class="fa fa-phone"></i>
+								T:3-3262629</span><span class="mrm"><i class="fa fa-envelope"></i>
+								mbr.bejarano@gmail.com</span>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- INIT MODAL -->
+	<div id="m-r-1" tabindex="-1" role="dialog" data-keyboard="false"
+		data-backdrop="static" aria-labelledby="myModalLabel"
+		aria-hidden="true" class="modal fade">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<!-- INIT HEADER -->
+					<h4 id="myModalLabel" class="modal-title">
+						<strong>PLAN DE PAGO - CLIENTE</strong>
+					</h4>
+					<!-- END HEADER -->
+				</div>
+				<div class="modal-body">
+					<!-- INIT BODY -->
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form-group">
+								<div class="col-md-5">Forma Pago</div>
+								<div class="col-md-7">
+									<h:selectOneMenu id="formaPago"
+										styleClass="input-sm form-control"
+										style=" color: #555555; height:25px; font-size:11px;"
+										value="#{notaVentasController.notaVenta.formaPago}">
+										<p:ajax event="valueChange" update="form001"
+											listener="#{notaVentasController.changeWeyToPay()}" />
+										<f:selectItem itemValue="MENSUAL" itemLabel="MENSUAL" />
+										<f:selectItem itemValue="QUINCENAL" itemLabel="QUINCENAL" />
+										<f:selectItem itemValue="SEMANAL" itemLabel="SEMANAL" />
+									</h:selectOneMenu>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<div class="col-md-5">Coef. Interes</div>
+								<div class="col-md-7">
+									<p:spinner id="coeficienteInteres" stepFactor="0.1" min="0"
+										max="100"
+										value="#{notaVentasController.notaVenta.coeficienteInteres}"
+										style=" color: #555555; background-image: none; padding: 0 10px;">
+										<p:ajax event="change" update="form001"
+											listener="#{notaVentasController.reloadPayPlan()}" />
+									</p:spinner>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group ">
+								<div class="col-md-5">Nº Cuotas</div>
+								<div class="col-md-7">
+									<p:spinner min="1" max="144"
+										value="#{notaVentasController.notaVenta.numeroCuotas}"
+										style=" color: #555555; background-image: none; padding: 0 10px;">
+										<p:ajax event="change" update="form001"
+											listener="#{notaVentasController.reloadPayPlan()}" />
+									</p:spinner>
+								</div>
+							</div>
+						</div>
+					</div>
+					<hr />
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form-group ">
+								<div class="col-md-5">
+									<p:outputLabel value="Monto Inicial Bs."
+										rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}" />
+									<p:outputLabel value="Monto Inicial $us."
+										rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}" />
+								</div>
+								<div class="col-md-7">
+									<p:inputText
+										rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+										value="#{notaVentasController.notaVenta.cuotaInicial}"
+										style=" color: #555555; background-image: none; padding: 0 10px;"
+										styleClass="input-sm form-control">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+										<p:ajax event="change" update="form001"
+											listener="#{notaVentasController.reloadPayPlan()}" />
+									</p:inputText>
+									<p:inputText
+										rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}"
+										value="#{notaVentasController.notaVenta.cuotaInicialExtranjero}"
+										style=" color: #555555; background-image: none; padding: 0 10px;"
+										styleClass="input-sm form-control">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+										<p:ajax event="change" update="form001"
+											listener="#{notaVentasController.reloadPayPlan()}" />
+									</p:inputText>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group ">
+								<div class="col-md-5">Porc. Inicial</div>
+								<div class="col-md-7">
+									<p:spinner stepFactor="0.1" prefix="%" min="0" max="100"
+										value="#{notaVentasController.notaVenta.porcentajeCuotaInicial}"
+										style=" color: #555555; background-image: none; padding: 0 10px;">
+										<p:ajax event="change" update="form001"
+											listener="#{notaVentasController.reloadPayPlan()}" />
+									</p:spinner>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group ">
+								<div class="col-md-4" style="padding-right: 0px;">Fecha
+									Incial</div>
+								<div class="col-md-5">
+									<p:calendar id="fechaInicial"
+										value="#{notaVentasController.notaVenta.fechaPagoInicial}"
+										locale="es" styleClass="myWid100" required="true"
+										requiredMessage="Fecha requerido" pattern="dd/MM/yyyy">
+										<p:ajax event="dateSelect"
+											listener="#{notaVentasController.reloadPayPlan()}" />
+									</p:calendar>
+								</div>
+								<div class="col-md-3"
+									style="padding-left: 0px; padding-right: 0px;">
+									<p:spinner min="1" max="31"
+										disabled="#{!notaVentasController.notaVenta.formaPago.equals('MENSUAL')}"
+										value="#{notaVentaController.diaPago}"
+										style=" color: #555555; background-image: none; padding: 0 10px;">
+										<p:ajax event="change" update="form001"
+											listener="#{notaVentasController.reloadPayPlan()}" />
+									</p:spinner>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-md-12">
+							<p:dataTable id="dataTablePlanPago" var="item" rendered="true"
+								scrollHeight="220" scrollable="true"
+								value="#{notaVentasController.notaVenta.listPlanCobranza}" reflow="true"
+								style="padding-left: 10px !important; padding-right: 10px !important; font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+								rowKey="#{item.id}" emptyMessage="No se encontraron registros">
+
+								<f:facet name="header">
+									Detalle Pagos
+								</f:facet>
+
+								<p:column headerText="Nº Cuota" width="25%"
+									style="text-align:center;">
+									<h:outputText value="#{item.numeroPago}" />
+								</p:column>
+								<p:column headerText="Fecha" width="25%"
+									style="text-align:center;">
+									<h:outputText value="#{item.fechaPago}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="Interes Mensual" width="25%"
+									style="text-align:center;" rendered="false">
+									<h:outputText
+										rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+										value="#{item.interesMensual}">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:outputText>
+									<h:outputText
+										rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}"
+										value="#{item.interesMensualExtranjero}">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:outputText>
+									<span class="label label-success"> <p:outputLabel
+											value=" $us."
+											rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}" />
+										<p:outputLabel value=" Bs."
+											rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}" />
+									</span>
+								</p:column>
+								<p:column headerText="Monto" width="25%"
+									style="text-align:center;">
+									<h:outputText
+										rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+										value="#{item.montoNacional}">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:outputText>
+									<h:outputText
+										rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}"
+										value="#{item.montoExtranjero}">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:outputText>
+									<span class="label label-success"> <p:outputLabel
+											value=" $us."
+											rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}" />
+										<p:outputLabel value=" Bs."
+											rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}" />
+									</span>
+								</p:column>
+
+							</p:dataTable>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-md-3">.</div>
+						<div class="col-md-4">.</div>
+						<div class="col-md-5">
+							<div class="form-group ">
+								<div class="col-md-6">
+									<strong>Saldo a Financiar</strong>
+								</div>
+								<div class="col-md-6">
+									<h:outputText
+										rendered="#{notaVentasController.notaVenta.moneda.equals('BOLIVIANOS')}"
+										value="#{notaVentaController.totalPlanPagoNacional}">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:outputText>
+									<h:outputText
+										rendered="#{notaVentasController.notaVenta.moneda.equals('DOLAR')}"
+										value="#{notaVentaController.totalPlanPagoExtranjero}">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:outputText>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END BODY -->
+				</div>
+				<div class="modal-footer">
+					<!-- INIT FOOTER -->
+					<div class="row">
+						<div class="col-md-4"></div>
+						<div class="col-md-4"></div>
+						<div class="col-md-4">
+							<p:commandLink id="buttonCancelar01" value="&#160; Atras."
+								styleClass="btn btn-warning btn-block ion-minus-circled"
+								immediate="true" style="height:31px; padding:center"
+								actionListener="#{notaVentaController.closeModalPlanPago()}">
+							</p:commandLink>
+						</div>
+					</div>
+					<!-- END FOOTER -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="m-r-2" data-keyboard="false" data-backdrop="static"
+		aria-hidden="true" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<!-- INIT HEADER -->
+					<h4 id="myModalLabel" class="modal-title">
+						<strong>REGISTRO NUEVO CLIENTE</strong>
+					</h4>
+					<!-- END HEADER -->
+				</div>
+				<div class="modal-body">
+					<!-- INIT BODY -->
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group ">
+								<div class="col-md-5">
+									<h:outputLabel value="Tipo Cliente" for="tipoPersona" />
+								</div>
+								<div class="col-md-7">
+									<h:selectOneMenu id="tipoPersona"
+										value="#{notaVentaController.newCliente.tipo}"
+										styleClass="form-control">
+										<p:ajax event="change" update="formModalCliente"
+											immediate="true"></p:ajax>
+										<f:selectItem itemValue="NATURAL" itemLabel="NATURAL" />
+										<f:selectItem itemValue="JURIDICO" itemLabel="JURIDICO" />
+									</h:selectOneMenu>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<ui:fragment
+						rendered="#{notaVentaController.newCliente.tipo.equals('JURIDICO')}">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group ">
+									<div class="col-md-5">Nit</div>
+									<div class="col-md-7">
+										<h:inputText value="#{notaVentaController.newCliente.nit}"
+											style=" color: #555555; background-image: none;"
+											styleClass="input-sm form-control ">
+											<p:ajax event="change" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group ">
+									<div class="col-md-5">Razon Social</div>
+									<div class="col-md-7">
+										<h:inputText
+											value="#{notaVentaController.newCliente.razonSocial}"
+											style=" color: #555555; background-image: none;"
+											styleClass="input-sm form-control ">
+											<p:ajax event="change" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+					</ui:fragment>
+					<ui:fragment
+						rendered="#{notaVentaController.newCliente.tipo.equals('NATURAL')}">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group ">
+									<div class="col-md-5">Doc. Identidad</div>
+									<div class="col-md-7">
+										<h:inputText value="#{notaVentaController.newCliente.ci}"
+											style=" color: #555555; background-image: none;"
+											styleClass="input-sm form-control ">
+											<p:ajax event="change" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group ">
+									<div class="col-md-5">Nombre(s)</div>
+									<div class="col-md-7">
+										<h:inputText value="#{notaVentaController.newCliente.nombres}"
+											style=" color: #555555; background-image: none;"
+											styleClass="input-sm form-control">
+											<p:ajax event="change" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group ">
+									<div class="col-md-5">Apellidos</div>
+									<div class="col-md-7">
+										<h:inputText
+											value="#{notaVentaController.newCliente.apellidos}"
+											style=" color: #555555; background-image: none;"
+											styleClass="input-sm form-control">
+											<p:ajax event="change" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group ">
+									<div class="col-md-5">Celular 1</div>
+									<div class="col-md-7">
+										<h:inputText
+											value="#{notaVentaController.newCliente.celular1}"
+											style=" color: #555555; background-image: none;"
+											styleClass="input-sm form-control">
+											<p:ajax event="change" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group ">
+									<div class="col-md-5">Celular 2</div>
+									<div class="col-md-7">
+										<h:inputText
+											value="#{notaVentaController.newCliente.celular2}"
+											style=" color: #555555; background-image: none;"
+											styleClass="input-sm form-control">
+											<p:ajax event="change" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+						</div>
+					</ui:fragment>
+					<br />
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group ">
+								<div class="col-md-5">Telefono</div>
+								<div class="col-md-7">
+									<h:inputText value="#{notaVentaController.newCliente.telefono}"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control">
+										<p:ajax event="change" />
+									</h:inputText>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group ">
+								<div class="col-md-5">Correo</div>
+								<div class="col-md-7">
+									<h:inputText value="#{notaVentaController.newCliente.correo}"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control">
+										<p:ajax event="change" />
+									</h:inputText>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group ">
+								<div class="col-md-5">Dirección</div>
+								<div class="col-md-7">
+									<p:inputTextarea id="descripcionID" style="padding: 0 10px;"
+										styleClass="form-control" size="40"
+										value="#{notaVentaController.newCliente.direccion}"
+										maxlength="250" rows="2">
+										<p:ajax event="change" />
+									</p:inputTextarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					<ui:fragment rendered="false">
+						<br />
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group ">
+									<div class="col-md-5">Fotografía</div>
+									<div class="col-md-5">
+										<p:graphicImage id="imgClienteId" rendered="true"
+											value="#{dynamicResourceClienteController.streamedContentImage}"
+											cache="false" width="50%">
+											<f:param name="param"
+												value="#{notaVentaController.newCliente.id}" />
+										</p:graphicImage>
+									</div>
+									<div class="col-md-2">
+										<center>
+											<p:commandLink
+												styleClass="btn btn-primary  ion-android-folder"
+												update="form001" style="height:31px; padding:center"
+												action="#{notaVentaController.loadDialogImage()}">
+											</p:commandLink>
+										</center>
+									</div>
+								</div>
+							</div>
+						</div>
+					</ui:fragment>
+					<br />
+
+					<!-- END BODY -->
+				</div>
+				<div class="modal-footer">
+					<!-- INIT FOOTER -->
+					<div class="row">
+						<div class="col-md-4"></div>
+						<div class="col-md-4">
+							<p:commandLink id="buttonCancelar01" value="&#160; Cancelar"
+								styleClass="btn btn-warning btn-block ion-minus-circled"
+								update="form001" immediate="true"
+								style="height:31px; padding:center"
+								actionListener="#{notaVentaController.closeModalCliente()}">
+							</p:commandLink>
+						</div>
+						<div class="col-md-4">
+							<p:commandLink id="buttonRegistrar01" value="&#160; Registrar"
+								styleClass="btn btn-success btn-block ion-checkmark"
+								style="height:31px; padding:center" immediate="true">
+								<p:ajax update="form001"
+									listener="#{notaVentaController.registrarCliente()}" />
+							</p:commandLink>
+						</div>
+					</div>
+					<!-- END FOOTER -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="m-r-3" tabindex="-1" role="dialog" data-keyboard="false"
+		data-backdrop="static" aria-labelledby="myModalLabel"
+		aria-hidden="true" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<!-- INIT HEADER -->
+					<ui:fragment rendered="false">
+						<!-- false, hide button close  -->
+						<button type="button" data-dismiss="modal" class="close">
+							<span aria-hidden="true">x</span><span class="sr-only">Cerrar</span>
+						</button>
+					</ui:fragment>
+					<h4 id="myModalLabel" class="modal-title">
+						<strong>MODIFICAR PRODUCTO</strong>
+					</h4>
+					<!-- END HEADER -->
+				</div>
+				<div class="modal-body">
+					<!-- INIT BODY -->
+
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group ">
+								<div class="col-md-6">Producto</div>
+								<div class="col-md-6">
+									<p:autoComplete id="nombreProducto2" style="width: 100%"
+										inputStyle="width: 100%; color: #555555; background-image: none; padding: 4px 10px;"
+										value="#{notaVentaController.selectedProducto.nombre}"
+										completeMethod="#{notaVentaController.completeProducto}"
+										minQueryLength="1" required="true"
+										requiredMessage="Nombre Producto Requerido."
+										forceSelection="true" var="_var" itemLabel="#{_var}"
+										itemValue="#{_var.nombre}" placeholder="Escriba Producto "
+										maxResults="10">
+
+										<p:ajax event="itemSelect" update="nombreProducto2"
+											listener="#{notaVentaController.onRowSelectProductoClick}" />
+
+										<p:column>
+											<h:outputText value="#{_var.codigo}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="#{_var.nombre}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="#{_var.descripcion}" />
+										</p:column>
+
+									</p:autoComplete>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<div class="col-md-6">Precio Venta</div>
+								<div class="col-md-6">
+									<h:inputText id="precioUnitarioID2"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}"
+										value="#{notaVentaController.selectedDetalleNotaVenta.precio}"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control" disabled="false">
+										<p:ajax event="change" update="formModalModificarProducto"
+											listener="#{notaVentaController.actualizarImporteParcialDetalleNotaVenta()}" />
+									</h:inputText>
+									<h:inputText id="precioUnitarioExtranjeroID2"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
+										value="#{notaVentaController.selectedDetalleNotaVenta.precioExtranjero}"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control" disabled="false">
+										<p:ajax event="change" update="formModalModificarProducto"
+											listener="#{notaVentaController.actualizarImporteParcialDetalleNotaVenta()}" />
+									</h:inputText>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<div class="col-md-6">Cantidad</div>
+								<div class="col-md-6">
+									<h:inputText id="cantidadProductoID2"
+										value="#{notaVentaController.selectedDetalleNotaVenta.cantidad}"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control">
+										<p:ajax event="keyup" update="importeID2"
+											listener="#{notaVentaController.actualizarImporteParcialDetalleNotaVenta()}" />
+									</h:inputText>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<div class="col-md-6">Importe</div>
+								<div class="col-md-6">
+									<h:inputText id="importeID2"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}"
+										value="#{notaVentaController.importeParcialDetalleNotaVenta}"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control" readonly="true">
+									</h:inputText>
+									<h:inputText id="importeExtranjeroID2"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
+										value="#{notaVentaController.importeParcialExtanjeroDetalleNotaVenta}"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control" readonly="true">
+									</h:inputText>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END BODY -->
+				</div>
+				<div class="modal-footer">
+					<!-- INIT FOOTER -->
+					<div class="row">
+						<div class="col-md-4"></div>
+						<div class="col-md-4">
+							<p:commandLink id="buttonCancelar03" value="&#160; Cancelar"
+								styleClass="btn btn-warning btn-block ion-minus-circled"
+								update="form001" immediate="true"
+								style="height:31px; padding:center"
+								actionListener="#{notaVentaController.actionCancelarModificarProducto()}">
+							</p:commandLink>
+						</div>
+						<div class="col-md-4">
+							<p:commandLink id="buttonRegistrar03" value="&#160; Modificar"
+								styleClass="btn btn-success btn-block ion-checkmark"
+								update="form001" style="height:31px; padding:center"
+								immediate="true"
+								action="#{notaVentaController.modificarDetalleNotaVenta()}">
+							</p:commandLink>
+						</div>
+					</div>
+					<!-- END FOOTER -->
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="m-r-4" tabindex="-1" role="dialog" data-keyboard="false"
+		data-backdrop="static" aria-labelledby="myModalLabel"
+		aria-hidden="true" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<!-- INIT HEADER -->
+					<h4 id="myModalLabel" class="modal-title">
+						<strong>PAGO - CLIENTE</strong>
+					</h4>
+					<!-- END HEADER -->
+				</div>
+				<div class="modal-body">
+					<!-- INIT BODY -->
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<div class="col-md-5">Observación</div>
+								<div class="col-md-7">
+									<p:inputTextarea id="observacionAmortizacion"
+										style="padding: 0 10px;" styleClass="form-control" size="40"
+										value="#{notaVentaController.observacion}" maxlength="250"
+										rows="3">
+										<p:ajax event="change" />
+									</p:inputTextarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<div class="col-md-5">Total Importe Venta</div>
+								<div class="col-md-7">
+									<h:inputText id="totalImporteVenta1"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}"
+										value="#{notaVentaController.notaVenta.montoTotal}"
+										style=" color: #555555; background-image: none;"
+										readonly="true" styleClass="input-sm form-control"
+										disabled="false">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:inputText>
+									<h:inputText id="totalImporteVenta2"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
+										value="#{notaVentaController.notaVenta.montoTotalExtranjero}"
+										style=" color: #555555; background-image: none;"
+										readonly="true" styleClass="input-sm form-control"
+										disabled="false">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:inputText>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group ">
+								<div class="col-md-5">Saldo a Financiar</div>
+								<div class="col-md-7">
+									<h:inputText readonly="true" styleClass="input-sm form-control"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}"
+										style=" color: #555555; background-image: none;"
+										value="#{notaVentaController.totalPlanPagoNacional}">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:inputText>
+									<h:inputText readonly="true" styleClass="input-sm form-control"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
+										style=" color: #555555; background-image: none;"
+										value="#{notaVentaController.totalPlanPagoExtranjero}">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:inputText>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<ui:fragment
+						rendered="#{notaVentaController.selectedReservaVenta.id!=0}">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<div class="col-md-5">Pago Reserva</div>
+									<div class="col-md-7">
+										<h:inputText id="totalReserva1"
+											rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}"
+											value="#{notaVentaController.selectedReservaVenta.montoReserva}"
+											style=" color: #555555; background-image: none;"
+											readonly="true" styleClass="input-sm form-control"
+											disabled="false">
+											<f:convertNumber type="number" groupingUsed="true"
+												minFractionDigits="2" pattern="#0.00" />
+										</h:inputText>
+										<h:inputText id="totalReserva2"
+											rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
+											value="#{notaVentaController.selectedReservaVenta.montoReservaExtranjero}"
+											style=" color: #555555; background-image: none;"
+											readonly="true" styleClass="input-sm form-control"
+											disabled="false">
+											<f:convertNumber type="number" groupingUsed="true"
+												minFractionDigits="2" pattern="#0.00" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<div class="col-md-5">Cuota Inicial - Reserva</div>
+									<div class="col-md-7">
+										<h:inputText id="totalCuotaInicial01"
+											rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}"
+											value="#{notaVentaController.notaVenta.cuotaInicial - notaVentaController.selectedReservaVenta.montoReserva}"
+											style=" color: #555555; background-image: none;"
+											readonly="true" styleClass="input-sm form-control"
+											disabled="false">
+											<f:convertNumber type="number" groupingUsed="true"
+												minFractionDigits="2" pattern="#0.00" />
+										</h:inputText>
+										<h:inputText id="totalCuotaInicial02"
+											rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
+											value="#{notaVentaController.notaVenta.cuotaInicialExtranjero - notaVentaController.selectedReservaVenta.montoReservaExtranjero}"
+											style=" color: #555555; background-image: none;"
+											readonly="true" styleClass="input-sm form-control"
+											disabled="false">
+											<f:convertNumber type="number" groupingUsed="true"
+												minFractionDigits="2" pattern="#0.00" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+					</ui:fragment>
+					<ui:fragment
+						rendered="#{notaVentaController.selectedReservaVenta.id==0}">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<div class="col-md-5">Total Cuota Inicial</div>
+									<div class="col-md-7">
+										<h:inputText id="totalCuotaInicial1"
+											rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}"
+											value="#{notaVentaController.notaVenta.cuotaInicial}"
+											style=" color: #555555; background-image: none;"
+											readonly="true" styleClass="input-sm form-control"
+											disabled="false">
+											<f:convertNumber type="number" groupingUsed="true"
+												minFractionDigits="2" pattern="#0.00" />
+										</h:inputText>
+										<h:inputText id="totalCuotaInicial2"
+											rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
+											value="#{notaVentaController.notaVenta.cuotaInicialExtranjero}"
+											style=" color: #555555; background-image: none;"
+											readonly="true" styleClass="input-sm form-control"
+											disabled="false">
+											<f:convertNumber type="number" groupingUsed="true"
+												minFractionDigits="2" pattern="#0.00" />
+										</h:inputText>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+					</ui:fragment>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<div class="col-md-5">Pago</div>
+								<div class="col-md-7">
+									<h:inputText id="pago1"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}"
+										value="#{notaVentaController.pagoNacional}"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control">
+										<p:ajax event="change" update="formModalPago"
+											listener="#{notaVentaController.calcularCambio()}" />
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:inputText>
+									<h:inputText id="pago2"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
+										value="#{notaVentaController.pagoExtranjero}"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control">
+										<p:ajax event="change" update="formModalPago"
+											listener="#{notaVentaController.calcularCambio()}" />
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:inputText>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<div class="col-md-5">Cambio</div>
+								<div class="col-md-7">
+									<h:inputText id="cambio1"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}"
+										value="#{notaVentaController.cambioNacional}"
+										style=" color: #555555; background-image: none;"
+										readonly="true" styleClass="input-sm form-control">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:inputText>
+									<h:inputText id="cambio2"
+										rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
+										value="#{notaVentaController.cambioExtranjero}"
+										style=" color: #555555; background-image: none;"
+										readonly="true" styleClass="input-sm form-control">
+										<f:convertNumber type="number" groupingUsed="true"
+											minFractionDigits="2" pattern="#0.00" />
+									</h:inputText>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<!-- INIT FOOTER -->
+					<div class="row">
+						<div class="col-md-4"></div>
+						<div class="col-md-4">
+							<p:commandLink id="buttonCancelar03" value="&#160; Cancelar"
+								styleClass="btn btn-warning btn-block ion-minus-circled"
+								update="form001" immediate="true"
+								style="height:31px; padding:center"
+								actionListener="#{notaVentaController.closeModalPago()}">
+							</p:commandLink>
+						</div>
+						<div class="col-md-4">
+							<p:commandLink id="buttonRegistrar03" value="&#160; Registrar"
+								styleClass="btn btn-success btn-block ion-checkmark"
+								update="form001" style="height:31px; padding:center"
+								immediate="true"
+								action="#{notaVentaController.registrarNotaVenta()}">
+							</p:commandLink>
+						</div>
+					</div>
+					<!-- END FOOTER -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END MODAL -->
+
+</ui:composition>

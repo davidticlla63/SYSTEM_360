@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="head">
+		<title>Bienvenido al Sistema</title>
+		<title>Inicio</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+
+			<section class="content-header">
+				<h1 class="pull-left">
+					Dashboard<small>Resumen de actividad.</small>
+				</h1>
+				<div class="pull-right">
+					<ol class="breadcrumb">
+						<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+							style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+						<!--                         <li><a href="#">Dashboard</a></li> -->
+						<li class="active">Dashboard</li>
+					</ol>
+				</div>
+			</section>
+
+			<section class="main-content">
+				<section class="main-content">
+					<div class="row">
+
+						<div class="col-md-3 col-sm-6">
+							<div class="panel panel-stat stat-warning">
+								<div class="panel-body">
+									<div class="row mbxl">
+										<div class="col-xs-6"
+											style="padding-left: 5px; padding-right: 5px;">
+											<span class="stat-title">Total Ventas Mes</span>
+											<h4 class="man">
+												<h:outputText
+													value="#{dashboardAdministradorController.totalVentasMes}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+												$us
+											</h4>
+										</div>
+										<div class="col-xs-6" style="padding-left: 1px;">
+											<i class="fa fa-tags"></i>
+
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-8"
+											style="padding-left: 5px; padding-right: 10px;">
+											<span class="stat-title">Total Ventas Día</span>
+											<h4 class="man">
+												<h:outputText
+													value="#{dashboardAdministradorController.totalVentasDia}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+												$us
+											</h4>
+										</div>
+										<div class="col-xs-4"
+											style="padding-left: 0px; padding-right: 10px;">
+											<p:commandLink id="buttonCrear1" value="&#160; Venta"
+												styleClass="btn white btn-block ion-plus-round btn-outlined"
+												style="height:31px; width:80px;" rendered="true"
+												onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/venta/nota_venta/nota_venta.xhtml';">
+											</p:commandLink>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-6">
+							<div class="panel panel-stat stat-primary">
+								<div class="panel-body">
+									<div class="row mbxl">
+										<div class="col-xs-8">
+											<span class="stat-title">Total Cobros Mes</span>
+											<h4 class="man">
+												<h:outputText value="#{dashboardAdministradorController.totalCobrosMes}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+												$us
+											</h4>
+										</div>
+										<div class="col-xs-4">
+											<i class="fa fa-dollar"></i>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-8">
+											<span class="stat-title">Total Cobros Día</span>
+											<h4 class="man">
+												<h:outputText value="#{dashboardAdministradorController.totalCobrosDia}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+												$us
+											</h4>
+										</div>
+										<div class="col-xs-4"
+											style="padding-left: 0px; padding-right: 10px;">
+											<p:commandLink id="buttonCobros" value="&#160; Cobro"
+												styleClass="btn white btn-block ion-plus-round btn-outlined"
+												style="height:31px; width:80px;" rendered="true"
+												onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/cobranza/registro-cobro.xhtml';">
+											</p:commandLink>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-6">
+							<div class="panel panel-stat stat-success">
+								<div class="panel-body">
+									<div class="row mbxl">
+										<div class="col-xs-8">
+											<span class="stat-title">Nº Ventas Credito Mes</span>
+											<h4 class="man">
+												<h:outputText value="#{dashboardAdministradorController.cantidadVentasCreditoMes}" />
+											</h4>
+										</div>
+										<div class="col-xs-4">
+											<i class="icon-logout"></i>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-12">
+											<span class="stat-title">Total Ventas Credito Mes</span>
+											<h4 class="man">
+												<h:outputText value="#{dashboardAdministradorController.totalVentasCreditoMes}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+												$us
+											</h4>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-6">
+							<div class="panel panel-stat stat-pink">
+								<div class="panel-body">
+									<div class="row mbxl">
+										<div class="col-xs-8" style="padding-right: 0px">
+											<span class="stat-title">Nº Ventas Contado Mes</span>
+											<h4 class="man">
+												<h:outputText value="#{dashboardAdministradorController.cantidadVentasContadoMes}" />
+											</h4>
+										</div>
+										<div class="col-xs-4">
+											<i class="glyphicon glyphicon-sort"></i>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-12">
+											<span class="stat-title">Total Ventas Contado Mes</span>
+											<h4 class="man">
+												<h:outputText value="#{dashboardAdministradorController.totalVentasContadoMes}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+												$us
+											</h4>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<br /> <br />
+
+					<div style="background: white;">
+						<div class="row">
+
+							<div class="col-lg-12 text-center v-center">
+								<p:graphicImage value="#{loginController.imageLogo}"
+									cache="false" width="40%" />
+
+								<h1 style="color: #F77B16; font-family: sans-serif;">Bienvenido
+									al Sistema</h1>
+
+							</div>
+						</div>
+
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div id="page-invoice">
+								<div class="invoice">
+									<div class="invoice-note"></div>
+									<div class="invoice-footer">
+										<p class="text-center">
+											<span class="mrm"><i class="fa fa-globe"></i>
+												www.teds.com.bo</span>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			</section>
+
+		</div>
+
+		<!--END CONTENT-->
+
+		<!-- START GROWL -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+
+	</ui:define>
+</ui:composition>

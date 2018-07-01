@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="head">
+		<title>Lista Orden Salida</title>
+
+		<f:event listener="#{listOrdenSalidaController.initConversation}"
+			type="preRenderView"></f:event>
+
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+				<h:form id="form001">
+					<!-- BEGIN BUTTONS -->
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											style="height:31px; padding:center" immediate="true"
+											rendered="#{listOrdenSalidaController.modificar}"
+											update="form001"
+											action="#{listOrdenSalidaController.loadDefault()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonCrear1"
+											value="&#160; Nueva Orden de Salida"
+											styleClass="btn btn-success ion-plus-round"
+											rendered="#{ ! listOrdenSalidaController.modificar }"
+											style="height:31px;" update="form001" disabled="false"
+											onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/proceso/orden_salida.xhtml';">
+										</p:commandLink>
+
+										<p:commandLink id="buttonModificar" value="&#160; Modificar"
+											rendered="#{listOrdenSalidaController.modificar }"
+											styleClass="btn btn-primary ion-edit" style="height:31px;"
+											update="form001" disabled="true"
+											action="#{listOrdenSalidaController.actionModificar()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonEliminar" value="&#160; Revertir"
+											disabled="true" styleClass="btn btn-danger ion-trash-b"
+											style="height:31px;"
+											rendered="#{listOrdenSalidaController.modificar }"
+											update="form001"
+											action="#{listOrdenSalidaController.eliminarFacturaCompra()}">
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/index"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a href="#{request.contextPath}/user"
+										style="color: #0090FF; font-size: 12px;">Inventario</a></li>
+									<li class="active" style="font-size: 12px;">Lista Orden de
+										Salida</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- END BUTTONS -->
+
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;"></div>
+					<!-- END PANEL REGISTER -->
+
+					<!-- BEGIN PANEL TABLE -->
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">Lista Orden de Salida</h3>
+								</div>
+								<div class="form-group">
+									<p:dataTable
+										style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+										selection="#{listOrdenSalidaController.selectedOrdenSalida}"
+										selectionMode="single" rowKey="#{_var.id}" id="itemsTable2"
+										var="_var" rows="20" paginator="true"
+										paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+										rowsPerPageTemplate="5,20,30"
+										value="#{listOrdenSalidaController.listaOrdenSalida}"
+										emptyMessage="No se encontraron Registros de ITEMS.">
+
+										<p:ajax event="rowSelect" update="form001"
+											listener="#{listOrdenSalidaController.onRowSelect}" />
+
+										<p:column width="7%" headerText="Código"
+											style="text-align:center;" filterBy="#{_var.correlativo}"
+											filterStyle="width: 100%;" filterMatchMode="contains">
+											<h:outputText value="#{_var.correlativo}" />
+										</p:column>
+
+										<p:column headerText="Almacén"
+											filterBy="#{_var.almacen.nombre}" filterStyle="width: 100%;"
+											filterMatchMode="contains">
+											<h:outputText value="#{_var.almacen.nombre}" />
+										</p:column>
+
+										<p:column headerText="Motivo" filterBy="#{_var.motivoSalida}"
+											filterStyle="width: 100%;" filterMatchMode="contains">
+											<h:outputText value="#{_var.motivoSalida}" />
+										</p:column>
+
+										<p:column headerText="Total Importe" width="15%"
+											style="text-align:center;" filterBy="#{_var.totalImporte}"
+											filterStyle="width: 100%;" filterMatchMode="contains">
+											<h:outputText value="#{_var.totalImporte}"
+												rendered="#{_var.moneda.equals('BOLIVIANOS')}">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:outputText>
+											<h:outputText value="#{_var.totalImporteExtranjero}"
+												rendered="#{_var.moneda.equals('DOLAR')}">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:outputText>
+											<span class="label label-success"> <p:outputLabel
+													value=" $us." rendered="#{_var.moneda.equals('DOLAR')}" />
+												<p:outputLabel value=" Bs."
+													rendered="#{_var.moneda.equals('BOLIVIANOS')}" />
+											</span>
+										</p:column>
+
+										<p:column headerText="Estado" width="8%"
+											style="text-align:center;" filterBy="#{_var.estado}"
+											filterStyle="width: 100%;" filterMatchMode="contains">
+											<span class="label label-primary"><h:outputText
+													rendered="#{_var.estado=='AC'}" value="Activo" /></span>
+											<span class="label label-danger"><h:outputText
+													rendered="#{_var.estado=='IN'}" value="Inactivo" /></span>
+											<span class="label label-success"><h:outputText
+													rendered="#{_var.estado=='PR'}" value="Procesado" /></span>
+											<span class="label label-danger"><h:outputText
+													rendered="#{_var.estado=='AN'}" value="Anulada" /></span>
+										</p:column>
+
+										<p:column width="10%" headerText="Fecha"
+											style="text-align:center;" filterBy="#{_var.fechaRegistro}"
+											filterStyle="width: 100%;" filterMatchMode="contains">
+											<h:outputText value="#{_var.fechaRegistro}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+
+										<p:column width="8%" headerText="Registro"
+											style="text-align:center;" filterBy="#{_var.usuarioRegistro}"
+											filterStyle="width: 100%;" filterMatchMode="contains">
+											<h:outputText value="#{_var.usuarioRegistro}" />
+										</p:column>
+
+										<f:facet name="footer">
+											<h:outputText
+												value="#{listOrdenSalidaController.listaOrdenSalida.size()} Registros en Total" />
+										</f:facet>
+
+									</p:dataTable>
+								</div>
+								<div class="panel-body"></div>
+							</div>
+						</div>
+					</div>
+					<!-- END PANEL TABLE -->
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<!-- START GROWL -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+		<!-- START DIALOG -->
+		<p:dialog header="DIALOG TEST" widgetVar="dlg1" modal="true"
+			height="100%">
+		</p:dialog>
+		<!-- END DIALOG -->
+
+	</ui:define>
+</ui:composition>

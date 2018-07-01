@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Lista de Items</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="content-header">
+				<div class="pull-left" style="padding-top: 8px;">
+					<h:form id="formBotonesHeader" style="padding-left: 10px;">
+						<div class="btn-group-demo">
+							<div class="btn-group"></div>
+						</div>
+					</h:form>
+				</div>
+				<div class="pull-right">
+					<ol class="breadcrumb">
+						<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+							style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+						<li><a
+							href="#{request.contextPath}/pages/reportes/lista_item.xhtml"
+							style="color: #0090FF; font-size: 12px;">Reporte</a></li>
+						<li class="active" style="font-size: 12px;">Lista de Item</li>
+					</ol>
+				</div>
+			</section>
+			<section class="main-content">
+				<section class="main-content">
+					<div class="row">
+
+						<h:form id="formTableProducto" styleClass="form-horizontal">
+
+							<div class="col-md-12" align="left">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Lista de Item Metodo PEPS</h3>
+									</div>
+									<!-- start here datatable -->
+									<div class="box-content no-padding">
+
+										<p:dataTable
+											style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+											rowKey="#{_var.id}" id="productoTable" var="_var"
+											value="#{listaItemController.listDetalleProducto}"
+											emptyMessage="No se encontraron Registros.">
+
+											<p:column width="7%" headerText="Código"
+												filterBy="#{_var.correlativoTransaccion}"
+												style="text-align:center;" filterStyle="width: 100%;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_var.correlativoTransaccion}" />
+											</p:column>
+
+											<p:column width="6%" headerText="Partida"
+												style="text-align:center;"
+												filterBy="#{_var.producto.partida.codigo}"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.producto.partida.codigo}" />
+											</p:column>
+
+											<p:column width="19%" headerText="Nombre Producto"
+												filterBy="#{_var.producto.nombre}"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.producto.nombre}" />
+											</p:column>
+
+											<p:column width="19%" headerText="Almacén"
+												filterBy="#{_var.almacen.nombre}" filterStyle="width: 100%;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_var.almacen.nombre}" />
+											</p:column>
+
+											<p:column width="8%" headerText="Precio U."
+												filterBy="#{_var.precio}" style="text-align:center;"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.precio}">
+													<f:convertNumber pattern="#,##0.00" />
+												</h:outputText>
+											</p:column>
+											<p:column width="8%" headerText="Stock Inicial"
+												style="text-align:center;" filterBy="#{_var.stockInicial}"
+												filterStyle="width: 100%; " filterMatchMode="contains">
+												<h:outputText value="#{_var.stockInicial}" />
+											</p:column>
+
+											<p:column width="8%" headerText="Stock Actual"
+												style="text-align:center;" filterBy="#{_var.stockActual}"
+												filterStyle="width: 100%; " filterMatchMode="contains">
+												<h:outputText value="#{_var.stockActual}" />
+											</p:column>
+
+											<p:column width="13%" headerText="Fecha"
+												filterBy="#{_var.fecha}" style="text-align:center;"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.fecha}" />
+											</p:column>
+
+											<f:facet name="footer">
+												<h:outputText
+													value="#{listaItemController.listDetalleProducto.size()} Registros en Total" />
+											</f:facet>
+
+										</p:dataTable>
+
+									</div>
+
+									<!-- end here datatable -->
+									<div class="panel-body"></div>
+								</div>
+							</div>
+						</h:form>
+					</div>
+				</section>
+			</section>
+		</div>
+
+		<!--END CONTENT-->
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>

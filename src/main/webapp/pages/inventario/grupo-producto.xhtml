@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Grupo de Productos</title>
+
+		<f:event listener="#{grupoProductoController.initConversation}"
+			type="preRenderView"></f:event>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+
+				<h:form id="form001">
+
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 10px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											rendered="#{grupoProductoController.modificar or grupoProductoController.registrar}"
+											style="height:31px; padding:center" immediate="true">
+											<p:ajax update="form001"
+												listener="#{grupoProductoController.loadDefault()}" />
+										</p:commandLink>
+
+										<p:commandLink id="buttonCrear1"
+											value="&#160; Nuevo Grupo Producto"
+											styleClass="btn btn-success ion-plus-round"
+											rendered="#{grupoProductoController.crear}" update="form001"
+											action="#{grupoProductoController.actionButtonNuevo()}"
+											style="height:31px;">
+										</p:commandLink>
+
+										<p:commandLink id="buttonRegistrar" value="&#160; Registrar"
+											styleClass="btn btn-success ion-checkmark"
+											rendered="#{grupoProductoController.registrar}"
+											update="form001" style="height:31px; padding:center"
+											action="#{grupoProductoController.registrarGrupoProducto()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonModificar" value="&#160; Modificar"
+											styleClass="btn btn-primary ion-edit"
+											rendered="#{grupoProductoController.modificar}"
+											style="height:31px; padding:center">
+											<p:ajax update="form001"
+												listener="#{grupoProductoController.modificarGrupoProducto()}" />
+										</p:commandLink>
+
+										<p:commandLink id="buttonEliminar" value="&#160; Eliminar"
+											styleClass="btn btn-danger ion-close"
+											rendered="#{grupoProductoController.modificar}"
+											style="height:31px; padding:center">
+											<p:ajax update="form001"
+												listener="#{grupoProductoController.eliminarGrupoProducto()}" />
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/inventario/gestion-producto.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inventario</a></li>
+									<li class="active" style="font-size: 12px;">Gestión de
+										Productos</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+
+						<ui:fragment
+							rendered="#{grupoProductoController.modificar or grupoProductoController.registrar}">
+							<div class="col-md-4">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Datos Grupo Producto</h3>
+									</div>
+									<div class="panel-body">
+										<!-- start here register -->
+										<div class="row">
+											<div class="col-md-12 box-content form-horizontal">
+												<div class="form-group ">
+													<div class="col-md-4">Código</div>
+													<div class="col-md-8">
+														<p:inputText id="codigoID"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{grupoProductoController.newGrupoProducto.codigo}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Nombre</div>
+													<div class="col-md-8">
+														<p:inputText id="nombreID"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{grupoProductoController.newGrupoProducto.nombre}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Contado(%)</div>
+													<div class="col-md-8">
+														<p:inputText id="porcentaje1ID"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{grupoProductoController.newGrupoProducto.porcentajeVentaContado}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Credito(%)</div>
+													<div class="col-md-8">
+														<p:inputText id="porcentaje2ID"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{grupoProductoController.newGrupoProducto.porcentajeVentaCredito}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Descripción</div>
+													<div class="col-md-8">
+														<p:inputTextarea id="descripcionID"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{grupoProductoController.newGrupoProducto.descripcion}"
+															required="true" requiredMessage="Requerido." rows="5">
+															<p:ajax event="change" />
+														</p:inputTextarea>
+													</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ui:fragment>
+
+
+						<ui:fragment rendered="#{grupoProductoController.crear}">
+
+							<div class="col-md-12" align="left">
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Lista Grupo de Producto</h3>
+									</div>
+									<!-- start here datatable -->
+									<div class="box-content no-padding">
+
+										<p:dataTable
+											style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+											selection="#{grupoProductoController.selectedGrupoProducto}"
+											selectionMode="single" rowKey="#{_var.id}" id="productoTable"
+											var="_var"
+											value="#{grupoProductoController.listaGrupoProducto}"
+											emptyMessage="No se encontraron Registros." rows="20"
+											paginator="true"
+											paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+											rowsPerPageTemplate="5,20,30">
+
+											<p:ajax event="rowSelect" update="form001"
+												listener="#{grupoProductoController.onRowSelect}" />
+
+											<p:column width="9%" headerText="Código"
+												filterBy="#{_var.codigo}" style="text-align:center;"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.codigo}" />
+											</p:column>
+
+											<p:column width="18%" headerText="Nombre"
+												filterBy="#{_var.nombre}" filterStyle="width: 100%;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_var.nombre}" />
+											</p:column>
+
+											<p:column width="30%" headerText="Descripción"
+												filterBy="#{_var.descripcion}" style="text-align:center;"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.descripcion}" />
+											</p:column>
+
+											<p:column headerText="Credito(%)"
+												filterBy="#{_var.porcentajeVentaCredito}"
+												style="text-align:center;" filterStyle="width: 100%;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_var.porcentajeVentaCredito}" />
+											</p:column>
+
+											<p:column headerText="Contado(%)"
+												filterBy="#{_var.porcentajeVentaContado}"
+												style="text-align:center;" filterStyle="width: 100%;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_var.porcentajeVentaContado}" />
+											</p:column>
+
+											<p:column width="10%" headerText="Estado"
+												style="text-align:center;" filterBy="#{_var.estado}"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<span class="label label-success"><h:outputText
+														rendered="#{_var.estado=='AC'}" value="Activo" /></span>
+												<span class="label label-danger"><h:outputText
+														rendered="#{_var.estado=='IN'}" value="Inactivo" /></span>
+											</p:column>
+
+											<p:column width="10%" headerText="Fecha"
+												style="text-align:center;" filterBy="#{_var.fechaRegistro}"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.fechaRegistro}">
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+												</h:outputText>
+											</p:column>
+											<p:column width="10%" headerText="Registro"
+												filterBy="#{_var.usuarioRegistro}"
+												style="text-align:center;" filterStyle="width: 100%;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_var.usuarioRegistro}" />
+											</p:column>
+											<f:facet name="footer">
+												<h:outputText
+													value="#{grupoProductoController.listaGrupoProducto.size()} Registros en Total" />
+											</f:facet>
+
+										</p:dataTable>
+
+									</div>
+
+									<!-- end here datatable -->
+									<div class="panel-body"></div>
+
+								</div>
+							</div>
+
+						</ui:fragment>
+
+					</div>
+					<!-- END PANEL TABLE -->
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+
+		<p:dialog header="Desea Eliminar el Producto?" widgetVar="dlgEliminar"
+			minHeight="40" modal="true">
+			<h:form id="formDlgEliminar">
+				<h:panelGrid columns="2" cellpadding="5">
+					<p:outputLabel value="Código: " />
+					<p:outputLabel
+						value="#{grupoProductoController.newGrupoProducto.codigo}"
+						style="text-transform: uppercase" required="true" size="20">
+					</p:outputLabel>
+
+					<p:outputLabel value="Nombre: " />
+					<p:outputLabel style="text-transform: uppercase" size="20"
+						value="#{grupoProductoController.newGrupoProducto.nombre}"
+						required="true" requiredMessage="Requerido.">
+					</p:outputLabel>
+				</h:panelGrid>
+				<p:commandButton value="Si"
+					actionListener="#{grupoProductoController.eliminarProducto()}"
+					icon="ui-icon-trash" style="width: 90px; text-color: white;"
+					update="form001" oncomplete="PF('dlgEliminar').hide()"
+					styleClass="btn btn-default" immediate="true" />
+				<p:commandButton value="No" style="width: 90px; text-color: white;"
+					update="form001" oncomplete="PF('dlgEliminar').hide()"
+					styleClass="btn btn-default" immediate="true" />
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>

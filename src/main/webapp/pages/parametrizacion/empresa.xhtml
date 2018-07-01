@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="security">
+		<h:body onload="#{loginController.permisoValidado('EMPRESA')}">
+		</h:body>
+	</ui:define>
+
+	<ui:define name="head">
+		<title>Empresa</title>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="content-header">
+				<div class="pull-left" style="padding-top: 8px;">
+					<h:form id="formBotonesHeader" style="padding-left: 10px;">
+						<div class="btn-group-demo">
+							<div class="btn-group">
+								<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+									styleClass="btn btn-warning ion-minus-circled"
+									rendered="#{empresaController.modificar}"
+									style="height:31px; padding:center"
+									update=":formRegEmpresa,formBotonesHeader"
+									action="#{empresaController.loadValuesDefault()}">
+								</p:commandLink>
+								<p:commandLink id="buttonModificar" value="&#160; Modificar"
+									styleClass="btn btn-primary ion-edit"
+									rendered="#{! empresaController.modificar }"
+									style="height:31px; padding:center"
+									update="formRegEmpresa,formBotonesHeader"
+									action="#{empresaController.modificarForm()}">
+								</p:commandLink>
+								<p:commandLink id="buttonGuardar" value="&#160; Guardar"
+									styleClass="btn btn-success ion-checkmark"
+									rendered="#{empresaController.modificar}"
+									style="height:31px; padding:center"
+									update="formRegEmpresa,formGrowl:msgs1,formBotonesHeader"
+									action="#{empresaController.modificarEmpresa()}">
+								</p:commandLink>
+							</div>
+						</div>
+					</h:form>
+				</div>
+				<div class="pull-right">
+					<ol class="breadcrumb">
+						<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+							style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+						<li><a
+							href="#{request.contextPath}/pages/parametrizacion/empresa.xhtml"
+							style="color: #0090FF; font-size: 12px;">Parametrización</a></li>
+						<li class="active" style="font-size: 12px;">Empresa</li>
+					</ol>
+				</div>
+			</section>
+			<section class="main-content">
+				<section class="main-content">
+					<div class="row">
+						<h:form id="formRegEmpresa" enctype="multipart/form-data">
+							<div class="col-md-5">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Parámetros de Empresa</h3>
+									</div>
+									<div class="panel-body">
+										<!-- start here register -->
+										<div class="row">
+											<div class="col-md-12 box-content form-horizontal">
+												<div class="tabbable-custom">
+													<ul class="nav nav-tabs">
+														<li class="active"><a href="#tab_5_1"
+															data-toggle="tab">EMPRESA</a></li>
+														<li><a href="#tab_5_2" data-toggle="tab">PARÁMETROS</a></li>
+													</ul>
+													<div class="tab-content">
+														<div id="tab_5_1" class="tab-pane active">
+															<div class="row">
+																<div class="col-md-12 box-content form-horizontal">
+																	<div class="form-group">
+																		<div class="col-md-4">Nombre</div>
+																		<div class="col-md-8">
+																			<h:inputText value="#{empresaController.newEmpresa.razonSocial}"
+																				rendered="#{ empresaController.modificar}"
+																				style=" color: #555555; background-image: none; text-transform: uppercase;"
+																				styleClass="input-sm form-control">
+																				<p:ajax event="change" />
+																			</h:inputText>
+																			<h:outputLabel
+																				rendered="#{! empresaController.modificar}"
+																				value="#{empresaController.newEmpresa.razonSocial}" />
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="col-md-4">Dirección</div>
+																		<div class="col-md-8">
+																			<h:inputText value="#{empresaController.newEmpresa.direccion}"
+																				rendered="#{ empresaController.modificar}"
+																				style=" color: #555555; background-image: none;"
+																				styleClass="input-sm form-control">
+																				<p:ajax event="change" />
+																			</h:inputText>
+																			<h:outputLabel
+																				rendered="#{! empresaController.modificar}"
+																				value="#{empresaController.newEmpresa.direccion}" />
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="col-md-4">Teléfono</div>
+																		<div class="col-md-8">
+																			<h:inputText value="#{empresaController.newEmpresa.telefono}"
+																				rendered="#{ empresaController.modificar}"
+																				style=" color: #555555; background-image: none;"
+																				styleClass="input-sm form-control">
+																				<p:ajax event="change" />
+																			</h:inputText>
+																			<h:outputLabel
+																				rendered="#{! empresaController.modificar}"
+																				value="#{empresaController.newEmpresa.telefono}" />
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="col-md-4">NIT</div>
+																		<div class="col-md-8">
+																			<h:inputText value="#{empresaController.newEmpresa.nit}"
+																				rendered="#{ empresaController.modificar}"
+																				style=" color: #555555; background-image: none;"
+																				styleClass="input-sm form-control">
+																				<p:ajax event="change" />
+																			</h:inputText>
+																			<h:outputLabel
+																				rendered="#{! empresaController.modificar}"
+																				value="#{empresaController.newEmpresa.nit}" />
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="col-md-4">Ciudad</div>
+																		<div class="col-md-8">
+																			<h:inputText value="#{empresaController.newEmpresa.ciudad}"
+																				rendered="#{ empresaController.modificar}"
+																				style=" color: #555555; background-image: none;"
+																				styleClass="input-sm form-control">
+																				<p:ajax event="change" />
+																			</h:inputText>
+																			<h:outputLabel
+																				rendered="#{! empresaController.modificar}"
+																				value="#{empresaController.newEmpresa.ciudad}" />
+																		</div>
+																	</div>
+																	<hr />
+																	<div class="form-group">
+																		<div class="col-md-4">Representante Legal</div>
+																		<div class="col-md-8">
+																			<h:inputText value="#{empresaController.newEmpresa.representanteLegal}"
+																				rendered="#{ empresaController.modificar}"
+																				style=" color: #555555; background-image: none; text-transform: uppercase;"
+																				styleClass="input-sm form-control">
+																				<p:ajax event="change" />
+																			</h:inputText>
+																			<h:outputLabel
+																				rendered="#{! empresaController.modificar}"
+																				value="#{empresaController.newEmpresa.representanteLegal}" />
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="col-md-4">Documento Identidad</div>
+																		<div class="col-md-8">
+																			<h:inputText value="#{empresaController.newEmpresa.carnetIdentidad}"
+																				rendered="#{ empresaController.modificar}"
+																				style=" color: #555555; background-image: none; text-transform: uppercase;"
+																				styleClass="input-sm form-control">
+																				<p:ajax event="change" />
+																			</h:inputText>
+																			<h:outputLabel
+																				rendered="#{! empresaController.modificar}"
+																				value="#{empresaController.newEmpresa.carnetIdentidad}" />
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="col-md-4">Actividad Económica</div>
+																		<div class="col-md-8">
+																			<h:inputText value="#{empresaController.newEmpresa.actividadEconomica}"
+																				rendered="#{ empresaController.modificar}"
+																				style=" color: #555555; background-image: none; text-transform: uppercase;"
+																				styleClass="input-sm form-control">
+																				<p:ajax event="change" />
+																			</h:inputText>
+																			<h:outputLabel
+																				rendered="#{! empresaController.modificar}"
+																				value="#{empresaController.newEmpresa.actividadEconomica}" />
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div id="tab_5_2" class="tab-pane">
+															<div class="row">
+																<div class="form-group" style="padding-left: 10px;  padding-right: 10px;">
+																	<div class="col-md-2">LOGO</div>
+																	<div class="col-md-10">
+																		<p:graphicImage value="#{loginController.imageLogo}"
+																			cache="false" styleClass="img-circle inline-block"
+																			width="80" height="80" />
+
+																		<p:fileUpload value="#{loginController.fileLogo}"
+																			mode="simple" skinSimple="false"
+																			style="text-align: left; " />
+
+																		<br />
+
+																		<div class="col-md-6">
+																			<p:commandLink value="Guardar Logo"
+																				update="formRegEmpresa"
+																				styleClass="btn btn-success btn-block" ajax="false"
+																				actionListener="#{loginController.uploadLogo}">
+																			</p:commandLink>
+																		</div>
+																	</div>
+																</div>
+
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- end here register -->
+									</div>
+								</div>
+							</div>
+						</h:form>
+					</div>
+				</section>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+		<!-- START DIALOG -->
+		<p:dialog header="NUEVA GESTIÓN" widgetVar="dlgNuevaGestion"
+			height="100%">
+			<h:form id="formDlgNuevaGestion">
+				<div class="row">
+					<div class="col-md-12 box-content form-horizontal">
+						<div class="form-group">
+							<div class="col-md-4">Gestión</div>
+							<div class="col-md-8">
+								<h:inputText value="#{empresaController.newGestion.gestion}"
+									style=" color: #555555; background-image: none;"
+									styleClass="input-sm form-control">
+									<p:ajax event="change" />
+								</h:inputText>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-4"></div>
+							<div class="col-md-4">
+								<p:commandLink id="buttonDlgCancelar" value="&#160; Cancelar"
+									styleClass="btn btn-warning ion-minus-circled"
+									style="height:31px; padding:center"
+									update="formRegEmpresa,formBotonesHeader"
+									oncomplete="PF('dlgNuevaGestion').hide();" immediate="true">
+								</p:commandLink>
+							</div>
+							<div class="col-md-4">
+								<p:commandLink id="buttonDlgRegistrar" value="&#160; Registrar"
+									styleClass="btn btn-success ion-plus-round"
+									style="height:31px; padding:center"
+									update="formRegEmpresa,formGrowl:msgs1,:formBotonesHeader"
+									oncomplete="PF('dlgNuevaGestion').hide();">
+									<p:ajax listener="#{empresaController.registrarGestion()}" />
+								</p:commandLink>
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		<!-- END DIALOG -->
+
+
+	</ui:define>
+</ui:composition>

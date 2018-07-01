@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Orden Ingreso</title>
+
+		<f:event listener="#{ordenIngresoController.initConversation}"
+			type="preRenderView"></f:event>
+
+		<h:outputScript name="js/calendar-localization.js" />
+
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+
+				<h:form id="form001">
+
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+
+										<p:commandLink id="buttonAtras" value="&#160; Atras"
+											styleClass="btn btn-warning ion-minus-circled"
+											rendered="#{ ! ordenIngresoController.verReport}"
+											style="height:31px; padding:center" immediate="true"
+											onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/proceso/list-orden-ingreso.xhtml';">
+										</p:commandLink>
+
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											immediate="true"
+											rendered="#{ordenIngresoController.verReport}"
+											style="height:31px; padding:center" update="form001"
+											actionListener="#{ordenIngresoController.loadDefault()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonRegistrar" value="&#160; Registrar"
+											styleClass="btn btn-success ion-checkmark"
+											rendered="#{ ! ordenIngresoController.verReport and (!ordenIngresoController.modificar)}"
+											update="form001" style="height:31px; padding:center"
+											disabled="#{ ! ordenIngresoController.estaGestionIniciada()}"
+											action="#{ordenIngresoController.registrarOrdenIngreso()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonModificar" value="&#160; Modificar"
+											styleClass="btn btn-primary ion-edit"
+											rendered="#{ordenIngresoController.modificar and ordenIngresoController.verProcesar}"
+											style="height:31px; padding:center" update="form001"
+											action="#{ordenIngresoController.modificarOrdenIngreso()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonEliminar" value="&#160; Eliminar"
+											styleClass="btn btn-danger ion-close"
+											rendered="#{ordenIngresoController.selectedOrdenIngreso.id.intValue() != 0 and ordenIngresoController.crear and ordenIngresoController.verProcesar and ! ordenIngresoController.verReport }"
+											update="form001"
+											onclick="PF('dlgEliminarOrdenIngreso').show()"
+											style="height:31px; padding:center">
+										</p:commandLink>
+
+										<p:commandLink id="buttonProcesar" value="&#160; Procesar"
+											styleClass="btn btn-info ion-ios7-loop-strong"
+											rendered="#{ordenIngresoController.selectedOrdenIngreso.id.intValue() != 0 and ordenIngresoController.crear and ordenIngresoController.verProcesar and ! ordenIngresoController.verReport}"
+											style="height:31px; padding:center" update="form001"
+											action="#{ordenIngresoController.procesarOrdenIngreso()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonAnular" value="&#160; Eliminar"
+											styleClass="btn btn-danger ion-close" update="form001"
+											rendered="#{ordenIngresoController.verButtonAnular}"
+											action="#{ordenIngresoController.anularOrden()}"
+											style="height:31px; padding:center">
+										</p:commandLink>
+
+									</div>
+								</div>
+
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/proceso/orden_ingreso.xhtml"
+										style="color: #0090FF; font-size: 12px;">Proceso</a></li>
+									<li class="active" style="font-size: 12px;">Orden Ingreso</li>
+								</ol>
+							</div>
+
+						</section>
+					</div>
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+						<div class="col-md-6">
+							<ui:fragment
+								rendered="#{ ! ordenIngresoController.estaGestionIniciada()}">
+								<div class="alert alert-warning alert-dismissable fade in"
+									style="height: 28px; padding-top: 5px;">
+									<button type="button" data-dismiss="alert" aria-hidden="true"
+										class="close">x</button>
+									<strong>VALIDACION! </strong>&#160; &#160; &#160; &#160; No
+									realizó o no se procesó la toma de inventario inicial #{' '} <a
+										href="#{request.contextPath}/pages/proceso/toma_inventario.xhtml">Configurar</a>
+								</div>
+							</ui:fragment>
+						</div>
+					</div>
+
+					<div class="row" style="padding-top: 10px;">
+
+						<ui:fragment rendered="#{ ! ordenIngresoController.verReport}">
+
+							<div class="col-md-4">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Registro Datos Orden Ingreso</h3>
+									</div>
+									<div class="panel-body">
+										<!-- start here register -->
+										<div class="row">
+											<div class="col-md-12 box-content form-horizontal">
+
+												<div class="form-group ">
+													<div class="col-md-4">Nro Orden Ingreso</div>
+													<div class="col-md-8">
+														<p:inputText id="NroOrdenIngresoID"
+															style=" color: #555555; background-image: none;padding: 0px 10px;"
+															styleClass="input-sm form-control" size="40"
+															readonly="true"
+															value="#{ordenIngresoController.newOrdenIngreso.correlativo}">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Motivo Ingreso</div>
+													<div class="col-md-8">
+														<h:selectOneMenu id="tipoID"
+															disabled="#{ordenIngresoController.newOrdenIngreso.motivoIngreso.equals('TOMA INVENTARIO INICIAL')}"
+															value="#{ordenIngresoController.newOrdenIngreso.motivoIngreso}"
+															styleClass="form-control" required="false"
+															requiredMessage="Tipo Requerido.">
+															<f:selectItem itemValue="COMPRA" itemLabel="COMPRA" />
+															<f:selectItem itemValue="DONACION" itemLabel="DONACION" />
+															<f:selectItem itemValue="DEVOLUCION"
+																itemLabel="DEVOLUCION" />
+															<f:selectItem itemValue="TOMA INVENTARIO INICIAL"
+																itemLabel="TOMA INVENTARIO INICIAL"
+																itemDisabled="#{!ordenIngresoController.newOrdenIngreso.motivoIngreso.equals('TOMA INVENTARIO INICIAL')}" />
+															<p:ajax event="change" update="form001"
+																listener="#{ordenIngresoController.verificarEstadoImportacion()}" />
+														</h:selectOneMenu>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Almacén</div>
+													<div class="col-md-8">
+
+														<p:autoComplete id="almacenID" style="width: 93%"
+															inputStyle="width: 93%; color: #555555; background-image: none;padding: 4px 10px;"
+															value="#{ordenIngresoController.selectedAlmacen.nombre}"
+															completeMethod="#{ordenIngresoController.completeAlmacen}"
+															minQueryLength="3" dropdown="true" required="true"
+															requiredMessage="Almacen Requerido."
+															forceSelection="true" var="_var" itemLabel="#{_var}"
+															itemValue="#{_var.nombre}"
+															placeholder="[Escriba Almacen]" scrollHeight="300">
+
+															<p:ajax event="itemSelect" update="form001"
+																listener="#{ordenIngresoController.onRowSelectAlmacenClick}" />
+
+															<p:column>
+																<h:outputText value="#{_var.nombre}" />
+															</p:column>
+
+														</p:autoComplete>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Proveedor</div>
+													<div class="col-md-8">
+														<p:autoComplete id="proveedorID" style="width: 93%" disabled="#{ordenIngresoController.ocultarProveedor}"
+															inputStyle="width: 93%; color: #555555; background-image: none;padding: 4px 10px;"
+															value="#{ordenIngresoController.selectedProveedor.nombre}"
+															completeMethod="#{ordenIngresoController.completeProveedor}"
+															minQueryLength="1" dropdown="true" required="true"
+															requiredMessage="Proveedor Requerido."
+															forceSelection="true" var="_var" itemLabel="#{_var}"
+															itemValue="#{_var.nombre}" 
+															placeholder="[Escriba Proveedor]" scrollHeight="300">
+															<p:ajax event="itemSelect"
+																listener="#{ordenIngresoController.onRowSelectProveedorClick}" />
+															<p:column>
+																<h:outputText value="#{_var.codigo}" />
+															</p:column>
+															<p:column>
+																<h:outputText value="#{_var.nombre}" />
+															</p:column>
+															<p:column rendered="false">
+																<h:outputText value="#{_var.direccion}" />
+															</p:column>
+														</p:autoComplete>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Tipo Documento</div>
+													<div class="col-md-8">
+														<h:selectOneMenu id="tipoDocProvID"
+															value="#{ordenIngresoController.newOrdenIngreso.tipoDocumento}"
+															styleClass="form-control" required="false"
+															requiredMessage="Tipo Requerido.">
+															<f:selectItem itemValue="FACTURA" itemLabel="FACTURA" />
+															<f:selectItem itemValue="RECIBO" itemLabel="RECIBO" />
+															<f:selectItem itemValue="NOTA VENTA"
+																itemLabel="NOTA VENTA" />
+															<f:selectItem itemValue="SIN DOCUMENTO"
+																itemLabel="SIN DOCUMENTO" />
+															<p:ajax event="change" update="form001" />
+														</h:selectOneMenu>
+													</div>
+												</div>
+
+												<div class="form-group">
+													<div class="col-md-4">Nro Documento</div>
+													<div class="col-md-8">
+														<p:inputText id="tipoDocumentoAdjID"
+															style=" color: #555555; background-image: none;padding: 0px 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{ordenIngresoController.newOrdenIngreso.numeroDocumento}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Fecha Documento</div>
+													<div class="col-md-8">
+														<p:calendar pattern="dd/MM/yyyy" id="fechaComp"
+															styleClass="myWid100" locale="es"
+															value="#{ordenIngresoController.newOrdenIngreso.fechaDocumento}"
+															onkeypress="return permiteKey(event, 'none')">
+															<p:ajax event="dateSelect" />
+														</p:calendar>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Total Compra</div>
+													<div class="col-md-8">
+														<p:inputText id="nuevoPrecioID"
+															style=" color: #555555; background-image: none;padding: 0px 10px;"
+															styleClass="input-sm form-control" required="true"
+															requiredMessage="Precio Requerido."
+															value="#{ordenIngresoController.newOrdenIngreso.totalImporte}"
+															size="40">
+															<p:ajax event="change" />
+															<f:convertNumber pattern="#,##0.000" locale="en" />
+														</p:inputText>
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="col-md-4">Orden Por Pagar</div>
+													<div class="col-md-8">
+														<div class="actions">
+															<label class="switch switch-success switch-sm"> <h:selectBooleanCheckbox
+																	value="#{ordenIngresoController.newOrdenIngreso.porPagar}"
+																	id="checkEV" styleClass="switch">
+																	<p:ajax update="checkEV" />
+																</h:selectBooleanCheckbox> <span class="switch"></span>
+															</label>
+														</div>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Observación</div>
+													<div class="col-md-8">
+														<p:inputTextarea id="descripcionID"
+															style=" color: #555555; background-image: none;padding: 0px 10px;"
+															styleClass="form-control" size="255"
+															value="#{ordenIngresoController.newOrdenIngreso.observacion}"
+															required="true" requiredMessage="Requerido." rows="5">
+															<p:ajax event="change" />
+														</p:inputTextarea>
+													</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-8">
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Lista de Items</h3>
+										<div class="actions mtn">
+											<div class="btn-group btn-group-xs">
+												<p:commandLink id="buttonDlgTelefono"
+													value="&#160; Producto"
+													styleClass="btn btn-success btn-outlined ion-plus"
+													style="height:27px; padding-top: 5px" immediate="true"
+													update="form001"
+													actionListener="#{ordenIngresoController.actionLoadDialogProducto()}">
+												</p:commandLink>
+												<p:tooltip for="buttonDlgTelefono" value=".">
+
+													<div class="panel">
+														<div class="panel-heading">
+															<h3 class="panel-title">
+																<strong class="text-uppercase text-orange">Información</strong>
+															</h3>
+														</div>
+														<div class="panel-body">
+															<p class="mbl">Agregar ítem a la orden de ingreso</p>
+														</div>
+													</div>
+												</p:tooltip>
+											</div>
+										</div>
+									</div>
+									<!-- start here datatable -->
+									<div class="box-content no-padding">
+
+										<div class="table-responsive">
+
+											<p:dataTable id="itemsTable1"
+												style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+												selectionMode="single" rowKey="#{_var.id}" var="_var"
+												value="#{ordenIngresoController.listaDetalleOrdenIngreso}"
+												emptyMessage="No se encontraron Registros de ITEMS.">
+
+												<p:column width="5%" headerText="Código"
+													filterBy="#{_var.producto.codigo}"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.producto.codigo}" />
+												</p:column>
+
+												<p:column width="10%" headerText="Nombre"
+													filterBy="#{_var.producto.nombre}"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.producto.nombre}" />
+												</p:column>
+
+												<p:column width="10%" headerText="Descripción"
+													filterBy="#{_var.producto.descripcion}"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.producto.descripcion}" />
+												</p:column>
+
+												<p:column headerText="Cantidad" width="5%"
+													filterBy="#{_var.cantidad}" style="text-align:center;"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.cantidad}" />
+												</p:column>
+
+												<p:column headerText="Precio Compra" width="6%"
+													filterBy="#{_var.precioCompra}" style="text-align:center;"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.precioCompra}">
+														<f:convertNumber pattern="#,##0.00" />
+													</h:outputText>
+													#{' '}
+														<h:outputText value="$us.-" />
+												</p:column>
+
+												<p:column headerText="Total" width="6%"
+													filterBy="#{_var.total}" style="text-align:center;"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.totalCompra}">
+														<f:convertNumber pattern="#,##0.00" />
+													</h:outputText>
+													#{' '}
+														<h:outputText value="$us.-" />
+												</p:column>
+
+												<p:column width="12%" headerText="Obervación"
+													style="text-align:center;" filterBy="#{_var.observacion}"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.observacion}" />
+												</p:column>
+
+												<p:column width="7%" headerText="Acción"
+													style="text-align:center;">
+													<div class="row">
+														<div class="btn-group-demo">
+															<div class="btn-group">
+																<p:commandLink id="buttonModificarDetalle"
+																	value="&#160;" styleClass="btn ion-edit"
+																	style="padding-left: 5px; padding-right: 5px;"
+																	immediate="true"
+																	actionListener="#{ordenIngresoController.editarDetalleOrdenIngreso(_var.id)}" />
+																<p:commandLink id="buttonEliminarDetalle"
+																	style="padding-left: 5px; padding-right: 5px;"
+																	value="&#160;" styleClass="btn ion-trash-b"
+																	immediate="true"
+																	actionListener="#{ordenIngresoController.borrarDetalleOrdenIngreso(_var.id)}" />
+															</div>
+														</div>
+													</div>
+												</p:column>
+
+											</p:dataTable>
+										</div>
+									</div>
+									<!-- end here datatable -->
+									<div class="panel-body"></div>
+								</div>
+							</div>
+
+						</ui:fragment>
+
+						<ui:fragment rendered="#{ordenIngresoController.verReport}">
+							<div class="col-md-12">
+								<div class="panel panel-default">
+									<div class="panel-body" style="text-align: center;">
+										<p:media player="pdf" rendered="true"
+											value="#{ordenIngresoController.urlOrdenIngreso}"
+											width="800px" height="1125px" />
+									</div>
+								</div>
+							</div>
+						</ui:fragment>
+
+					</div>
+					<!-- END PANEL TABLE -->
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+		<!--   MODAL PRODUCTO -->
+		<p:dialog widgetVar="dlgProducto" resizable="false" header="AGREGAR PRODUCTO"
+			showHeader="true" modal="false" closeOnEscape="true" draggable="true"
+			position="center" style="padding: 0px 0px 0px 0px;" width="600"
+			visible="#{partidaController.diagloProducto}" id="modalProductoID">
+			<h:form id="formDialogProducto">
+				<ui:fragment rendered="#{ ! ordenIngresoController.nuevoProducto}">
+					<!-- ocultar si se va a creaer producto -->
+					<div class="row">
+						<ui:fragment rendered="false">
+							<div class="form-group ">
+								<div class="col-md-4">Proveedor</div>
+								<div class="col-md-8">
+									<p:autoComplete id="proveedorID" style="width: 100%"
+										inputStyle="width: 93%; color: #555555; background-image: none;padding: 4px 10px;"
+										value="#{ordenIngresoController.selectedProveedor.nombre}"
+										completeMethod="#{ordenIngresoController.completeProveedor}"
+										minQueryLength="1" dropdown="true" required="true"
+										requiredMessage="Proveedor Requerido." forceSelection="true"
+										var="_var" itemLabel="#{_var}" itemValue="#{_var.nombre}"
+										placeholder="[Escriba Proveedor]" scrollHeight="300">
+										<p:ajax event="itemSelect"
+											listener="#{ordenIngresoController.onRowSelectProveedorClick}" />
+										<p:column>
+											<h:outputText value="#{_var.codigo}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="#{_var.nombre}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="#{_var.direccion}" />
+										</p:column>
+									</p:autoComplete>
+								</div>
+							</div>
+						</ui:fragment>
+					</div>
+					<div class="row">
+						<div class="form-group">
+							<div class="col-md-4">Producto</div>
+							<div class="col-md-8">
+								<p:autoComplete id="productoID" style="width: 100%"
+									inputStyle="width: 93%; color: #555555; background-image: none;padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedProducto}"
+									converter="productoConverter"
+									completeMethod="#{ordenIngresoController.completeProducto}"
+									minQueryLength="1" size="30" dropdown="true" required="true"
+									requiredMessage="Producto Requerido." forceSelection="true"
+									var="_var" itemLabel="#{_var.nombre}" itemValue="#{_var}"
+									placeholder="[Escriba Producto]" scrollHeight="300">
+									<p:ajax event="itemSelect" update="productoID"
+										listener="#{ordenIngresoController.onRowSelectProductoClick}" />
+									<p:column>
+										<h:outputText value="#{_var.codigo}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{_var.nombre}" />
+									</p:column>
+									<p:column rendered="false">
+										<h:outputText value="#{_var.descripcion}" />
+									</p:column>
+
+								</p:autoComplete>
+							</div>
+							<ui:fragment rendered="false">
+								<div class="col-md-1" style="padding-right: 5px;">
+									<p:commandLink value="&#160; "
+										styleClass="btn btn-default ion-plus"
+										style="height:31px;  width: 29px; padding: 4px 6px; "
+										immediate="true">
+										<p:ajax immediate="true" update="form001"
+											listener="#{ordenIngresoController.setNuevoProducto(true)}" />
+									</p:commandLink>
+								</div>
+							</ui:fragment>
+
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="form-group">
+							<label class="col-sm-4 control-label">Garantía (Días)</label>
+							<div class="col-sm-8">
+								<p:inputText id="garantiaID" required="true"
+									requiredMessage="Garantía Requerido."
+									style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.garantia}"
+									size="40">
+									<p:ajax event="change" />
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="form-group">
+							<label for="descripcionID" class="col-sm-4 control-label">Observación</label>
+							<div class="col-sm-8">
+								<p:inputTextarea id="descripcionID" required="true"
+									style="padding: 4px 10px;"
+									requiredMessage="Observacion Requerido."
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.observacion}"
+									size="20" rows="2" cols="39">
+									<p:ajax event="change" />
+								</p:inputTextarea>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="form-group">
+							<label class="col-sm-4 control-label">Precio Compra ($us)</label>
+							<div class="col-sm-8">
+								<p:inputText id="precioCompraID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioCompra}"
+									size="40">
+									<p:ajax event="change" update="precioVCoID,precioVCrID,totalID"
+										listener="#{ordenIngresoController.calcularPorcentajePrecio()}" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="form-group">
+							<label class="col-sm-4 control-label">Precio Venta
+								Contado ($us)</label>
+							<div class="col-sm-8">
+								<p:inputText id="precioVCoID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioVentaContado}"
+									size="40">
+									<p:ajax event="change" update="totalID"
+										listener="#{ordenIngresoController.calcular()}" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="form-group">
+							<label class="col-sm-4 control-label">Precio Venta
+								Credito ($us)</label>
+							<div class="col-sm-8">
+								<p:inputText id="precioVCrID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioVentaCredito}"
+									size="40">
+									<p:ajax event="change" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="form-group">
+							<label class="col-sm-4 control-label">Cantidad</label>
+							<div class="col-sm-8">
+								<p:inputText id="cantidadID" required="true"
+									requiredMessage="Cantidad Requerido."
+									style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.cantidad}"
+									size="40">
+									<p:ajax event="change" update="totalID"
+										listener="#{ordenIngresoController.calcular()}" />
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="form-group">
+							<label for="totalID" class="col-sm-4 control-label">Total
+								Compra ($us)</label>
+							<div class="col-sm-8">
+								<p:inputText id="totalID" required="true"
+									requiredMessage="Total Requerido." readonly="true"
+									style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.totalCompra}"
+									size="40">
+									<f:convertNumber pattern="#,##0.000" locale="en" />
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+
+					<br />
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<p:commandLink value="&#160; Cerrar"
+										styleClass="btn btn-warning ion-minus-circled btn-block"
+										onclick="PF('dlgProducto').hide();"
+										action="#{ordenIngresoController.limpiarDatosProducto()}"
+										immediate="true">
+									</p:commandLink>
+								</div>
+								<div class="col-md-4">
+									<p:commandLink value="&#160; Agregar"
+										styleClass="btn btn-success ion-checkmark btn-block"
+										onclick="PF('dlgProducto').hide();"
+										rendered="#{ ! ordenIngresoController.editarOrdenIngreso}">
+										<p:ajax update="form001"
+											listener="#{ordenIngresoController.agregarDetalleOrdenIngreso()}" />
+									</p:commandLink>
+
+									<p:commandLink value="&#160; Modificar"
+										styleClass="btn btn-success ion-checkmark btn-block"
+										onclick="PF('dlgProducto').hide();"
+										rendered="#{ordenIngresoController.editarOrdenIngreso}">
+										<p:ajax update="form001"
+											listener="#{ordenIngresoController.modificarDetalleOrdenIngreso()}" />
+									</p:commandLink>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</ui:fragment>
+				<ui:fragment rendered="#{ordenIngresoController.nuevoProducto}">
+					<!-- mostrar si se va a crear producto -->
+					<div class="row">
+						<div class="col-md-12 box-content form-horizontal">
+
+							<div class="form-group ">
+								<div class="col-md-4">Código</div>
+								<div class="col-md-8">
+									<p:inputText id="nuevoCodigoID"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control" size="40"
+										value="#{ordenIngresoController.newProducto.codigo}"
+										required="true" requiredMessage="Requerido.">
+										<p:ajax event="change" />
+									</p:inputText>
+								</div>
+							</div>
+
+							<div class="form-group ">
+								<div class="col-md-4">Nombre Producto</div>
+								<div class="col-md-8">
+									<p:inputText id="nuevoNombreID"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control" size="40"
+										value="#{ordenIngresoController.newProducto.nombre}"
+										required="true" requiredMessage="Requerido.">
+										<p:ajax event="change" />
+									</p:inputText>
+								</div>
+							</div>
+							<div class="form-group ">
+								<div class="col-md-4">Descripción</div>
+								<div class="col-md-8">
+									<p:inputText id="nuevoDescripcionID"
+										style=" color: #555555; background-image: none;"
+										styleClass="input-sm form-control" size="40"
+										value="#{ordenIngresoController.newProducto.descripcion}"
+										required="true" requiredMessage="Requerido.">
+										<p:ajax event="change" />
+									</p:inputText>
+								</div>
+							</div>
+							<ui:fragment rendered="false">
+								<div class="form-group ">
+									<div class="col-md-4">Precio Unitario</div>
+									<div class="col-md-8">
+										<p:inputText id="nuevoPrecioID"
+											style=" color: #555555; background-image: none;"
+											styleClass="input-sm form-control" required="true"
+											requiredMessage="Precio Requerido."
+											value="#{ordenIngresoController.newProducto.precioUnitario}"
+											size="40">
+											<p:ajax event="change" />
+											<f:convertNumber pattern="#,##0.000" locale="en" />
+										</p:inputText>
+									</div>
+								</div>
+							</ui:fragment>
+
+							<div class="form-group ">
+								<div class="col-md-4">Tipo Producto</div>
+								<div class="col-md-8">
+									<h:selectOneMenu id="nuevoTipoID"
+										style=" color: #555555; background-image: none; width:100%;"
+										styleClass="input-sm form-control" required="true"
+										requiredMessage="Tipo Requerido."
+										value="#{ordenIngresoController.newProducto.tipoProducto}">
+										<f:selectItem itemLabel="SELECCIONE" itemValue="" />
+										<f:selectItem itemLabel="INSUMOS" itemValue="INSUMOS" />
+										<f:selectItem itemLabel="MATERIALES" itemValue="MATERIALES" />
+										<f:selectItem itemLabel="SUMINISTRO" itemValue="SUMINISTRO" />
+										<p:ajax event="change" />
+									</h:selectOneMenu>
+								</div>
+							</div>
+
+							<div class="form-group ">
+								<div class="col-md-4">Unidad Medida</div>
+								<div class="col-md-8">
+									<p:autoComplete id="unidadMedidasID" style="width: 93%"
+										inputStyle="width: 93%; color: #555555; background-image: none;"
+										value="#{ordenIngresoController.selectedUnidadMedida.nombre}"
+										completeMethod="#{ordenIngresoController.completeUnidadMedida}"
+										minQueryLength="3" dropdown="true" required="true"
+										requiredMessage="Unidad Medida Requerido."
+										forceSelection="true" var="_var" itemLabel="#{_var}"
+										itemValue="#{_var.nombre}"
+										placeholder="[Escriba Unidad Medida]" scrollHeight="300">
+
+										<p:ajax event="itemSelect"
+											listener="#{ordenIngresoController.onRowSelectUnidadMedidaClick}"
+											update="form001" />
+
+										<p:column>
+											<h:outputText value="#{_var.nombre}" />
+										</p:column>
+									</p:autoComplete>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<p:commandLink value="&#160; Cancelar"
+										styleClass="btn btn-warning ion-minus-circled btn-block">
+										<p:ajax immediate="true" update="form001"
+											listener="#{ordenIngresoController.setNuevoProducto(false)}" />
+									</p:commandLink>
+								</div>
+								<div class="col-md-4">
+									<p:commandLink value="&#160; Registrar"
+										styleClass="btn btn-success ion-checkmark btn-block">
+										<p:ajax update="form001"
+											listener="#{ordenIngresoController.registrarProducto()}" />
+									</p:commandLink>
+								</div>
+							</div>
+						</div>
+					</div>
+				</ui:fragment>
+			</h:form>
+		</p:dialog>
+
+
+		<!-- VISTA PREVIA REPORTE -->
+		<p:dialog header="ORDEN INGRESO" rendered="false"
+			widgetVar="dlgVistaPreviaOrdenIngreso" modal="true"
+			visible="#{not empty facesContext.maximumSeverity}" resizable="false"
+			position="center" width="750px">
+			<h:form id="formModalVistaPrevia">
+				<div class="row">
+					<div class="form-group ">
+						<div class="col-md-12">
+							<p:media player="pdf" rendered="true"
+								value="#{ordenIngresoController.urlOrdenIngreso}" width="100%"
+								height="580px" />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<div class="col-md-4"></div>
+							<div class="col-md-4"></div>
+							<div class="col-md-4">
+								<p:commandLink value="Aceptar"
+									styleClass="btn btn-primary btn-block"
+									onclick="PF('dlgVistaPreviaOrdenIngreso').hide();" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Desea Eliminar la Orden de ingreso"
+			widgetVar="dlgEliminarOrdenIngreso" modal="true"
+			visible="#{not empty facesContext.maximumSeverity}" resizable="false"
+			position="center" width="500px">
+			<h:form id="formModalEliminarOrdenIngreso">
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<div class="col-md-4"></div>
+							<div class="col-md-4">
+								<p:commandLink value="&#160; NO"
+									styleClass="btn btn-warning ion-minus-circled btn-block"
+									onclick="PF('dlgEliminarOrdenIngreso').hide();"
+									immediate="true">
+								</p:commandLink>
+							</div>
+							<div class="col-md-4">
+								<p:commandLink value="&#160; SI"
+									styleClass="btn btn-success ion-checkmark btn-block"
+									onclick="PF('dlgEliminarOrdenIngreso').hide();">
+									<p:ajax update="form001"
+										listener="#{ordenIngresoController.eliminarOrdenIngreso()}" />
+								</p:commandLink>
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		<!-- END DIALOG -->
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>

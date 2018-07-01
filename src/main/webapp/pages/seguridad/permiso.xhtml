@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="security">
+		<h:body onload="#{loginController.permisoValidado('PERMISO')}">
+		</h:body>
+	</ui:define>
+
+	<ui:define name="head">
+		<title>Permiso</title>
+
+		<f:event listener="#{permisoController.initConversation}"
+			type="preRenderView"></f:event>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+
+				<h:form id="form001">
+
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 10px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+
+										<p:commandLink rendered="#{permisoController.modificar}"
+											actionListener="#{permisoController.cancelar()}"
+											style="height:31px; padding:center" update="form001"
+											styleClass="btn btn-warning ion-minus-circled"
+											value="&#160; Cancelar" />
+
+										<p:commandLink id="buttonModificar"
+											rendered="#{permisoController.modificar}"
+											style="height:31px; padding:center"
+											styleClass="btn btn-success ion-checkmark" immediate="true"
+											action="#{permisoController.guardar()}"
+											value="&#160; Modificar" update="form001">
+										</p:commandLink>
+
+
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/seguridad/permiso.xhtml"
+										style="color: #0090FF; font-size: 12px;">Seguridad</a></li>
+									<li class="active" style="font-size: 12px;">Permiso</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+						<div class="col-md-4">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">Roles</h3>
+								</div>
+								<div class="form-group ">
+									<p:dataTable id="rolesTable" var="var"
+										style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+										value="#{permisoController.listRoles}"
+										styleClass="table table-condensed table-hover table-responsive table-striped table-bordered"
+										selection="#{permisoController.selectedRoles}"
+										selectionMode="single" rowKey="#{var.id}"
+										emptyMessage="No se encontraron registros.">
+
+										<p:ajax event="rowSelect" update="form001"
+											listener="#{permisoController.onRowSelectRol}" />
+
+										<p:column id="id" width="25%" headerText="ID">
+											<center>
+												<span class="badge"><h:outputText value="#{var.id}" /></span>
+											</center>
+										</p:column>
+
+										<p:column id="nombre" width="75%" headerText="NOMBRE">
+											<h:outputText value="#{var.nombre}" />
+										</p:column>
+									</p:dataTable>
+								</div>
+								<div class="panel-body"></div>
+							</div>
+						</div>
+						<!-- END PANEL REGISTER -->
+
+						<!-- BEGIN PANEL TABLE -->
+						<div class="col-md-8">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">Permisos de Grupo de Usuario</h3>
+								</div>
+								<div class="panel-body">
+									<!-- start here register -->
+									<div class="row">
+										<div class="col-md-12 box-content form-horizontal">
+											<p:tree id="permiso" value="#{permisoController.root}"
+												var="node"
+												selectionMode="#{permisoController.selectionModeTreeNode}"
+												style="font-size: 13px !important; padding: 0 0 0 16px !important; width: 100%; font-family: sans-serif !important;"
+												selection="#{permisoController.selectedNodes}">
+												<p:ajax event="select" update="form001" />
+												<p:ajax event="unselect" update="form001" />
+
+												<p:treeNode icon="ui-icon-star">
+													<h:outputText value="#{node}" />
+												</p:treeNode>
+
+												<p:treeNode type="1" icon="ui-icon-newwin">
+													<h:outputText value="#{node}" />
+												</p:treeNode>
+
+											</p:tree>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END PANEL TABLE -->
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Parámetros</title>
+		<f:event listener="#{parametroInventarioController.initConversation}"
+			type="preRenderView"></f:event>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+
+				<h:form id="form001">
+
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											update="form001" rendered="false" immediate="true"
+											style="height:31px; padding:center"
+											action="#{parametroInventarioController.loadDefault()}">
+										</p:commandLink>
+										<p:commandLink id="buttonRegistrar" value="&#160; Modificar"
+											styleClass="btn btn-success ion-checkmark" immediate="true"
+											style="height:31px; padding:center" >
+											<p:ajax update="formGrowl,form001" listener="#{parametroInventarioController.modificarParametroInventario()}"/>
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/cobranza/nota-venta.xhtml"
+										style="color: #0090FF; font-size: 12px;">Parametrización</a></li>
+									<li class="active" style="font-size: 12px;">Parámetros</li>
+								</ol>
+							</div>
+
+						</section>
+					</div>
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">PARAMETROS DE INVENTARIO</h3>
+								</div>
+								<div class="panel-body">
+									<div class="tabbable-custom">
+										<ul class="nav nav-tabs">
+											<li class="active"><a href="#tab_5_1" data-toggle="tab">Procesos Inventario</a></li>
+										</ul>
+										<div class="tab-content">
+											<div id="tab_5_1" class="tab-pane active">
+											<div class="row">
+													<div class="col-md-12"
+														style="padding-left: 30px; padding-right: 30px;">
+														<h4 class="pbm border-bottom">
+															<div class="">
+																Método de Valuación de inventario
+																<div class="pull-right">
+																	<p:outputLabel id="question1" value="?" />
+																</div>
+															</div>
+															<p:tooltip for="question1" value=".">
+
+																<div class="panel">
+																	<div class="panel-heading">
+																		<h3 class="panel-title">
+																			<strong class="text-uppercase text-orange">Ayuda</strong>
+																		</h3>
+																	</div>
+																	<div class="panel-body">
+																		<p class="mbl">Seleccionar la configuración de metodo de valuacion de sus almacenes.</p>
+																	</div>
+																</div>
+
+															</p:tooltip>
+														</h4>
+														<div class="note note-success">
+																<p>
+																	- Seleccione la opción <strong>PEPS</strong> para que el processo.
+																</p>
+																<p>
+																	- Seleccione la opción <strong>UEPS</strong> para que el processo.
+																</p>
+																<p>
+																	- Seleccione la opción <strong>PPP</strong> para que el processo.
+																</p>
+															</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-12">
+														<div class="form-group ">
+															<div class="col-md-12" >
+																<p:selectOneRadio id="oneMenuTipoVenta"
+																	value="#{parametroInventarioController.selectedParametroInventario.tipoValuacion}">
+																	<p:ajax update="form001" />
+																	<f:selectItem itemLabel="&#160; Primero Entrar Primero Salir(PEPS) &#160;"
+																		itemValue="PEPS" />
+																	<f:selectItem itemLabel="&#160; Último Entrar Primero Salir (UEPS) &#160;"
+																		itemValue="UEPS" itemDisabled="false" />
+																	<f:selectItem itemLabel="&#160; Precio Promedio Ponderado(PPP) &#160;"
+																		itemValue="PPP" itemDisabled="false" />	
+																</p:selectOneRadio>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+					<!-- END PANEL -->
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>

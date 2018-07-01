@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jboss-web PUBLIC
+    "-//JBoss//DTD Web Application 2.4//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-web_4_2.dtd">
+
+<jboss-web>
+	<security-domain>erp360-2Security</security-domain>
+	<!-- <security-domain>java:jboss/jaas/erp360-2Security</security-domain> -->
+	<context-root>erp360</context-root>
+
+</jboss-web>

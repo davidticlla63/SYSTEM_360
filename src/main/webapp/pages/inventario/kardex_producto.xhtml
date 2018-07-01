@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Kardex Producto</title>
+
+		<f:event listener="#{kardexProductoController.initConversation}"
+			type="preRenderView"></f:event>
+
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+				<h:form id="form001">
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 10px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+
+										<p:commandLink id="buttonAtras" value="&#160; Atras"
+											styleClass="btn btn-warning ion-minus-circled"
+											immediate="true"
+											rendered="#{kardexProductoController.verReport}"
+											style="height:31px; padding:center">
+											<p:ajax update="form001"
+												listener="#{kardexProductoController.loadDefault()}" />
+										</p:commandLink>
+
+										<p:commandLink id="buttonProcesar" value="&#160; Filtrar"
+											styleClass="btn btn-info ion-ios7-loop-strong"
+											style="height:31px; padding:center"
+											rendered="#{! kardexProductoController.verReport}"
+											update="form001"
+											action="#{kardexProductoController.procesarConsulta()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonVerReporte"
+											value="&#160; Ver Reporte"
+											styleClass="btn btn-info ion-printer"
+											rendered="#{kardexProductoController.listaKardexProducto.size() > 0}"
+											style="height:31px; padding:center" update="form001"
+											action="#{kardexProductoController.cargarReporte()}">
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/proceso/kardex_producto.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inventario</a></li>
+									<li class="active" style="font-size: 12px;">Kardex
+										Producto</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+
+						<ui:fragment rendered="#{ ! kardexProductoController.verReport}">
+
+							<div class="col-md-12">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Filtro Kardex</h3>
+									</div>
+									<div class="panel-body">
+										<!-- start here register -->
+										<div class="row">
+											<div class="col-md-4 box-content form-horizontal">
+
+												<div class="form-group ">
+													<div class="col-md-4">Fecha Inicio</div>
+													<div class="col-md-8">
+														<p:calendar
+															value="#{kardexProductoController.fechaInicio}"
+															styleClass="myWid100" locale="es" pattern="dd/MM/yyyy"></p:calendar>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Fecha Fin</div>
+													<div class="col-md-8">
+														<p:calendar value="#{kardexProductoController.fechaFin}"
+															styleClass="myWid100" locale="es" pattern="dd/MM/yyyy"></p:calendar>
+													</div>
+												</div>
+
+											</div>
+											<div class="col-md-8 box-content form-horizontal"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-12" align="left">
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Kardex de Producto</h3>
+									</div>
+									<!-- start here datatable -->
+									<div class="box-content no-padding">
+
+										<div class="row">
+											<p:dataTable
+												style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+												rowKey="#{_var.id}" id="productoTable" var="_var"
+												value="#{kardexProductoController.listaKardexProducto}"
+												emptyMessage="No se encontraron Registros." rows="20"
+												paginator="true"
+												paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+												rowsPerPageTemplate="5,20,30">
+
+												<p:column width="6%" headerText="Fecha"
+													style="text-align:center;">
+													<h:outputText value="#{_var.fechaRegistro}">
+														<f:convertDateTime pattern="dd/MM/yyyy" />
+													</h:outputText>
+												</p:column>
+
+												<p:column width="10%" headerText="Movimiento"
+													style="text-align:center;">
+													<h:outputText
+														value="#{_var.tipoMovimiento.equals('OI')?'ORDEN INGRESO':'ORDEN SALIDA'}" />
+													<p:commandLink value=" #{ _var.ordenIngreso.correlativo}" rendered="#{_var.tipoMovimiento.equals('OI')}" actionListener="#{kardexProductoController.cargarOrdenIngreso(_var.ordenIngreso.id)}"/>
+													<p:commandLink value=" #{ _var.ordenSalida.correlativo}" rendered="#{_var.tipoMovimiento.equals('OS')}"/>
+												</p:column>
+
+												<p:column width="10%" headerText="Motivo"
+													style="text-align:center;">
+													<h:outputText value="#{_var.tipoTransaccion}" />
+												</p:column>
+
+												<p:column width="10%" headerText="Almacén">
+													<h:outputText value="#{_var.almacen.nombre}" />
+												</p:column>
+
+												<p:column width="9%" headerText="Código"
+													filterStyle="width: 100%;"
+													filterMatchMode="contains"
+													filterBy="#{_var.producto.codigo}">
+													<h:outputText value="#{_var.producto.codigo}" />
+												</p:column>
+
+												<p:column width="22%" headerText="Producto" 
+												filterStyle="width: 100%;" filterMatchMode="contains"
+													filterBy="#{_var.producto.nombre}">
+													<h:outputText
+														value="#{_var.producto.nombre}#{_var.producto.descripcion}" />
+												</p:column>
+
+												<p:column width="7%" headerText="Precio"
+													style="text-align:center;">
+													<ui:fragment rendered="#{_var.ordenIngreso==null}">
+														<h:outputText value="#{_var.precioSalida}">
+															<f:convertNumber pattern="#,##0.00" />
+														</h:outputText>
+													</ui:fragment>
+													<ui:fragment rendered="#{_var.ordenSalida==null}">
+														<h:outputText value="#{_var.precioEntradaCompra}">
+															<f:convertNumber pattern="#,##0.00" />
+														</h:outputText>
+													</ui:fragment>
+													$us
+												</p:column>
+
+												<p:column width="5%" headerText="Entrada"
+													style="text-align:center;">
+													<h:outputText value="#{_var.stockEntrante}" />
+												</p:column>
+
+												<p:column headerText="Salida" width="5%"
+													style="text-align:center;">
+													<h:outputText value="#{_var.stockSaliente}" />
+												</p:column>
+
+												<f:facet name="footer">
+													<h:outputText
+														value="#{kardexProductoController.listaKardexProducto.size()} Registros en Total" />
+												</f:facet>
+
+											</p:dataTable>
+										</div>
+									</div>
+									<!-- end here datatable -->
+									<div class="panel-body"></div>
+
+								</div>
+							</div>
+
+						</ui:fragment>
+
+						<ui:fragment rendered="#{kardexProductoController.verReport}">
+
+							<div class="col-md-12">
+								<div class="panel panel-default">
+									<div class="panel-body" style="text-align: center;">
+										<p:media player="pdf" rendered="true"
+											value="#{kardexProductoController.urlKardexProducto}"
+											width="800px" height="1125px" />
+									</div>
+								</div>
+							</div>
+						</ui:fragment>
+
+					</div>
+					<!-- END PANEL TABLE -->
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>

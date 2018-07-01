@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template_login.xhtml">
+
+	<ui:define name="head">
+		<title>Inicio sesión - ERP360</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<div class="outer">
+			<div class="middle ">
+				<div class="inner">
+					<!--BEGIN CONTENT-->
+					<div class="login-form"
+						style="background-color: white !important; box-shadow: 0 12px 15px rgba(0, 0, 0, 0.24), 0 17px 50px rgba(0, 0, 0, 0.19);">
+
+						<!--BEGIN LOGOTIPO s-->
+
+						<center>
+							<h:graphicImage library="gfx" name="logo-erp360.png" width="80%" />
+						</center>
+
+						<div class="header">
+							<a href="#" class="logo-text"
+								style="font-size: 30px; color: black;"><i
+								class="ion-ios7-locked"></i> Inicio Sesión</a>
+						</div>
+						<!--END LOGOTIPO -->
+
+						<hr />
+						<h:form id="formLogin">
+							<p:focus context="formLogin" />
+							<div class="form-group">
+								<div class="input-icon">
+									<i class="icon-user"></i>
+									<p:inputText id="inputTextUsuario" placeholder="Usuario"
+										styleClass="form-control" required="true"
+										style="border-radius: 3px; height:35px; font-size: 14px; color: #777;text-shadow: none ; background-image: none; background-color: #FFF;"
+										value="#{loginController.username}">
+										<p:ajax />
+									</p:inputText>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-icon">
+									<i class="icon-lock"></i>
+									<p:inputText id="inputTextContrasenia" placeholder="Contraseña"
+										styleClass="form-control" required="true"
+										style="border-radius: 3px; height:35px; font-size: 14px; color: #777;text-shadow: none ; background-image: none; background-color: #FFF;"
+										type="password" value="#{loginController.password}">
+										<p:ajax />
+									</p:inputText>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="checkbox pull-left">
+									<ui:fragment rendered="false">
+										<label style="color: #FFFFFF;"> <input
+											style="color: #FFFFFF;" type="checkbox" value="false" />Recordarme
+										</label>
+									</ui:fragment>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+
+							<div class="form-group">
+								<p:commandLink styleClass="btn btn-primary btn-block"
+									value="Ingresar">
+									<p:ajax update="formLogin,formGrowl:msgs1"
+										listener="#{loginController.login()}" />
+								</p:commandLink>
+							</div>
+
+							<p:hotkey bind="return" actionListener="#{loginController.login}"
+								update="formGrowl:msgs1" />
+
+						</h:form>
+
+					</div>
+					<ui:fragment rendered="true">
+						<br />
+						<center>
+						<div>#{' &#169;'} TEDS 2018. Todos los
+							derechos reservados</div>
+							</center>
+					</ui:fragment>
+					<!--END CONTENT-->
+				</div>
+			</div>
+		</div>
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+	</ui:define>
+</ui:composition>

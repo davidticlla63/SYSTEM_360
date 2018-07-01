@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="head">
+		<title>Tipo Cambio</title>
+		<script type="text/javascript">
+		    PrimeFaces.locales['tr'] = {
+		        closeText: 'Cerrar',
+		        prevText: 'Anterior',
+		        nextText: 'Siguiente',
+		        currentText: 'Hoy',
+		        monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+		            'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+		        monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun',
+		            'Jul','Ago','Sep','Oct','Nov','Dic'],
+		        dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sabado'],
+			    dayNamesShort: ['Do','Lu','Ma','Mi','Ju','Vi','Sa'],
+			    dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sa'],
+		        weekHeader: 'Semana',
+		        firstDay: 1,
+		        isRTL: false,
+		        showMonthAfterYear: false,
+		        yearSuffix: '',
+		        month: 'Mes',
+		        week: 'Semana',
+		        day: 'Día',
+		        allDayText : 'Todos el día'
+		    };
+	</script>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+				<h:form id="form001">
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+
+										<p:commandLink styleClass="btn btn-success ion-checkmark"
+											style="height:31px;" value="&#160; Registrar Cambios"
+											update="form001" rendered="false" disabled="true"
+											actionListener="#{tipoCambioController.registrarConfiguracionContable()}">
+										</p:commandLink>
+
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/contabilidad/tipo_cambio/index.xhtml"
+										style="color: #0090FF; font-size: 12px;">Contabilidad</a></li>
+									<li class="active" style="font-size: 12px;">Tipo Cambio</li>
+								</ol>
+							</div>
+
+						</section>
+					</div>
+					<!-- INSERT CONTENT -->
+					<ui:include src="#{tipoCambioController.page}" />
+
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+	</ui:define>
+
+</ui:composition>

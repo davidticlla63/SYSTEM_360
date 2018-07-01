@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="head">
+		<title>Lista Movimientos Caja</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+				<h:form id="form001">
+					<!-- BEGIN BUTTONS -->
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo"></div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/index"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a href="#{request.contextPath}/user"
+										style="color: #0090FF; font-size: 12px;">Caja</a></li>
+									<li class="active" style="font-size: 12px;">Movimientos Caja</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- END BUTTONS -->
+
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;"></div>
+					<!-- END PANEL REGISTER -->
+
+					<!-- BEGIN PANEL TABLE -->
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">Movimientos Caja</h3>
+								</div>
+								<div class="form-group">
+									<p:dataTable id="movimientosCajaTable" var="item"
+										value="#{movimientoCajaController.movimientosCaja}"
+										paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+										rowKey="#{item.id}" paginatorPosition="top" lazy="true"
+										loadingmessage="Realizando operación espere.."
+										style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+										paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+
+										<p:ajax event="rowSelect" update="form001"
+											listener="#{movimientoCajaController.onRowSelect}" />
+
+										<p:column headerText="Código" width="8%"
+											style="text-align:center;" filterMatchMode="contains"
+											filterStyle="width: 100%; height:25px;"
+											filterBy="#{item.correlativo}">
+											<h:outputText value="#{item.correlativo}" />
+										</p:column>
+
+										<p:column headerText="Transacción" width="30%"
+											filterStyle="width: 100%; height:25px;"
+											filterMatchMode="contains" filterBy="#{item.motivoIngreso}">
+											<h:outputText value="#{item.motivoIngreso}" />
+										</p:column>
+
+										<p:column headerText="Importe" width="10%"
+											style="text-align:center;">
+											<ui:fragment rendered="#{item.tipo.equals('INGRESO')}">
+												<span class="fa fa-long-arrow-down" style="color: green;"></span>
+											</ui:fragment>
+											<ui:fragment rendered="#{item.tipo.equals('EGRESO')}">
+												<span class="fa fa-long-arrow-up " style="color: red;"></span>
+											</ui:fragment>
+											<h:outputText value="#{'&#160; &#160; &#160; '}" />
+											<h:outputText rendered="#{item.moneda.equals('BOLIVIANOS')}"
+												value="#{item.totalImporteNacional}">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:outputText>
+											<h:outputText rendered="#{item.moneda.equals('DOLAR')}"
+												value="#{item.totalImporteExtranjero}">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:outputText>
+											<span class="label label-success"> <p:outputLabel
+													value=" $us." rendered="#{item.moneda.equals('DOLAR')}" />
+												<p:outputLabel value=" Bs."
+													rendered="#{item.moneda.equals('BOLIVIANOS')}" />
+											</span>
+										</p:column>
+
+										<p:column headerText="Tipo Doc." width="12%"
+											style="text-align:center;" filterBy="#{item.tipoDocumento}"
+											filterStyle="width: 100%; height:25px;"
+											filterMatchMode="contains">
+											<h:outputText value="#{item.tipoDocumento}" />
+										</p:column>
+
+										<p:column headerText="Nro. Doc." width="6%"
+											style="text-align:center;" filterBy="#{item.numeroDocumento}"
+											filterStyle="width: 100%; height:25px;"
+											filterMatchMode="contains">
+											<h:outputText value="#{item.numeroDocumento}" />
+										</p:column>
+
+										<p:column width="8%" headerText="Estado"
+											filterStyle="width: 100%; height:25px;"
+											style="text-align:center;" filterBy="#{item.estado}">
+											<span class="label label-success"><h:outputText
+													rendered="#{item.estado=='PR'}" value="Procesada" /></span>
+											<span class="label label-danger"><h:outputText
+													rendered="#{item.estado=='IN'}" value="Inactivo" /></span>
+											<span class="label orange"><h:outputText
+													rendered="#{item.estado=='PN'}" value="Pendiente" /></span>
+											<span class="label label-success"><h:outputText
+													rendered="#{item.estado=='AN'}" value="Anulada" /></span>
+										</p:column>
+										<p:column width="8%" headerText="Fecha "
+											style="text-align:center;" >
+											<h:outputText value="#{item.fechaRegistro}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{movimientoCajaController.sizeList} Registros en Total" />
+										</f:facet>
+									</p:dataTable>
+								</div>
+								<div class="panel-body"></div>
+							</div>
+						</div>
+					</div>
+					<!-- END PANEL TABLE -->
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+	</ui:define>
+</ui:composition>

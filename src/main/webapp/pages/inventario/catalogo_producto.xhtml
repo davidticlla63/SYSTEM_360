@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Catálogo de Productos</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="content-header">
+				<div class="pull-left" style="padding-top: 8px;">
+					<h:form id="formBotonesHeader" style="padding-left: 10px;">
+						<div class="btn-group-demo">
+							<div class="btn-group"></div>
+						</div>
+					</h:form>
+				</div>
+				<div class="pull-right">
+					<ol class="breadcrumb">
+						<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+							style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+						<li><a
+							href="#{request.contextPath}/pages/inventario/catalogo_producto.xhtml"
+							style="color: #0090FF; font-size: 12px;">Inventario</a></li>
+						<li class="active" style="font-size: 12px;">Catálogo de
+							Productos</li>
+					</ol>
+				</div>
+			</section>
+			<section class="main-content">
+				<section class="main-content">
+					<div class="row">
+
+						<h:form id="formTableProducto" styleClass="form-horizontal">
+
+							<div class="col-md-12" align="left">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Catálogo de Productos</h3>
+									</div>
+									<!-- start here datatable -->
+									<div class="box-content no-padding">
+
+										<p:dataTable
+											style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+											rowKey="#{_var.id}" id="productoTable" var="_var"
+											value="#{catalogoProductoController.listaAlmacenProducto}"
+											emptyMessage="No se encontraron Registros."
+											rows="20" paginator="true"
+													paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+													rowsPerPageTemplate="5,20,30">
+
+											<p:column width="10%" headerText="Código" filterBy="#{_var.producto.codigo}"
+												 filterStyle="width: 100%;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_var.producto.codigo}" />
+											</p:column>
+
+											<p:column width="25%" headerText="Nombre"
+												filterBy="#{_var.producto.nombre}"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.producto.nombre}#{_var.producto.descripcion}" />
+											</p:column>
+											<p:column headerText="Precio Venta Credito" width="8%" 
+												filterBy="#{_var.precioVentaCredito}"  style="text-align:center;"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.precioVentaCredito}">
+													<f:convertNumber pattern="#,##0.00" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Precio Venta Contado" width="8%" 
+												filterBy="#{_var.precioVentaContado}"  style="text-align:center;"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.precioVentaContado}">
+													<f:convertNumber pattern="#,##0.00" />
+												</h:outputText>
+											</p:column>
+
+											<p:column  width="10%"  headerText="Unidad Medida"  style="text-align:center;"
+												filterBy="#{_var.producto.unidadMedidas.nombre}"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.producto.unidadMedidas.nombre}" />
+											</p:column>
+
+											<p:column headerText="Stock" width="8%"  style="text-align:center;"
+												filterBy="#{_var.stock}" filterStyle="width: 100%; "
+												filterMatchMode="contains">
+												<h:outputText value="#{_var.stock}" rendered="#{_var.stock>0}" />
+												<span class="label label-danger"><h:outputText 
+												 value="#{_var.stock}" rendered="#{_var.stock==0}" /></span>
+											</p:column>
+
+											<p:column headerText="Proveedor" width="18%"
+												filterBy="#{_var.proveedor.nombre}"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.proveedor.nombre}" />
+											</p:column>
+											
+											<p:column headerText="Almacén" width="14%"
+												filterBy="#{_var.almacen.nombre}" style="text-align:center;"
+												filterStyle="width: 100%;" filterMatchMode="contains">
+												<h:outputText value="#{_var.almacen.nombre}" />
+											</p:column>
+											
+											<f:facet name="footer">
+												<h:outputText
+													value="#{catalogoProductoController.listaAlmacenProducto.size()} Registros en Total" />
+											</f:facet>
+
+										</p:dataTable>
+
+									</div>
+
+									<!-- end here datatable -->
+									<div class="panel-body"></div>
+
+								</div>
+							</div>
+
+						</h:form>
+
+					</div>
+				</section>
+			</section>
+		</div>
+
+		<!--END CONTENT-->
+
+		<!-- START GROWL formGrowl:msgs1 -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>

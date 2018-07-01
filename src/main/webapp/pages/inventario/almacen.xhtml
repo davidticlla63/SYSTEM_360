@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Almacén</title>
+
+		<f:event listener="#{almacenController.initConversation}"
+			type="preRenderView"></f:event>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+
+				<h:form id="form001">
+
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 10px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											update="form001" immediate="true"
+											rendered="#{almacenController.modificar or almacenController.registrar}"
+											style="height:31px; padding:center"
+											action="#{almacenController.loadDefault()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonCrear1" value="&#160; Nuevo Almacén"
+											styleClass="btn btn-success ion-plus-round"
+											rendered="#{almacenController.crear }" update="form001"
+											action="#{almacenController.cambiarAspecto()}"
+											style="height:31px;">
+										</p:commandLink>
+
+										<p:commandLink id="buttonRegistrar" value="&#160; Registrar"
+											styleClass="btn btn-success ion-checkmark"
+											rendered="#{almacenController.registrar}"
+											style="height:31px; padding:center">
+											<p:ajax update="form001"
+												listener="#{almacenController.registrarAlmacen()}" />
+										</p:commandLink>
+
+										<p:commandLink id="buttonVerModificar"
+											value="&#160; Modificar"
+											styleClass="btn btn-primary ion-edit"
+											rendered="#{almacenController.selectedAlmacen!=null and almacenController.crear }"
+											style="height:31px; padding:center" update="form001"
+											action="#{almacenController.cambiarAspectoModificar()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonModificar" value="&#160; Modificar"
+											styleClass="btn btn-primary ion-edit"
+											rendered="#{almacenController.modificar }"
+											style="height:31px; padding:center" >
+												<p:ajax update="form001"
+												listener="#{almacenController.modificarAlmacen()}" />
+										</p:commandLink>
+
+										<p:commandLink id="buttonEliminar" value="&#160; Eliminar"
+											styleClass="btn btn-danger ion-close"
+											rendered="#{almacenController.modificar }" update="form001"
+											oncomplete="PF('dlgEliminar').show();"
+											style="height:31px; padding:center">
+										</p:commandLink>
+
+										<p:dialog header="Desea Eliminar el Almacén?"
+											widgetVar="dlgEliminar" minHeight="40" modal="true">
+											<div class="form-group">
+												<div class="col-md-4">
+													<p:outputLabel value="ID" />
+												</div>
+												<div class="col-md-8">
+													<p:outputLabel value="#{almacenController.newAlmacen.id}"
+														style="text-transform: uppercase" required="true"
+														size="20">
+													</p:outputLabel>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<div class="col-md-4">
+													<p:outputLabel value="Nombre" />
+												</div>
+												<div class="col-md-8">
+													<p:outputLabel style="text-transform: uppercase" size="20"
+														value="#{almacenController.newAlmacen.nombre}"
+														required="true" requiredMessage="Requerido.">
+													</p:outputLabel>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<div class="col-md-4"></div>
+												<div class="col-md-4">
+													<p:commandLink id="buttonDlgCancelar" value="&#160; No"
+														styleClass="btn btn-warning ion-minus-circled btn-block"
+														style="height:31px; padding:center" update="form001"
+														oncomplete="PF('dlgEliminar').hide();" immediate="true">
+													</p:commandLink>
+												</div>
+												<div class="col-md-4">
+													<p:commandLink id="buttonDlgRegistrar" value="&#160; Si"
+														styleClass="btn btn-danger ion-close btn-block"
+														style="height:31px; padding:center" immediate="true"
+														oncomplete="PF('dlgEliminar').hide();">
+														<p:ajax update="form001"
+															listener="#{almacenController.eliminarAlmacen()}" />
+													</p:commandLink>
+												</div>
+											</div>
+
+										</p:dialog>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.jsf"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/parametrizacion/almacen.xhtml"
+										style="color: #0090FF; font-size: 12px;">Parametrización</a></li>
+									<li class="active" style="font-size: 12px;">Almacén</li>
+								</ol>
+							</div>
+
+						</section>
+					</div>
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+
+						<ui:fragment
+							rendered="#{almacenController.modificar or almacenController.registrar}">
+							<div class="col-md-4">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Datos Almacén</h3>
+									</div>
+									<div class="panel-body">
+										<!-- start here register -->
+										<div class="row">
+											<div class="col-md-12 box-content form-horizontal">
+												<div class="form-group ">
+													<div class="col-md-4">Código</div>
+													<div class="col-md-8">
+														<p:inputText id="codigoID"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{almacenController.newAlmacen.codigo}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Nombre</div>
+													<div class="col-md-8">
+														<p:inputText id="descripcionID"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{almacenController.newAlmacen.nombre}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Dirección</div>
+													<div class="col-md-8">
+														<p:inputText id="direccionID"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{almacenController.newAlmacen.direccion}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Teléfono</div>
+													<div class="col-md-8">
+														<p:inputText id="telefonoID"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{almacenController.newAlmacen.telefono}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Tipo</div>
+													<div class="col-md-8">
+														<h:selectOneMenu id="tipoID"
+															value="#{almacenController.newAlmacen.tipoAlmacen}"
+															styleClass="form-control" required="false"
+															requiredMessage="Tipo Requerido.">
+															<f:selectItem itemValue="ALMACEN CENTRAL"
+																itemLabel="ALMACEN CENTRAL" />
+															<f:selectItem itemValue="SUB-ALMACEN"
+																itemLabel="SUB-ALMACEN" />
+															<f:selectItem itemValue="BODEGA" itemLabel="BODEGA" />
+															<p:ajax event="change" update="form001" />
+														</h:selectOneMenu>
+													</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Sucursal</div>
+													<div class="col-md-8">
+														<h:selectOneMenu id="sucursalID"
+															value="#{almacenController.newAlmacen.tipoAlmacen}"
+															styleClass="form-control" required="false"
+															requiredMessage="Tipo Requerido.">
+															<f:selectItem itemValue="ALMACEN CENTRAL"
+																itemLabel="CASA MATRIZ" />
+															<p:ajax event="change" update="form001" />
+														</h:selectOneMenu>
+													</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-8">
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Lista de Encargados</h3>
+										<div class="actions mtn">
+											<div class="btn-group btn-group-xs">
+												<p:commandLink id="buttonDlgTelefono"
+													value="&#160; ENCARGADO"
+													styleClass="btn btn-success btn-outlined ion-plus-round"
+													style="height:27px; padding-top: 5px" immediate="true"
+													action="#{almacenController.loadDialogEncargado()}">
+												</p:commandLink>
+												<p:tooltip for="buttonDlgTelefono" value=".">
+
+													<div class="panel">
+														<div class="panel-heading">
+															<h3 class="panel-title">
+																<strong class="text-uppercase text-orange">Información</strong>
+															</h3>
+														</div>
+														<div class="panel-body">
+															<p>
+																<strong>Agregar un Encargado</strong>
+															</p>
+															<p class="mbl">Los encargados, son usuarios
+																responsables del almacen seleccionado.</p>
+														</div>
+													</div>
+												</p:tooltip>
+											</div>
+										</div>
+									</div>
+									<!-- start here datatable -->
+									<div class="box-content no-padding">
+
+										<p:dataTable
+											style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+											selection="#{almacenController.selectedEncargado}"
+											rowKey="#{var.id}" id="almacenEncargadoTable" var="var"
+											value="#{almacenController.listAlmacenEncargado}"
+											emptyMessage="No se encontraron Registros.">
+
+											<p:column width="15%" headerText="Encargado"
+												style="text-align:center;"
+												filterBy="#{var.encargado.nombre}"
+												filterStyle="width: 100%; height:25px;"
+												filterMatchMode="contains">
+												<h:outputText value="#{var.encargado.nombre}" />
+											</p:column>
+
+											<p:column width="8%" headerText="Estado"
+												filterBy="#{var.estado}"
+												filterStyle="width: 100%; height:25px;"
+												style="text-align:center;" filterMatchMode="contains">
+												<span class="label label-success"><h:outputText
+														rendered="#{var.estado=='AC'}" value="Activo" /></span>
+												<span class="label label-danger"><h:outputText
+														rendered="#{var.estado=='IN'}" value="Inactivo" /></span>
+											</p:column>
+
+											<p:column width="8%" headerText="Fecha"
+												style="text-align:center;" filterBy="#{var.fechaRegistro}"
+												filterStyle="width: 100%; height:25px;"
+												filterMatchMode="contains">
+												<h:outputText value="#{var.fechaRegistro}">
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+												</h:outputText>
+											</p:column>
+
+											<p:column width="8%" headerText="Registro"
+												style="text-align:center;" filterBy="#{var.usuarioRegistro}"
+												filterStyle="width: 100%; height:25px;"
+												filterMatchMode="contains">
+												<h:outputText value="#{var.usuarioRegistro}" />
+											</p:column>
+
+											<p:column width="8%" headerText="Acción "
+												style="text-align:center;">
+												<div class="row">
+													<div class="btn-group-demo">
+														<div class="btn-group">
+
+															<p:commandLink id="buttonEliminarTelefono"
+																style="padding-left: 5px; padding-right: 5px;"
+																value="&#160;" styleClass="btn ion-trash-b"
+																immediate="true" update="form001"
+																actionListener="#{almacenController.elimnarEncargado(var.id)}" />
+														</div>
+													</div>
+												</div>
+											</p:column>
+
+											<f:facet name="footer">
+												<h:outputText
+													value="#{almacenController.listAlmacenEncargado.size()} Registros en Total" />
+											</f:facet>
+
+										</p:dataTable>
+
+									</div>
+
+									<!-- end here datatable -->
+									<div class="panel-body"></div>
+
+								</div>
+							</div>
+						</ui:fragment>
+
+						<ui:fragment rendered="#{almacenController.crear}">
+
+							<div class="col-md-12" align="left">
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Lista de Almacén</h3>
+									</div>
+									<!-- start here datatable -->
+									<div class="box-content no-padding">
+
+										<p:dataTable
+											style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+											selection="#{almacenController.selectedAlmacen}"
+											selectionMode="single" rowKey="#{_almacen.id}"
+											id="almacenTable" var="_almacen"
+											value="#{almacenController.listaAlmacen}"
+											emptyMessage="No se encontraron Registros.">
+
+											<p:ajax event="rowSelect" update="form001"
+												listener="#{almacenController.onRowSelectAlmacenClick}" />
+
+											<p:column width="8%" headerText="Código"
+												filterBy="#{_almacen.codigo}" style="text-align:center;"
+												filterStyle="width: 100%; height:25px;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_almacen.codigo}" />
+											</p:column>
+
+											<p:column headerText="Almacén" filterBy="#{_almacen.nombre}"
+												filterStyle="width: 100%; height:25px;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_almacen.nombre}" />
+											</p:column>
+
+											<p:column headerText="Dirección"
+												filterBy="#{_almacen.direccion}"
+												filterStyle="width: 100%; height:25px;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_almacen.direccion}" />
+											</p:column>
+
+											<p:column headerText="Tipo"
+												filterBy="#{_almacen.tipoAlmacen}"
+												filterStyle="width: 100%; height:25px;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_almacen.tipoAlmacen}" />
+											</p:column>
+
+											<p:column width="8%" headerText="Estado"
+												filterBy="#{_almacen.estado}"
+												filterStyle="width: 100%; height:25px;"
+												style="text-align:center;" filterMatchMode="contains">
+												<span class="label label-success"><h:outputText
+														rendered="#{_almacen.estado=='AC'}" value="Activo" /></span>
+												<span class="label label-danger"><h:outputText
+														rendered="#{_almacen.estado=='IN'}" value="Inactivo" /></span>
+											</p:column>
+
+											<p:column width="8%" headerText="Fecha"
+												style="text-align:center;"
+												filterBy="#{_almacen.fechaRegistro}"
+												filterStyle="width: 100%; height:25px;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_almacen.fechaRegistro}">
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+												</h:outputText>
+											</p:column>
+
+											<p:column width="8%" headerText="Registro"
+												style="text-align:center;"
+												filterBy="#{_almacen.usuarioRegistro}"
+												filterStyle="width: 100%; height:25px;"
+												filterMatchMode="contains">
+												<h:outputText value="#{_almacen.usuarioRegistro}" />
+											</p:column>
+
+											<f:facet name="footer">
+												<h:outputText
+													value="#{listaAlmacen.size()} Registros en Total" />
+											</f:facet>
+
+										</p:dataTable>
+
+									</div>
+
+									<!-- end here datatable -->
+									<div class="panel-body"></div>
+
+								</div>
+							</div>
+						</ui:fragment>
+					</div>
+					<!-- END PANEL TABLE -->
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<p:dialog header="DATOS ENCARGADO" widgetVar="dlgEncargado"
+			modal="true" height="100%" width="40%" closable="false"
+			visible="#{not empty facesContext.maximumSeverity}">
+			<h:form id="formDlgEncargado">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group ">
+							<div class="col-md-4">Usuario Encargado</div>
+							<div class="col-md-8">
+								<h:selectOneMenu id="grupoID"
+									value="#{almacenController.selectedEncargado.id}"
+									styleClass="form-control" required="true"
+									requiredMessage="Encargado Requerido.">
+									<f:selectItems value="#{almacenController.listUsuario}"
+										var="_pro" itemLabel="#{_pro.nombre}" itemValue="#{_pro.id}" />
+									<p:ajax event="change" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="form-group ">
+							<div class="col-md-12">
+								<p:outputLabel
+									rendered="#{almacenController.selectedEncargado.id==0}"
+									value="* Todos los usuario del sistema estan como encargados de este almacen" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group ">
+							<div class="col-md-6">
+								<p:commandLink id="buttonDlgCancelar2" value="&#160; Cancelar"
+									styleClass="btn btn-warning btn-block ion-minus-circled"
+									style="height:31px; padding:center" immediate="true"
+									action="#{almacenController.cerrarDialogEncargado()}">
+								</p:commandLink>
+							</div>
+							<div class="col-md-6">
+								<p:commandLink id="buttonDlgRegistrar2" value="&#160; Registrar"
+									styleClass="btn btn-success btn-block ion-checkmark"
+									style="height:31px;" immediate="true">
+									<p:ajax update="form001"
+										listener="#{almacenController.agregarModificarEncargado()}" />
+								</p:commandLink>
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

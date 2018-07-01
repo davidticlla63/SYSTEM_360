@@ -1,0 +1,579 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<link rel="shortcut icon"
+		href="#{request.contextPath}/resources/gfx/icon-erp360.ico" />
+
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta content="Sistema Web ERP" name="description" />
+	<meta content="Mauricio Bejarano" name="author" />
+
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/global/plugins/font-awesome/css/font-awesome.min.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/global/plugins/ionicons/css/ionicons.min.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/global/plugins/simple-line-icons/simple-line-icons.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/global/css/style.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/assets/css/themes/default.css"
+		id="theme-color" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/assets/plugins/jquery-file-input/file-input.css" />
+
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/global/plugins/animate.css/animate.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/global/plugins/iCheck/skins/all.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/assets/plugins/rickshaw/rickshaw.min.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/assets/css/page-demo.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/assets/css/style-admin.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/assets/css/style-plugins.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/assets/css/style-responsive.css" />
+
+	<!-- start notificacion -->
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/rock/assets/plugins/jquery-gritter/jquery.gritter-custom.css" />
+
+	<!-- end notificacion -->
+
+	<!-- Efectos sobre Componentes -->
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/css/all-animation.css" />
+
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/css/input.css" />
+	<!-- end notificacion -->
+
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/style/layout.css" />
+
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/css/data-table.css" />
+
+	<ui:insert name="head">
+		[Main Title of Web Page]
+	</ui:insert>
+
+	<!-- NOTIFICATION STYLE-->
+	<style type="text/css">
+.ui-growl {
+	/*position:absolute;*/
+	position: absolute;
+	top: 100px;
+	z-index: 2;
+	top: 55px;
+	/*left:20px;*/
+	/*width:350px;*/
+	z-index: 9999;
+}
+</style>
+	<!-- MODAL SCRIPT-->
+	<script type="text/javascript">
+	    function openModal(modalName) {
+	       $('#'+ modalName).modal('show');
+	       return false;
+	    };
+	    
+	    function hideModal(modalName) {
+	       $('#'+ modalName).modal('hide');
+	       return false;
+		};
+
+		 // finally, wire up the actual modal functionality and show the dialog
+	    $("#m-r-1").modal({
+	      "backdrop"  : "static",
+	      "keyboard"  : true,
+	      "show"      : true    // this parameter ensures the modal is shown immediately
+	    });
+	</script>
+
+
+</h:head>
+<!-- page-header-fixed page-sidebar-fixed page-layout-full-width page-quick-sidebar-push page-sidebar-left-closed -->
+<!-- page-header-fixed page-sidebar-fixed page-quick-sidebar-push page-sidebar-left-closed -->
+<h:body
+	class="page-header-fixed page-sidebar-fixed  page-quick-sidebar-push page-sidebar-left-closed">
+
+	<ui:insert name="security">
+	</ui:insert>
+
+	<p:growl id="growl" showDetail="true" autoUpdate="true" />
+
+	<div>
+		<div class="page-wrapper">
+			<!--BEGIN HEADER-->
+			<header class="header">
+			<div class="logo">
+				<a href="#{request.contextPath}/pages/dashboard.xhtml"
+					class="logo-text" style="font-size: 18px;">#{' '}ERP360 #{' '}
+
+				</a><a data-toggle="offcanvas" class="sidebar-toggle pull-right"><i
+					class="fa fa-bars"></i></a>
+			</div>
+			<nav role="navigation" class="navbar navbar-static-top">
+
+			<div class="navbar-right">
+				<ul class="nav navbar-nav">
+
+					<!-- PERFIL Y FOTOGRAFIA -->
+					<li class="dropdown dropdown-user menu-user"><a href="#"
+						data-toggle="dropdown" class="dropdown-toggle"> <!-- <p:graphicImage
+								library="gfx" name="person.jpg" width="27"
+								styleClass="img-circle" />  --> <p:graphicImage width="27px;"
+								cache="false" value="#{loginController.imageUserSession}"
+								styleClass="img-circle" /> <span>#{sessionMain.usuarioLogin.nombre}
+						</span>&nbsp;<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#{request.contextPath}/pages/profile.xhtml"><i
+									class="icon-user"></i>Perfil</a></li>
+							<li><a href="#{request.contextPath}/logoutServlet"><i
+									class="icon-logout"></i>Salir</a></li>
+						</ul></li>
+
+				</ul>
+			</div>
+			</nav> </header>
+			<!--END HEADER-->
+
+			<!--BEGIN WRAPPER-->
+			<div class="wrapper row-offcanvas row-offcanvas-left">
+
+				<!--BEGIN SIDEBAR-->
+				<aside class="page-sidebar sidebar-offcanvas"> <section
+					class="sidebar">
+				<ul class="sidebar-menu">
+
+					<li
+						class="#{(view.viewId.equals('/pages/dashboard.xhtml')) ? 'active' : 'inactive'}"
+						style="background-color: #503099;"><a
+						href="#{request.contextPath}/pages/dashboard.xhtml"><i
+							class="icon-home"></i><span class="sidebar-text">Inicio</span></a></li>
+					<ui:fragment
+						rendered="#{sessionMain.verificarPermiso('USUARIO') or sessionMain.verificarPermiso('ROL') or sessionMain.verificarPermiso('PERMISO')}">
+						<li
+							class="#{(view.viewId.equals('/pages/seguridad/usuario.xhtml')) ? 'active' : (view.viewId.equals('/pages/seguridad/rol.xhtml')) ? 'active' : (view.viewId.equals('/pages/seguridad/permiso.xhtml')) ? 'active' : 'inactive'}">
+							<a href="#"> <i class="icon-lock"></i> <span
+								class="sidebar-text">Seguridad</span>
+						</a>
+							<ul class="nav nav-second-level">
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('USUARIO')}">
+									<li
+										class="#{(view.viewId.equals('/pages/seguridad/usuario.xhtml')) ? 'active' : 'inactive'}">
+										<a href="#{request.contextPath}/pages/seguridad/usuario.xhtml">
+											<i class="icon-user"></i> <span class="sidebar-text">Usuario</span>
+									</a>
+									</li>
+								</ui:fragment>
+								<ui:fragment rendered="#{sessionMain.verificarPermiso('ROL')}">
+									<li
+										class="#{(view.viewId.equals('/pages/seguridad/rol.xhtml')) ? 'active' : 'inactive'}"><a
+										href="#{request.contextPath}/pages/seguridad/rol.xhtml"><i
+											class="icon-users"></i><span class="sidebar-text">Rol</span></a></li>
+								</ui:fragment>
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('PERMISO')}">
+									<li
+										class="#{(view.viewId.equals('/pages/seguridad/permiso.xhtml')) ? 'active' : 'inactive'}"><a
+										href="#{request.contextPath}/pages/seguridad/permiso.xhtml"><i
+											class="icon-shield"></i><span class="sidebar-text">Permiso</span></a></li>
+								</ui:fragment>
+							</ul>
+						</li>
+					</ui:fragment>
+
+					<ui:fragment
+						rendered="#{sessionMain.verificarPermiso('EMPRESA') or sessionMain.verificarPermiso('SUCURSAL') or sessionMain.verificarPermiso('GESTION')}">
+						<li
+							class="#{(view.viewId.equals('/pages/parametrizacion/sucursal.xhtml')) ? 'active' : (view.viewId.equals('/pages/parametrizacion/empresa.xhtml')) ? 'active' : (view.viewId.equals('/pages/parametrizacion/gestion.xhtml')) ? 'active' :(view.viewId.equals('/pages/parametrizacion/sucursal.xhtml')) ? 'active' :(view.viewId.equals('/pages/parametrizacion/tipo_cambio/index.xhtml')) ? 'active' :'inactive'}"><a
+							href="#"><i class="icon-equalizer"></i><span
+								class="sidebar-text">Parametrización</span></a>
+							<ul class="nav nav-second-level">
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('EMPRESA')}">
+									<li
+										class="#{(view.viewId.equals('/pages/parametrizacion/empresa.xhtml')) ? 'active' :'inactive'}"><a
+										href="#{request.contextPath}/pages/parametrizacion/empresa.xhtml">
+											<i class="icon-globe"></i><span class="sidebar-text">Empresa</span>
+									</a></li>
+								</ui:fragment>
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('SUCURSAL')}">
+									<li
+										class="#{(view.viewId.equals('/pages/parametrizacion/sucursal.xhtml')) ? 'active' :'inactive'}"><a
+										href="#{request.contextPath}/pages/parametrizacion/sucursal.xhtml">
+											<i class="icon-globe"></i><span class="sidebar-text">Sucursal</span>
+									</a></li>
+								</ui:fragment>
+
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('GESTION')}">
+									<li
+										class="#{(view.viewId.equals('/pages/parametrizacion/gestion.xhtml')) ? 'active' :'inactive'}"><a
+										href="#{request.contextPath}/pages/parametrizacion/gestion.xhtml">
+											<i class="icon-globe"></i><span class="sidebar-text">Gestión</span>
+									</a></li>
+								</ui:fragment>
+								<li
+									class="#{(view.viewId.equals('/pages/parametrizacion/tipo_cambio/index.xhtml')) ? 'active' :'inactive'}"><a
+									href="#{request.contextPath}/pages/parametrizacion/tipo_cambio/index.xhtml">
+										<i class="icon-globe"></i><span class="sidebar-text">Tipo
+											Cambio</span>
+								</a></li>
+							</ul></li>
+					</ui:fragment>
+					<li
+						class="#{(view.viewId.equals('/pages/caja/list_movimiento.xhtml')) ? 'active':'inactive'}">
+						<a href="#"><i class="fa fa-dollar"></i><span
+							class="sidebar-text">Caja</span></a>
+						<ul class="nav nav-second-level">
+							<li
+								class="#{(view.viewId.equals('/pages/caja/list_movimiento.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/caja/list_movimiento.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">Movimientos</span>
+							</a></li>
+						</ul>
+					</li>
+					<li
+						class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}">
+						<a href="#"><i class="fa fa-users"></i><span
+							class="sidebar-text">Cliente</span></a>
+						<ul class="nav nav-second-level">
+							<li
+								class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/cliente/index.xhtml"> <i
+									class="icon-globe"></i><span class="sidebar-text">Gestionar</span>
+							</a></li>
+							
+							<li
+								class="#{(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/cliente/kardex/index.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">Kardex
+										Cliente</span>
+							</a></li>
+
+						</ul>
+					</li>
+
+					<li
+						class="#{(view.viewId.equals('/pages/venta/nota_venta/reserva.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/encargado_venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/nota_venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/param.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/cotizacion.xhtml')) ? 'active' :'inactive'}">
+						<a href="#"><i class="icon-tag"></i><span class="sidebar-text">Venta</span></a>
+						<ul class="nav nav-second-level">
+							<li
+								class="#{(view.viewId.equals('/pages/venta/nota_venta/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/nota_venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/reserva.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/venta/nota_venta/index.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">Nota
+										de Venta</span>
+							</a></li>
+
+							<li
+								class="#{(view.viewId.equals('/pages/venta/encargado_venta.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/venta/encargado_venta.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">Vendedor
+										/ Publicador</span>
+							</a></li>
+							<li
+								class="#{(view.viewId.equals('/pages/venta/param.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/venta/param.xhtml"> <i
+									class="icon-globe"></i><span class="sidebar-text">Parámetros</span>
+							</a></li>
+
+						</ul>
+					</li>
+
+					<ui:fragment
+						rendered="#{sessionMain.verificarPermiso('NOTA DE VENTA') or sessionMain.verificarPermiso('CLIENTE') or sessionMain.verificarPermiso('COBROS') or sessionMain.verificarPermiso('PARAMETRIZACION COBRANZA')}">
+						<li
+							class="#{(view.viewId.equals('/pages/cobranza/cobranza.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/list_cobro.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/list-nota-venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/parametros.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/registro-cobro.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/mov_cli/index.xhtml')) ? 'active' :'inactive'}">
+							<a href="#"><i class="fa fa-money"></i><span
+								class="sidebar-text">Cobranzas</span></a>
+							<ul class="nav nav-second-level">
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('COBROS')}">
+									<li
+										class="#{(view.viewId.equals('/pages/cobranza/list_cobro.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/registro-cobro.xhtml')) ? 'active' :'inactive'}"><a
+										href="#{request.contextPath}/pages/cobranza/list_cobro.xhtml">
+											<i class="icon-globe"></i><span class="sidebar-text">Cobros
+												Cuota</span>
+									</a></li>
+								</ui:fragment>
+								<li
+								class="#{(view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/cliente/cuenta_cobrar/index.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">Cuentas
+										Por Cobrar</span>
+							</a></li>
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('PARAMETRIZACION COBRANZA')}">
+									<li
+										class="#{(view.viewId.equals('/pages/cobranza/parametros.xhtml')) ? 'active' :'inactive'}"><a
+										href="#{request.contextPath}/pages/cobranza/parametros.xhtml">
+											<i class="icon-globe"></i><span class="sidebar-text">Parámetros</span>
+									</a></li>
+								</ui:fragment>
+							</ul>
+						</li>
+					</ui:fragment>
+					<li
+						class="#{(view.viewId.equals('/pages/proveedor/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/proveedor/cuentas_pagar/index.xhtml')) ? 'active' :'inactive'}">
+						<a href="#"><i class="fa fa-truck"></i><span
+							class="sidebar-text">Proveedor</span></a>
+						<ul class="nav nav-second-level">
+							<li
+								class="#{(view.viewId.equals('/pages/proveedor/index.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/proveedor/index.xhtml"> <i
+									class="icon-globe"></i><span class="sidebar-text">Gestión</span>
+							</a></li>
+							<li
+								class="#{(view.viewId.equals('/pages/proveedor/cuentas_pagar/index.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/proveedor/cuentas_pagar/index.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">Cuentas
+										Por Pagar</span>
+							</a></li>
+							<li
+								class="#{(view.viewId.equals('/pages/proveedor/kardex/index.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/proveedor/kardex/index.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">Kardex
+										Proveedor</span>
+							</a></li>
+
+						</ul>
+					</li>
+
+
+					<ui:fragment
+						rendered="#{sessionMain.verificarPermiso('CATALOGO') or sessionMain.verificarPermiso('KARDEX') or sessionMain.verificarPermiso('ORDEN INGRESO') or sessionMain.verificarPermiso('ORDEN SALIDA') or sessionMain.verificarPermiso('ORDEN TRASPASO') or sessionMain.verificarPermiso('TOMA INVENTARIO') or sessionMain.verificarPermiso('PROVEEDOR') or sessionMain.verificarPermiso('ALMACEN') or sessionMain.verificarPermiso('GRUPO PRODUCTO') or sessionMain.verificarPermiso('LINEA PRODUCTO') or sessionMain.verificarPermiso('PRODUCTO') or sessionMain.verificarPermiso('UNIDAD MEDIDA') or sessionMain.verificarPermiso('PARAMETROS INVENTARIO')}">
+
+						<li
+							class="#{(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/unidad_medida.xhtml')) ? 'active':(view.viewId.equals('/pages/inventario/proveedor.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/almacen.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/orden_ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/orden_salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/orden_traspaso.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/grupo-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/linea-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/parametros.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/toma_inventario.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-traspaso.xhtml')) ? 'active' :'inactive'}">
+							<a href="#"><i class="icon-social-dropbox"></i><span
+								class="sidebar-text">Inventario</span></a>
+							<ul class="nav nav-second-level">
+								<li
+									class="#{(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :'inactive'}"><a
+									href="#"><i class="icon-plus"></i><span
+										class="sidebar-text">Gestión Producto</span></a>
+									<ul class="nav nav-third-level">
+										<li
+											class="#{(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :'inactive'}"><a
+											href="#{request.contextPath}/pages/inventario/stock_producto.xhtml">
+												<i class="icon-globe"></i><span class="sidebar-text">Stock</span>
+										</a></li>
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('CATALOGO')}">
+											<li
+												class="#{(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/inventario/catalogo_producto.xhtml">
+													<i class="icon-globe"></i><span class="sidebar-text">Catálogo</span>
+											</a></li>
+										</ui:fragment>
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('KARDEX')}">
+											<li
+												class="#{(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/inventario/kardex_producto.xhtml">
+													<i class="icon-globe"></i><span class="sidebar-text">Kardex</span>
+											</a></li>
+										</ui:fragment>
+
+									</ul></li>
+
+								<li
+									class="#{(view.viewId.equals('/pages/proceso/orden_ingreso.xhtml')) ? 'active': (view.viewId.equals('/pages/proceso/orden_salida.xhtml')) ? 'active': (view.viewId.equals('/pages/proceso/orden_traspaso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/toma_inventario.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-traspaso.xhtml')) ? 'active' :'inactive'}"><a
+									href="#"><i class="icon-plus"></i><span
+										class="sidebar-text">Proceso</span></a>
+									<ul class="nav nav-third-level">
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('ORDEN INGRESO')}">
+											<li
+												class="#{(view.viewId.equals('/pages/proceso/orden_ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-ingreso.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/proceso/list-orden-ingreso.xhtml">
+													<i class="icon-social-dropbox"></i><span
+													class="sidebar-text">Orden de Ingreso </span>
+											</a></li>
+										</ui:fragment>
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('ORDEN SALIDA')}">
+											<li
+												class="#{(view.viewId.equals('/pages/proceso/orden_salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-salida.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/proceso/list-orden-salida.xhtml">
+													<i class="icon-social-dropbox"></i><span
+													class="sidebar-text">Orden de Salida </span>
+											</a></li>
+										</ui:fragment>
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('ORDEN TRASPASO')}">
+											<li
+												class="#{(view.viewId.equals('/pages/proceso/orden_traspaso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-traspaso.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/proceso/list-orden-traspaso.xhtml">
+													<i class="icon-social-dropbox"></i><span
+													class="sidebar-text">Orden de Traspaso </span>
+											</a></li>
+										</ui:fragment>
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('TOMA INVENTARIO')}">
+											<li
+												class="#{(view.viewId.equals('/pages/proceso/toma_inventario.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/proceso/toma_inventario.xhtml">
+													<i class="icon-social-dropbox"></i><span
+													class="sidebar-text">Toma de Inventario</span>
+											</a></li>
+										</ui:fragment>
+
+									</ul></li>
+
+								<li
+									class="#{(view.viewId.equals('/pages/inventario/unidad_medida.xhtml')) ? 'active': (view.viewId.equals('/pages/inventario/almacen.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/grupo-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/linea-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/parametros.xhtml')) ? 'active' :'inactive'}"><a
+									href="#"><i class="icon-plus"></i><span
+										class="sidebar-text">Parametrización</span></a>
+									<ul class="nav nav-third-level">
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('ALMACEN')}">
+											<li
+												class="#{(view.viewId.equals('/pages/inventario/almacen.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/inventario/almacen.xhtml">
+													<i class="icon-social-dropbox"></i><span
+													class="sidebar-text">Almacen</span>
+											</a></li>
+										</ui:fragment>
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('GRUPO PRODUCTO')}">
+											<li
+												class="#{(view.viewId.equals('/pages/inventario/grupo-producto.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/inventario/grupo-producto.xhtml">
+													<i class="icon-social-dropbox"></i><span
+													class="sidebar-text">Grupo Producto</span>
+											</a></li>
+										</ui:fragment>
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('LINEA PRODUCTO')}">
+											<li
+												class="#{(view.viewId.equals('/pages/inventario/linea-producto.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/inventario/linea-producto.xhtml">
+													<i class="icon-social-dropbox"></i><span
+													class="sidebar-text">Línea Producto</span>
+											</a></li>
+										</ui:fragment>
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('PRODUCTO')}">
+											<li
+												class="#{(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/inventario/gestion-producto.xhtml">
+													<i class="icon-globe"></i><span class="sidebar-text">Producto</span>
+											</a></li>
+										</ui:fragment>
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('UNIDAD MEDIDA')}">
+											<li
+												class="#{(view.viewId.equals('/pages/inventario/unidad_medida.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/inventario/unidad_medida.xhtml">
+													<i class="icon-social-dropbox"></i><span
+													class="sidebar-text">Unidad Medida</span>
+											</a></li>
+										</ui:fragment>
+										<ui:fragment
+											rendered="#{sessionMain.verificarPermiso('PARAMETROS INVENTARIO')}">
+											<li
+												class="#{(view.viewId.equals('/pages/inventario/parametros.xhtml')) ? 'active' :'inactive'}"><a
+												href="#{request.contextPath}/pages/inventario/parametros.xhtml">
+													<i class="icon-social-dropbox"></i><span
+													class="sidebar-text">Parámetros</span>
+											</a></li>
+										</ui:fragment>
+									</ul></li>
+							</ul>
+						</li>
+					</ui:fragment>
+
+					<ui:fragment
+						rendered="#{sessionMain.verificarPermiso('CUENTAS CLIENTE') or sessionMain.verificarPermiso('VENTAS')}">
+						<li
+							class="#{(view.viewId.equals('/pages/reportes/report.xhtml')) ? 'active' : (view.viewId.equals('/pages/reportes/exportacion-compras.xhtml')) ? 'active' :(view.viewId.equals('/pages/reportes/exportacion-ventas.xhtml')) ? 'active' :(view.viewId.equals('/pages/reportes/libro_diario.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/libro_mayor.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/sumas_saldos.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/balance_general.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/est_cue_cli.xhtml')) ? 'active' :'inactive'}">
+							<a href="#"><i class="icon-bar-chart"></i><span
+								class="sidebar-text">Reportes</span></a>
+							<ul class="nav nav-second-level">
+								<li
+									class="#{(view.viewId.equals('/pages/reportes/report.xhtml')) ? 'active' :'inactive'}"><a
+									href="#{request.contextPath}/pages/reportes/report.xhtml">
+										<i class="icon-notebook"></i> <span class="sidebar-text">Informes
+											Generales</span>
+								</a></li>
+							</ul>
+						</li>
+					</ui:fragment>
+
+					<ui:fragment rendered="false">
+						<li
+							class="#{(view.viewId.equals('/pages/ayuda/manual_usuario.xhtml')) ? 'active' : 'inactive'}">
+							<a href="#"><i class="icon-support"></i><span
+								class="sidebar-text">Ayuda</span></a>
+							<ul class="nav nav-second-level">
+								<li
+									class="#{(view.viewId.equals('/pages/ayuda/manual_usuario.xhtml')) ? 'active' :'inactive'}"><a
+									href="#{request.contextPath}/pages/ayuda/manual_usuario.xhtml">
+										<i class="icon-notebook"></i> <span class="sidebar-text">Manual
+											Usuario</span>
+								</a></li>
+							</ul>
+						</li>
+					</ui:fragment>
+				</ul>
+				</section> </aside>
+				<!--END SIDERBAR-->
+
+				<!--BEGIN CONTENT-->
+				<ui:insert name="content">
+				</ui:insert>
+				<!--END CONTENT-->
+			</div>
+			<!--END WRAPPER-->
+		</div>
+	</div>
+
+	<!-- start include dialog cambiar empresa -->
+	<!-- <ui:include src="/WEB-INF/templates/include_container_dialog_empresa.xhtml" /> -->
+	<!-- end include dialog cambiar empresa -->
+
+
+	<!-- start scrip -->
+	<script
+		src="#{request.contextPath}/resources/rock/global/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script
+		src="#{request.contextPath}/resources/rock/global/plugins/slimScroll/jquery.slimscroll.js"></script>
+	<script
+		src="#{request.contextPath}/resources/rock/assets/plugins/jquery-metisMenu/jquery.menu.min.js"></script>
+	<script src="#{request.contextPath}/resources/rock/assets/js/layout.js"></script>
+	<script src="#{request.contextPath}/resources/js/validator.js"></script>
+	<ui:insert name="scripts">
+
+	</ui:insert>
+
+	<!-- AJAX STATUS -->
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog widgetVar="statusDialog" position="right bottom" width="1px;"
+		height="1px;" style="opacity: 1.0 !important;" closable="false"
+		resizable="false" showHeader="false">
+		<p:graphicImage name="/gfx/loading.gif" width="60px;" height="60px;" />
+	</p:dialog>
+
+
+	<!-- SESSION TIMEOUT -->
+	<ui:include src="/WEB-INF/templates/template_session_time_out.xhtml" />
+
+</h:body>
+</html>

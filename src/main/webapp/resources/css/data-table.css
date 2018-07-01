@@ -1,0 +1,27 @@
+.datatable {
+	font-size: 12px !important;
+	line-height: 1.33846154 !important;
+	color: none !important;
+	font-family: sans-serif !important;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default,
+	.ui-widget-header .ui-state-default {
+	color: #797777 !important;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default,
+	.ui-widget-header .ui-state-default {
+	background-color: none !important;
+	background-image: none !important;
+}
+
+.ui-tree .ui-treenode-label{
+	font-size: 12px !important;
+	color: #797777 !important;
+	font-family: sans-serif !important;
+}
+
+/* .ui-widget-content { color: #797777 !important; }*/
+
+/* .ui-widget-header{ color: #797777 !important; } */

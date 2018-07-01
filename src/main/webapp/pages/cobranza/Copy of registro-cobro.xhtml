@@ -1,0 +1,898 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Cobro Cobro</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+
+				<h:form id="form001">
+
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonAtras" value="&#160; Atras"
+											styleClass="btn btn-warning ion-minus-circled"
+											rendered="#{ ! registroCobroController.verReporte}"
+											style="height:31px; padding:center"
+											onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/cobranza/list_cobro.xhtml';">
+										</p:commandLink>
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											immediate="true"
+											rendered="#{registroCobroController.verReporte}"
+											style="height:31px; padding:center" update="form001"
+											action="#{registroCobroController.loadDefault()}">
+										</p:commandLink>
+										<p:commandLink id="buttonRegistrar"
+											value="&#160; Registrar Cobro"
+											styleClass="btn btn-success ion-checkmark" immediate="true"
+											style="height:31px; padding:center"
+											rendered="#{ ! registroCobroController.verReporte}"
+											action="#{registroCobroController.loadDialogCollectMoney()}">
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/cobranza/nota-venta.xhtml"
+										style="color: #0090FF; font-size: 12px;">Cobranza</a></li>
+									<li class="active" style="font-size: 12px;">Cobro</li>
+								</ol>
+							</div>
+
+						</section>
+					</div>
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+						<ui:fragment rendered="#{ ! registroCobroController.verReporte}">
+							<div class="col-md-12">
+								<div id="page-invoice">
+									<div class="invoice">
+										<div class="invoice-company">
+											<h3>Cobro Cuota - Cliente</h3>
+										</div>
+										<div class="invoice-header">
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<div class="col-md-3">
+															<p:outputLabel value="Cliente" />
+														</div>
+														<div class="col-md-9">
+															<p:autoComplete id="nombreCliente" style="width: 100%"
+																converter="clienteConverter"
+																inputStyle="width: 100%; color: #555555; background-image: none; padding: 4px 10px;"
+																value="#{registroCobroController.selectedCliente}"
+																completeMethod="#{registroCobroController.completeCliente}"
+																minQueryLength="1" required="true"
+																requiredMessage="Cliente Requerido."
+																forceSelection="true" var="_var"
+																itemLabel="#{_var.nombres}#{_var.apellidos}#{_var.razonSocial}"
+																itemValue="#{_var}"
+																placeholder="Escriba Ci o Nombre cliente "
+																maxResults="10">
+
+																<p:ajax event="itemSelect" update="nombreCliente"
+																	listener="#{registroCobroController.onRowSelectClienteClick}" />
+
+																<p:column>
+																	<h:outputText value="#{_var.codigo}" />
+																</p:column>
+																<p:column>
+																	<h:outputText value="#{_var.ci}#{_var.nit}" />
+																</p:column>
+																<p:column>
+																	<h:outputText
+																		value="#{_var.nombres} #{_var.apellidos}#{_var.razonSocial}" />
+																</p:column>
+
+															</p:autoComplete>
+														</div>
+														<div>
+															<p:commandLink value="Ver"
+																actionListener="#{registroCobroController.loadModalCliente()}"
+																rendered="#{registroCobroController.selectedCliente.id!=0}" />
+														</div>
+													</div>
+												</div>
+
+												<div class="col-md-4">
+													<div class="form-group ">
+														<div class="col-md-3">
+															<p:outputLabel value="Data 2" />
+														</div>
+														<div class="col-md-9">
+															<p:inputText readonly="true" style="padding: 0 10px;"
+																styleClass="form-control" value="0" />
+														</div>
+													</div>
+												</div>
+												<div class="col-md-4">
+													<div class="form-group ">
+														<div class="col-md-3">
+															<p:outputLabel value="Data 3" />
+														</div>
+														<div class="col-md-9">
+															<p:inputText readonly="true" style="padding: 0 10px;"
+																styleClass="form-control" value="0" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="invoice-content">
+											<div class="table-responsive">
+												<br />
+												<div class="row">
+													<div class="col-md-12">
+														<div class="form-group ">
+															<div class="col-md-12">
+																<p:dataTable id="table001" var="var"
+																	expandedRow="#{true}"
+																	value="#{registroCobroController.listDeudaPendiente}"
+																	emptyMessage="Agregue Detalles." reflow="true"
+																	style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;">
+																	<f:facet name="header">
+           																Deudas Pendientes
+       																</f:facet>
+
+																	<p:column width="2%">
+																		<p:rowToggler />
+																	</p:column>
+
+																	<p:rowExpansion id="rowExpansionId">
+																		<div class="row">
+																			<div class="col-md-12">
+																				<div class="form-group ">
+																					<div class="col-md-12">
+																						<p:dataTable id="dataTablePlanPago" var="item"
+																							rendered="true" scrollable="true"
+																							scrollHeight="210" value="#{var.collectionPlan}"
+																							reflow="true"
+																							style="padding-left: 10px !important; padding-right: 10px !important; font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+																							rowKey="#{item.id}" sortOrder="ASCENDING"
+																							sortBy="#{item.fechaPago}"
+																							emptyMessage="No se encontraron registros">
+
+																							<f:facet name="header">
+																								Detalle Pagos
+																							</f:facet>
+
+																							<p:column headerText="Numero" width="10%"
+																								style="text-align:center;">
+																								<h:outputText value="#{item.numeroPago}" />
+																							</p:column>
+																							<p:column headerText="Fecha" width="10%"
+																								style="text-align:center;">
+																								<h:outputText value="#{item.fechaPago}">
+																									<f:convertDateTime pattern="dd/MM/yyyy" />
+																								</h:outputText>
+																							</p:column>
+																							<p:column headerText="Monto" width="10%"
+																								style="text-align:center;">
+																								<h:outputText value="#{item.montoNacional}"
+																									rendered="#{item.tipoMoneda.equals('BOLIVIANOS')}">
+																									<f:convertNumber type="number"
+																										groupingUsed="true" minFractionDigits="2"
+																										pattern="#0.00" />
+																								</h:outputText>
+																								<h:outputText value="#{item.montoExtranjero}"
+																									rendered="#{item.tipoMoneda.equals('DOLAR')}">
+																									<f:convertNumber type="number"
+																										groupingUsed="true" minFractionDigits="2"
+																										pattern="#0.00" />
+																								</h:outputText>
+																								<span class="label label-success"> <p:outputLabel
+																										value=" $us."
+																										rendered="#{item.tipoMoneda.equals('DOLAR')}" />
+																									<p:outputLabel value=" Bs."
+																										rendered="#{item.tipoMoneda.equals('BOLIVIANOS')}" />
+																								</span>
+																							</p:column>
+																							<p:column headerText="Días Mora" width="10%"
+																								style="text-align:center;">
+																								<h:outputText value="#{item.diasMora}" />
+																							</p:column>
+																							<p:column headerText="Monto Multa" width="10%"
+																								style="text-align:center;">
+																								<h:outputText value="#{item.montoMulta}">
+																									<f:convertNumber type="number"
+																										groupingUsed="true" minFractionDigits="2"
+																										pattern="#0.00" />
+																								</h:outputText>
+																							</p:column>
+																							<p:column headerText="Cobrar Cuota" width="10%"
+																								style="text-align:center;">
+
+																								<p:commandLink id="buttonSelected1"
+																									value="&#160; Cobrar"
+																									disabled="#{item.estadoCobro.equals('CO')}"
+																									styleClass="btn btn-default"
+																									style="height:31px; padding:center"
+																									rendered="#{item.cobro.equals('UNSELECTED')}">
+																									<p:ajax
+																										update="form001:msgs1,form001:table001,form001:montoCuotaInicialSubTotalNacional,form001:totalCobro01"
+																										listener="#{registroCobroController.checkCashCollectionForCreditFee(var.id,item.id)}" />
+																								</p:commandLink>
+																								<p:commandLink id="buttonSelected2"
+																									value="&#160; Quitar"
+																									styleClass="btn btn-success" immediate="true"
+																									style="height:31px; padding:center"
+																									rendered="#{item.cobro.equals('SELECTED')}">
+																									<p:ajax
+																										update="form001:msgs1,form001:table001,form001:montoCuotaInicialSubTotalNacional,form001:totalCobro01"
+																										listener="#{registroCobroController.checkCashCollectionForCreditFee(var.id,item.id)}" />
+																								</p:commandLink>
+																							</p:column>
+																							<p:column headerText="Estado" width="10%"
+																								style="text-align:center;">
+																								<span class="label label-success"><h:outputText
+																										rendered="#{item.estadoCobro=='CO'}"
+																										value="COBRADO" /></span>
+																								<span class="label label-danger"><h:outputText
+																										rendered="#{item.estadoCobro=='NC'}"
+																										value="PENDIENTE" /></span>
+																							</p:column>
+
+																						</p:dataTable>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</p:rowExpansion>
+
+																	<p:column width="5%" headerText="Nº Venta"
+																		disabledSelection="true" style="text-align:center;">
+																		<h:outputText
+																			value="#{var.cuentaCobrar.notaVenta.codigo}" />
+																	</p:column>
+
+																	<p:column width="10%" headerText="Monto Plan Pago"
+																		style="text-align:center;">
+																		<h:outputText
+																			rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}"
+																			value="#{var.cuentaCobrar.notaVenta.montoTotal}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<h:outputText
+																			rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('DOLAR')}"
+																			value="#{var.cuentaCobrar.notaVenta.montoTotalExtranjero}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<span class="label label-success"> <p:outputLabel
+																				value=" $us."
+																				rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('DOLAR')}" />
+																			<p:outputLabel value=" Bs."
+																				rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}" />
+																		</span>
+																	</p:column>
+
+																	<p:column width="10%" headerText="Cuota Inicial"
+																		style="text-align:center;">
+																		<h:outputText
+																			rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}"
+																			value="#{var.cuentaCobrar.notaVenta.cuotaInicial}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<h:outputText
+																			rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('DOLAR')}"
+																			value="#{var.cuentaCobrar.notaVenta.cuotaInicialExtranjero}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<span class="label label-success"> <p:outputLabel
+																				value=" $us."
+																				rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('DOLAR')}" />
+																			<p:outputLabel value=" Bs."
+																				rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}" />
+																		</span>
+																	</p:column>
+
+																	<p:column width="10%" headerText="Nº Cuotas Pendientes"
+																		style="text-align:center;">
+																		<h:outputText value="#{var.cuotasPendientes}" />
+																	</p:column>
+
+																	<p:column width="10%" headerText="Saldo"
+																		rendered="false" style="text-align:center;">
+																	</p:column>
+
+																	<p:column width="10%" headerText="Cuota a pagar"
+																		style="text-align:center;">
+																		<span class="label label-success"> <h:outputText
+																				rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}"
+																				value="#{var.montoProximaCuota}">
+																				<f:convertNumber type="number" groupingUsed="true"
+																					minFractionDigits="2" pattern="#0.00" />
+																			</h:outputText> <h:outputText
+																				rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('DOLAR')}"
+																				value="#{var.montoProximaCuotaExtranjero}">
+																				<f:convertNumber type="number" groupingUsed="true"
+																					minFractionDigits="2" pattern="#0.00" />
+																			</h:outputText> <span class="label label-success"> <p:outputLabel
+																					value=" $us."
+																					rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('DOLAR')}" />
+																				<p:outputLabel value=" Bs."
+																					rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}" />
+																		</span>
+																		</span>
+																	</p:column>
+
+																	<p:column width="10%" headerText="Cobrar Cuota vigente"
+																		rendered="false" style="text-align:center;">
+																		<p:selectBooleanCheckbox id="checkCobrarCuota"
+																			value="#{var.pagarSiguienteCuota}" immediate="true">
+																			<p:ajax update="form001"
+																				listener="#{registroCobroController.loadCheck(var.id)}" />
+																		</p:selectBooleanCheckbox>
+																	</p:column>
+
+																	<p:column width="3%" headerText="Ver" rendered="false"
+																		style="text-align:center;">
+																		<div class="row">
+																			<div class="btn-group-demo">
+																				<div class="btn-group">
+																					<p:commandLink id="buttonModificarDetalle"
+																						value="&#160;" styleClass="btn ion-navicon-round"
+																						style="padding-left: 5px; padding-right: 5px;"
+																						immediate="true"
+																						actionListener="#{registroCobroController.cargarPlanPago(var.id)}" />
+																				</div>
+																			</div>
+																		</div>
+																	</p:column>
+																</p:dataTable>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<br />
+											<div class="invoice-price">
+												<div class="invoice-price-left">
+													<div class="invoice-price-row">
+														<div class="sub-price">
+
+															<div class="form-group ">
+																<div class="col-md-10">
+																	<p:outputLabel value="Cuotas a Pagar" />
+																</div>
+																<div class="col-md-2">
+																	<p:outputLabel id="montoCuotaInicialSubTotalNacional"
+																		value="#{registroCobroController.numeroCuotasACobrar}" />
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="invoice-price-right">
+													<div class="form-group ">
+														<div class="col-md-7"
+															style="padding-left: 1px; padding-right: 5px;">
+															<p:outputLabel value="Cobrar Bs." />
+
+														</div>
+														<div class="col-md-5" style="padding-left: 1px;">
+															<p:outputLabel id="totalCobro01"
+																value="#{registroCobroController.totalCobrarExtranjero}">
+																<f:convertNumber type="number" groupingUsed="true"
+																	minFractionDigits="2" pattern="#0.00" />
+															</p:outputLabel>
+
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="invoice-note"></div>
+										<div class="invoice-footer">
+											<p class="text-center">
+												<span class="mrm"><i class="fa fa-globe"></i>
+													www.teds.com.bo</span><span class="mrm"><i
+													class="fa fa-phone"></i> T:3-3262629</span><span class="mrm"><i
+													class="fa fa-envelope"></i> mbr.bejarano@gmail.com</span>
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ui:fragment>
+
+						<ui:fragment rendered="#{registroCobroController.verReporte}">
+							<div class="col-md-12">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">VISUALIZACIÓN COBRANZA</h3>
+									</div>
+									<div class="panel-body">
+										<div class="tabbable-custom">
+											<ul class="nav nav-tabs">
+												<li class="active"><a href="#tab_5_1" data-toggle="tab">COBRANZA</a></li>
+											</ul>
+											<div class="tab-content">
+												<div id="tab_5_1" class="tab-pane active">
+													<div class="row">
+														<div class="col-md-12">
+															<p:media player="pdf" rendered="true"
+																value="#{registroCobroController.urlReporteCobro}"
+																width="800px" height="800px" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ui:fragment>
+					</div>
+					<!-- END PANEL -->
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<!-- INIT MODAL -->
+		<div id="m-r-0" tabindex="-1" role="dialog" data-keyboard="false"
+			data-backdrop="static" aria-labelledby="myModalLabel"
+			aria-hidden="true" class="modal fade ">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<h:form id="formModalCliente">
+						<div class="modal-header">
+							<!-- INIT HEADER -->
+							<ui:fragment rendered="false">
+								<!-- false, hide button close  -->
+								<button type="button" data-dismiss="modal" class="close">
+									<span aria-hidden="true">x</span><span class="sr-only">Cerrar</span>
+								</button>
+							</ui:fragment>
+							<h4 id="myModalLabel" class="modal-title">
+								<strong>DETALLE CLIENTE</strong>
+							</h4>
+							<!-- END HEADER -->
+						</div>
+						<div class="modal-body">
+							<!-- INIT BODY -->
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<div class="col-md-3">
+											<p:outputLabel value="Cliente" />
+										</div>
+										<div class="col-md-9"></div>
+										<div>
+											<p:commandLink value="Ver"
+												actionListener="#{registroCobroController.loadModalCliente()}"
+												rendered="#{registroCobroController.selectedCliente.id!=0}" />
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-4">
+									<div class="form-group ">
+										<div class="col-md-3">
+											<p:outputLabel value="Ci"
+												rendered="#{registroCobroController.selectedCliente.id!=0}" />
+										</div>
+										<div class="col-md-9">
+											<p:inputText readonly="true" style="padding: 0 10px;"
+												styleClass="form-control"
+												rendered="#{registroCobroController.selectedCliente.id!=0}"
+												value="#{registroCobroController.selectedCliente.ci}" />
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group ">
+										<div class="col-md-3">
+											<p:outputLabel value="Teléfono"
+												rendered="#{registroCobroController.selectedCliente.id!=0}" />
+										</div>
+										<div class="col-md-9">
+											<p:inputText readonly="true" style="padding: 0 10px;"
+												styleClass="form-control"
+												rendered="#{registroCobroController.selectedCliente.id!=0}"
+												value="#{registroCobroController.selectedCliente.celular1} | #{registroCobroController.selectedCliente.celular2} | #{registroCobroController.selectedCliente.telefono} " />
+										</div>
+									</div>
+								</div>
+							</div>
+							<ui:fragment
+								rendered="#{registroCobroController.selectedCliente.id!=0}">
+								<br />
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group ">
+											<div class="col-md-3">
+												<p:outputLabel value="Código" />
+											</div>
+											<div class="col-md-9">
+												<p:inputText readonly="true" style="padding: 0 10px;"
+													styleClass="form-control"
+													value="#{registroCobroController.selectedCliente.codigo}" />
+											</div>
+
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group ">
+											<div class="col-md-3">
+												<p:outputLabel value="Dirección" />
+											</div>
+											<div class="col-md-9">
+												<p:inputTextarea style="padding: 0 10px;"
+													styleClass="form-control" readonly="true"
+													value="#{registroCobroController.selectedCliente.direccion}"
+													rows="2" />
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group ">
+											<div class="col-md-3">
+												<p:outputLabel value="Fotografía" />
+											</div>
+											<div class="col-md-9">
+												<p:graphicImage id="imgClienteId" rendered="true"
+													value="#{dynamicResourceClienteController.streamedContentImage}"
+													cache="false" width="30%">
+													<f:param name="param"
+														value="#{registroCobroController.selectedCliente.id}" />
+												</p:graphicImage>
+											</div>
+										</div>
+									</div>
+								</div>
+							</ui:fragment>
+						</div>
+						<div class="modal-footer">
+							<!-- INIT FOOTER -->
+							<div class="row">
+								<div class="col-md-4"></div>
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonCancelar01" value="&#160; Cerrar"
+										styleClass="btn btn-warning btn-block ion-minus-circled"
+										immediate="true" style="height:31px; padding:center"
+										actionListener="#{registroCobroController.closeModalCliente()}">
+									</p:commandLink>
+								</div>
+							</div>
+							<!-- END FOOTER -->
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="m-r-1" tabindex="-1" role="dialog" data-keyboard="false"
+			data-backdrop="static" aria-labelledby="myModalLabel"
+			aria-hidden="true" class="modal fade ">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<h:form id="formModalPlanPago">
+						<div class="modal-header">
+							<!-- INIT HEADER -->
+							<ui:fragment rendered="false">
+								<!-- false, hide button close  -->
+								<button type="button" data-dismiss="modal" class="close">
+									<span aria-hidden="true">x</span><span class="sr-only">Cerrar</span>
+								</button>
+							</ui:fragment>
+							<h4 id="myModalLabel" class="modal-title">
+								<strong>DETALLE PLAN PAGO</strong>
+							</h4>
+							<!-- END HEADER -->
+						</div>
+						<div class="modal-body">
+							<!-- INIT BODY -->
+							<div class="row">
+								<div class="row">
+									<div class="col-md-7">
+										<div class="form-group ">
+											<div class="col-md-6">Monto Total
+												#{registroCobroController.selectedEDDeudaPendiente.cuentaCobrar.notaVenta.moneda.equals('DOLAR')?'(
+												$us)':'(Bs)'}</div>
+											<div class="col-md-6">
+												<p:inputText
+													rendered="#{registroCobroController.selectedEDDeudaPendiente.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}"
+													value="#{registroCobroController.selectedEDDeudaPendiente.cuentaCobrar.notaVenta.montoTotal}"
+													disabled="true"
+													style=" color: #555555; background-image: none; padding: 0 10px;"
+													styleClass="input-sm form-control">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</p:inputText>
+												<h:outputText
+													rendered="#{registroCobroController.selectedEDDeudaPendiente.cuentaCobrar.notaVenta.moneda.equals('DOLAR')}"
+													disabled="true"
+													value="#{registroCobroController.selectedEDDeudaPendiente.cuentaCobrar.notaVenta.montoTotalExtranjero}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+
+
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-md-7">
+										<div class="form-group ">
+											<div class="col-md-6">Cuota Inicial (30 %)</div>
+											<div class="col-md-6">
+												<h:inputText id="cuotaInicial"
+													rendered="#{registroCobroController.selectedEDDeudaPendiente.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}"
+													value="#{registroCobroController.selectedEDDeudaPendiente.cuentaCobrar.notaVenta.cuotaInicial}"
+													style=" color: #555555; background-image: none; "
+													styleClass="input-sm form-control" disabled="true">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:inputText>
+												<h:inputText id="cuotaInicialEx"
+													rendered="#{registroCobroController.selectedEDDeudaPendiente.cuentaCobrar.notaVenta.moneda.equals('DOLAR')}"
+													value="#{registroCobroController.selectedEDDeudaPendiente.cuentaCobrar.notaVenta.cuotaInicialExtranjero}"
+													style=" color: #555555; background-image: none; "
+													styleClass="input-sm form-control" disabled="true">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:inputText>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-md-12">
+										<p:dataTable id="dataTablePlanPago" var="item" rendered="true"
+											scrollable="true" scrollHeight="180"
+											value="#{registroCobroController.selectedListPlanCobranza}"
+											reflow="true"
+											style="padding-left: 10px !important; padding-right: 10px !important; font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+											rowKey="#{item.id}" sortOrder="ASCENDING"
+											sortBy="#{item.fechaPago}"
+											emptyMessage="No se encontraron registros">
+
+											<f:facet name="header">
+												Detalle Pagos
+											</f:facet>
+
+											<p:column headerText="Numero" width="10%"
+												style="text-align:center;">
+												<h:outputText value="#{item.numeroPago}" />
+											</p:column>
+											<p:column headerText="Fecha" width="10%"
+												style="text-align:center;">
+												<h:outputText value="#{item.fechaPago}">
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Monto" width="10%"
+												style="text-align:center;">
+												<h:outputText value="#{item.montoNacional}"
+													rendered="#{item.tipoMoneda.equals('BOLIVIANOS')}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+												<h:outputText value="#{item.montoExtranjero}"
+													rendered="#{item.tipoMoneda.equals('DOLAR')}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+												<span class="label label-success"> <p:outputLabel
+														value=" $us."
+														rendered="#{item.tipoMoneda.equals('DOLAR')}" /> <p:outputLabel
+														value=" Bs."
+														rendered="#{item.tipoMoneda.equals('BOLIVIANOS')}" />
+												</span>
+											</p:column>
+											<p:column headerText="Días Mora" width="10%"
+												style="text-align:center;">
+												<h:outputText value="#{item.diasMora}" />
+											</p:column>
+											<p:column headerText="Monto Multa" width="10%"
+												style="text-align:center;">
+												<h:outputText value="#{item.montoMulta}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Cobrar Cuota" width="10%"
+												style="text-align:center;">
+												<p:selectBooleanCheckbox id="checkCobrarCuotaDetalle"
+													disabled="#{item.estadoCobro=='CO'}" value="#{item.cobro}"
+													immediate="true">
+													<p:ajax update="formModalPlanPago"
+														listener="#{registroCobroController.checkCashCollectionForCreditFee()}" />
+												</p:selectBooleanCheckbox>
+											</p:column>
+											<p:column headerText="Estado" width="10%"
+												style="text-align:center;">
+												<span class="label label-success"><h:outputText
+														rendered="#{item.estadoCobro=='CO'}" value="COBRADO" /></span>
+												<span class="label label-danger"><h:outputText
+														rendered="#{item.estadoCobro=='NC'}" value="PENDIENTE" /></span>
+											</p:column>
+
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+							<!-- END BODY -->
+						</div>
+						<div class="modal-footer">
+							<!-- INIT FOOTER -->
+							<div class="row">
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonCancelar01" value="&#160; Cancelar"
+										styleClass="btn btn-warning btn-block ion-minus-circled"
+										update="form001" immediate="true"
+										style="height:31px; padding:center"
+										actionListener="#{registroCobroController.closeModalPlanPago()}">
+									</p:commandLink>
+								</div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonRegistrar01" value="&#160; Aceptar"
+										styleClass="btn btn-success btn-block ion-checkmark"
+										style="height:31px; padding:center" immediate="true"
+										action="#{registroCobroController.agregarCuotaAPagar()}">
+									</p:commandLink>
+								</div>
+							</div>
+							<!-- END FOOTER -->
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+		<!-- END MODAL -->
+
+
+		<div id="m-r-2" tabindex="-1" role="dialog" data-keyboard="false"
+			data-backdrop="static" aria-labelledby="myModalLabel"
+			aria-hidden="true" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<h:form id="formModalCobro">
+						<div class="modal-header">
+							<!-- INIT HEADER -->
+							<h4 id="myModalLabel" class="modal-title">
+								<strong>COBRO - CUOTA</strong>
+							</h4>
+							<!-- END HEADER -->
+						</div>
+						<div class="modal-body">
+							<!-- INIT BODY -->
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div class="col-md-5">Nota</div>
+										<div class="col-md-7">
+											<p:inputTextarea id="observacionAmortizacion"
+												style="padding: 0 10px;" styleClass="form-control" size="40"
+												value="#{registroCobroController.glosa}" maxlength="250"
+												rows="3">
+												<p:ajax event="change" />
+											</p:inputTextarea>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div class="col-md-5">Total a cobrar</div>
+										<div class="col-md-7">
+											<h:inputText id="importeTotal"
+												value="#{registroCobroController.totalCobrarExtranjero}"
+												style=" color: #555555; background-image: none;"
+												readonly="true" styleClass="input-sm form-control">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:inputText>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div class="col-md-5">Pago</div>
+										<div class="col-md-7">
+											<h:inputText id="importeTotalCobro"
+												value="#{registroCobroController.cobroExtranjero}"
+												style=" color: #555555; background-image: none;"
+												styleClass="input-sm form-control">
+												<p:ajax event="change" update="formModalCobro"
+													listener="#{registroCobroController.calcularCambio()}" />
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:inputText>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div class="col-md-5">Cambio</div>
+										<div class="col-md-7">
+											<h:inputText id="cambio"
+												value="#{registroCobroController.cambioExtranjero}"
+												style=" color: #555555; background-image: none;"
+												readonly="true" styleClass="input-sm form-control">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:inputText>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- END BODY -->
+						</div>
+						<div class="modal-footer">
+							<!-- INIT FOOTER -->
+							<div class="row">
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonCancelar01" value="&#160; Cancelar"
+										styleClass="btn btn-warning btn-block ion-minus-circled"
+										update="form001" immediate="true"
+										style="height:31px; padding:center"
+										actionListener="#{registroCobroController.closeModalPlanPago()}">
+									</p:commandLink>
+								</div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonRegistrar01" value="&#160; Cobrar"
+										styleClass="btn btn-success btn-block ion-checkmark"
+										style="height:31px; padding:center" immediate="true"
+										action="#{registroCobroController.registrarCobro()}">
+									</p:commandLink>
+								</div>
+							</div>
+							<!-- END FOOTER -->
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>

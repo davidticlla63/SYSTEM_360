@@ -1,0 +1,1017 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Cotizacion</title>
+	</ui:define>
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+				<h:form id="form001">
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonAtras" value="&#160; Atras"
+											styleClass="btn btn-warning ion-minus-circled"
+											rendered="#{ ! cotizacionController.verReporte}"
+											style="height:31px; padding:center"
+											onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/venta/list_cotizacion.xhtml';">
+										</p:commandLink>
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											immediate="true"
+											rendered="#{cotizacionController.verReporte}"
+											style="height:31px; padding:center" update="form001"
+											action="#{cotizacionController.loadDefault()}">
+										</p:commandLink>
+										<p:commandLink id="buttonRegistrar" value="&#160; Registrar"
+											styleClass="btn btn-success ion-checkmark" immediate="true"
+											style="height:31px; padding:center" disabled="false"
+											rendered="#{ ! cotizacionController.verReporte}">
+											<p:ajax update="form001"
+												listener="#{cotizacionController.registrarCotizacion()}" />
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/venta/reserva_venta.xhtml"
+										style="color: #0090FF; font-size: 12px;">Venta</a></li>
+									<li class="active" style="font-size: 12px;">Cotización</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+						<ui:fragment rendered="#{ ! cotizacionController.verReporte}">
+							<div class="col-md-12">
+								<div id="page-invoice">
+									<div class="invoice">
+										<div class="invoice-company">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="pull-left">Cotización - Nº
+														#{cotizacionController.cotizacion.codigo}</div>
+													<div class="pull-right">
+														<div class="form-group">
+															<div class="col-md-4" style="font-size: 16px;">Vendedor</div>
+															<div class="col-md-8">
+																<h:selectOneMenu id="vendedor"
+																	styleClass="input-sm form-control"
+																	style=" color: #555555; height:25px; font-size:11px;"
+																	immediate="true"
+																	value="#{cotizacionController.cotizacion.encargadoVenta.id}">
+																	<p:ajax event="change" />
+																	<f:selectItems
+																		value="#{cotizacionController.listVendedores}"
+																		var="item"
+																		itemLabel="#{item.nombres} #{item.apellidos}"
+																		itemValue="#{item.id}" />
+																</h:selectOneMenu>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="invoice-header">
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<div class="col-md-2" style="padding-right: 0px;">
+															<p:outputLabel id="labelCliente" value="Cliente" />
+														</div>
+														<div class="col-md-9" style="padding-right: 0px;">
+															<p:autoComplete id="nombreCliente" style="width: 100%"
+																converter="clienteConverter"
+																inputStyle="width: 100%; color: #555555; background-image: none; padding: 4px 10px;"
+																value="#{cotizacionController.selectedCliente}"
+																completeMethod="#{cotizacionController.completeCliente}"
+																minQueryLength="1" required="true"
+																requiredMessage="Nombre Cliente Requerido."
+																forceSelection="false" var="_var"
+																itemLabel="#{_var.nombres}#{_var.apellidos}#{_var.razonSocial}"
+																itemValue="#{_var}"
+																placeholder="Escriba Ci o Nombre cliente "
+																maxResults="10">
+
+																<p:ajax event="itemSelect"
+																	update="nombreCliente,tooltipId1"
+																	listener="#{cotizacionController.onRowSelectCliente2Click}" />
+
+																<p:column>
+																	<h:outputText value="#{_var.codigo}" />
+																</p:column>
+																<p:column>
+																	<h:outputText value="#{_var.ci}#{_var.nit}" />
+																</p:column>
+																<p:column>
+																	<h:outputText
+																		value="#{_var.nombres} #{_var.apellidos}#{_var.razonSocial}" />
+																</p:column>
+
+															</p:autoComplete>
+															<p:tooltip id="tooltipId1" for="labelCliente" value="."
+																rendered="true">
+
+																<div class="panel">
+																	<div class="panel-heading">
+																		<h3 class="panel-title">
+																			<strong class="text-uppercase text-orange">Datos
+																				Cliente</strong>
+																		</h3>
+																	</div>
+																	<div class="panel-body">
+																		<div class="row">
+																			<div class="col-md-12">
+																				<div class="form-group ">
+																					<div class="col-md-4">Código:</div>
+																					<div class="col-md-8">
+																						<p:outputLabel
+																							value="#{cotizacionController.selectedCliente.codigo}" />
+																					</div>
+																				</div>
+																				<div class="form-group ">
+																					<div class="col-md-4">Ci:</div>
+																					<div class="col-md-8">
+																						<p:outputLabel
+																							value="#{cotizacionController.selectedCliente.ci}" />
+																					</div>
+																				</div>
+																				<div class="form-group ">
+																					<div class="col-md-4">Nombres:</div>
+																					<div class="col-md-8">
+																						<p:outputLabel
+																							value="#{cotizacionVentaController.selectedCliente.nombres}" />
+																					</div>
+																				</div>
+																				<div class="form-group ">
+																					<div class="col-md-4">Apellidos:</div>
+																					<div class="col-md-8">
+																						<p:outputLabel
+																							value="#{cotizacionController.selectedCliente.apellidos}" />
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+
+															</p:tooltip>
+														</div>
+														<div class="col-md-1">
+															<p:commandLink value="&#160; "
+																styleClass="btn btn-default ion-plus" immediate="true"
+																style="height:27px;  width: 23px; padding: 5px 4px; ">
+																<p:ajax
+																	listener="#{cotizacionController.actionNuevoCliente()}" />
+															</p:commandLink>
+														</div>
+													</div>
+												</div>
+
+												<div class="col-md-2">
+													<div class="form-group ">
+														<div class="col-md-4">Fecha</div>
+														<div class="col-md-8">
+															<p:calendar id="fechaCompra" readonly="true"
+																value="#{cotizacionController.cotizacion.fechaRegistro}"
+																locale="es" styleClass="myWid100" required="true"
+																requiredMessage="Fecha requerido" pattern="dd/MM/yyyy">
+																<p:ajax event="dateSelect" />
+															</p:calendar>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="form-group ">
+														<div class="col-md-5">Tipo Cambio</div>
+														<div class="col-md-7">
+															<h:inputText id="tipoCambio"
+																value="#{cotizacionController.cotizacion.tipoCambio}"
+																style=" color: #555555; background-image: none;"
+																styleClass="input-sm form-control" disabled="true">
+																<p:ajax event="keyup" update="form001"
+																	listener="#{cotizacionController.actionChangeTipoCambio()}" />
+															</h:inputText>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="col-md-5">Moneda</div>
+													<div class="col-md-7">
+														<h:selectOneMenu id="roles"
+															styleClass="input-sm form-control"
+															style=" color: #555555; height:25px; font-size:11px;"
+															immediate="true"
+															value="#{cotizacionController.cotizacion.moneda}">
+															<p:ajax event="change" update="form001"
+																listener="#{cotizacionController.actionChangeTipoCambio()}" />
+															<f:selectItem itemValue="DOLAR" itemLabel="DOLAR" />
+															<f:selectItem itemValue="BOLIVIANOS"
+																itemLabel="BOLIVIANOS" />
+														</h:selectOneMenu>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<div class="col-md-1">Observación</div>
+														<div class="col-md-11" style="padding-left: 29px;">
+															<p:inputTextarea id="descripcionID"
+																style="padding: 0 10px;" styleClass="form-control"
+																size="40"
+																value="#{cotizacionController.cotizacion.concepto}"
+																maxlength="250" rows="2">
+																<p:ajax event="change" />
+															</p:inputTextarea>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="form-group">
+														<div class="col-md-3" style="padding-left: 15px;">Fecha
+															Validez</div>
+														<div class="col-md-3" style="padding-left: 0px;">
+															<p:calendar id="fechaValidez" readonly="true"
+																value="#{cotizacionController.cotizacion.fechaCaducidad}"
+																locale="es" styleClass="myWid100" required="true"
+																requiredMessage="Fecha requerido" pattern="dd/MM/yyyy">
+																<p:ajax event="dateSelect" />
+															</p:calendar>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="invoice-content">
+											<div class="table-responsive">
+												<br />
+												<div class="row">
+													<div class="col-md-12"
+														style="padding-left: 30px; padding-right: 30px;">
+														<h4 class="pbm border-bottom">
+															<div class="">
+																Agregar Detalle
+																<div class="pull-right">
+																	<p:outputLabel id="question1" value="?" />
+																</div>
+															</div>
+															<p:tooltip for="question1" value=".">
+
+																<div class="panel">
+																	<div class="panel-heading">
+																		<h3 class="panel-title">
+																			<strong class="text-uppercase text-orange">Ayuda</strong>
+																		</h3>
+																	</div>
+																	<div class="panel-body">
+																		<p class="mbl">Agregar los productos al detalle.</p>
+																	</div>
+																</div>
+
+															</p:tooltip>
+														</h4>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group">
+															<div class="col-md-2" style="padding-right: 0px;">
+																<p:outputLabel id="labelProducto" value="Producto" />
+																<p:tooltip id="tooltipId2" for="labelProducto" value="."
+																	rendered="true">
+																	<div class="panel">
+																		<div class="panel-heading">
+																			<h3 class="panel-title">
+																				<strong class="text-uppercase text-orange">Datos
+																					Producto</strong>
+																			</h3>
+																		</div>
+																		<div class="panel-body">
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group ">
+																						<div class="col-md-4">Código:</div>
+																						<div class="col-md-8">
+																							<p:outputLabel
+																								value="#{cotizacionController.selectedProducto.codigo}" />
+																						</div>
+																					</div>
+																					<div class="form-group ">
+																						<div class="col-md-4">Nombre:</div>
+																						<div class="col-md-8">
+																							<p:outputLabel
+																								value="#{cotizacionController.selectedProducto.nombre}" />
+																						</div>
+																					</div>
+																					<div class="form-group ">
+																						<div class="col-md-4">Descripción:</div>
+																						<div class="col-md-8">
+																							<p:outputLabel
+																								value="#{cotizacionController.selectedProducto.descripcion}" />
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</p:tooltip>
+															</div>
+															<div class="col-md-10" style="padding-right: 0px;">
+																<p:autoComplete id="nombreProducto" style="width: 100%"
+																	converter="productoConverter"
+																	inputStyle="width: 95%; color: #555555; background-image: none; padding: 4px 10px;"
+																	value="#{cotizacionController.selectedProducto}"
+																	completeMethod="#{cotizacionController.completeProducto}"
+																	minQueryLength="1" required="true"
+																	requiredMessage="Nombre Producto Requerido."
+																	forceSelection="true" var="_var"
+																	itemLabel="#{_var.nombre}#{_var.descripcion}"
+																	itemValue="#{_var}"
+																	placeholder="Código o Nombre Producto " maxResults="10">
+
+																	<p:ajax event="itemSelect" update="form001"
+																		listener="#{cotizacionController.onRowSelectProductoClick}" />
+																	<p:column>
+																		<h:outputText value="#{_var.codigo}" />
+																	</p:column>
+																	<p:column>
+																		<h:outputText value="#{_var.nombre}" />
+																	</p:column>
+																	<p:column>
+																		<h:outputText value="#{_var.descripcion}" />
+																	</p:column>
+
+																</p:autoComplete>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="form-group">
+															<div class="col-md-4">Precio</div>
+															<div class="col-md-8">
+																<h:inputText id="precioUnitarioID"
+																	rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}"
+																	value="#{cotizacionController.detalleCotizacion.precioContadoNacional}"
+																	style=" color: #555555; background-image: none;"
+																	styleClass="input-sm form-control" disabled="false">
+																	<p:ajax event="change" update="form001"
+																		listener="#{cotizacionController.actualizarImporteParcialDetalleCotizacion()}" />
+																</h:inputText>
+																<h:inputText id="precioUnitarioExtranjeroID"
+																	rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}"
+																	value="#{cotizacionController.detalleCotizacion.precioContadoExtranjero}"
+																	style=" color: #555555; background-image: none;"
+																	styleClass="input-sm form-control" disabled="false">
+																	<p:ajax event="change" update="form001"
+																		listener="#{cotizacionController.actualizarImporteParcialDetalleCotizacion()}" />
+																</h:inputText>
+															</div>
+
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="form-group">
+															<div class="col-md-12">
+																<p:commandLink id="buttonAceptarDialog1wsdf"
+																	value="Agregar" styleClass="btn btn-success btn-block"
+																	immediate="true">
+																	<p:ajax update="form001"
+																		listener="#{cotizacionController.agregarDetalleCotizacion()}" />
+																</p:commandLink>
+															</div>
+														</div>
+													</div>
+
+												</div>
+												<br />
+												<div class="row">
+													<div class="col-md-12">
+														<div class="form-group ">
+															<div class="col-md-12">
+																<p:dataTable id="table001" var="var" rendered="true"
+																	value="#{cotizacionController.listDetalleCotizacion}"
+																	emptyMessage="Agregue Detalles." reflow="true"
+																	style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;">
+																	<f:facet name="header">
+           																Detalle Productos
+       																</f:facet>
+
+																	<p:column width="10%" headerText="Código"
+																		disabledSelection="true" style="text-align:center;">
+																		<h:outputText value="#{var.producto.codigo}" />
+																	</p:column>
+
+																	<p:column width="30%" headerText="Producto">
+																		<h:outputText
+																			value="#{var.producto.nombre} #{var.producto.descripcion}" />
+
+																	</p:column>
+
+																	<p:column width="10%" headerText="Precio Contado"
+																		style="text-align:center; background-color : #e6ffe6 !important;">
+
+																		<h:outputText value="#{var.precioContadoNacional}"
+																			rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<h:outputText value="#{var.precioContadoExtranjero}"
+																			rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<span class="label label-success"> <p:outputLabel
+																				value=" $us."
+																				rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}" />
+																			<p:outputLabel value=" Bs."
+																				rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}" />
+																		</span>
+																	</p:column>
+
+																	<p:column width="10%" headerText="Precio Credito"
+																		style="text-align:center; background-color :#ffffe6 !important;">
+
+																		<h:outputText value="#{var.precioCreditoNacional}"
+																			rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<h:outputText value="#{var.precioCreditoExtranjero}"
+																			rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<span class="label label-success"> <p:outputLabel
+																				value=" $us."
+																				rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}" />
+																			<p:outputLabel value=" Bs."
+																				rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}" />
+																		</span>
+																	</p:column>
+
+
+																	<p:column width="10%" headerText="Cuota Inicial"
+																		style="text-align:center; background-color :#ffffe6 !important;">
+
+																		<h:outputText
+																			value="#{var.precioCuotaInicialNacional}"
+																			rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<h:outputText
+																			value="#{var.precioCuotaInicialExtranjera}"
+																			rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<span class="label label-success"> <p:outputLabel
+																				value=" $us."
+																				rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}" />
+																			<p:outputLabel value=" Bs."
+																				rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}" />
+																		</span>
+																	</p:column>
+
+																	<p:column width="10%" headerText="Cuota Mensual"
+																		style="text-align:center; background-color :#ffffe6 !important;">
+
+																		<h:outputText
+																			value="#{var.precioCuotaMensualNacional}"
+																			rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<h:outputText
+																			value="#{var.precioCuotaMensualExtranjera}"
+																			rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<span class="label label-success"> <p:outputLabel
+																				value=" $us."
+																				rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}" />
+																			<p:outputLabel value=" Bs."
+																				rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}" />
+																		</span>
+																	</p:column>
+
+																	<p:column width="10%" headerText="Nº Cuotas"
+																		style="text-align:center; background-color :#ffffe6 !important;">
+																		<h:outputText value="#{var.numeroCuotas}">
+																		</h:outputText>
+																	</p:column>
+																	<p:column width="6%" headerText="Acción"
+																		style="text-align:center;" rendered="true">
+																		<div class="row">
+																			<div class="btn-group-demo">
+																				<div class="btn-group">
+																					<p:commandLink id="buttonModificarDetalle"
+																						value="&#160;" styleClass="btn ion-edit"
+																						style="padding-left: 5px; padding-right: 5px;"
+																						immediate="true"
+																						actionListener="#{cotizacionController.editDetalleCotizacion(var.id)}" />
+																					<p:commandLink id="buttonEliminarDetalle"
+																						style="padding-left: 5px; padding-right: 5px;"
+																						value="&#160;" styleClass="btn ion-trash-b"
+																						immediate="true" update="form001"
+																						actionListener="#{cotizacionController.deleteDetalleCotizacion(var.id)}" />
+																				</div>
+																			</div>
+																		</div>
+																	</p:column>
+																</p:dataTable>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<br />
+											<div class="invoice-price">
+												<div class="invoice-price-left">
+													<div class="invoice-price-row">
+														<div class="sub-price">
+															<div class="form-group ">
+																<div class="col-md-12">
+																	<small></small>
+																</div>
+															</div>
+
+														</div>
+													</div>
+												</div>
+												<div class="invoice-price-right">
+													<div class="form-group ">
+														<div class="col-md-8">
+															<p:outputLabel value="Total Bs."
+																rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}" />
+															<p:outputLabel value="Total $us."
+																rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}" />
+														</div>
+														<div class="col-md-4">
+															<h:outputText
+																rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}"
+																value="#{cotizacionController.cotizacion.montoTotal}">
+																<f:convertNumber type="number" groupingUsed="true"
+																	minFractionDigits="2" pattern="#0.00" />
+															</h:outputText>
+															<h:outputText
+																rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}"
+																value="#{cotizacionController.cotizacion.montoTotalExtranjero}">
+																<f:convertNumber type="number" groupingUsed="true"
+																	minFractionDigits="2" pattern="#0.00" />
+															</h:outputText>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="invoice-footer">
+											<p class="text-center">
+												<span class="mrm"><i class="fa fa-globe"></i>
+													www.teds.com.bo</span><span class="mrm"><i
+													class="fa fa-phone"></i> T:3-3262629</span><span class="mrm"><i
+													class="fa fa-envelope"></i> mbr.bejarano@gmail.com</span>
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ui:fragment>
+						<ui:fragment rendered="#{cotizacionController.verReporte}">
+							<div class="col-md-12">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">VISUALIZACIÓN COTIZACIÓN</h3>
+									</div>
+									<div class="panel-body">
+										<div class="row">
+											<div class="col-md-12">
+												<p:media player="pdf" rendered="true"
+													value="#{cotizacionController.urlCotizacion}" width="800px"
+													height="800px" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</ui:fragment>
+					</div>
+					<!-- END PANEL -->
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+		<!-- INIT MODAL -->
+		<div id="m-r-1" tabindex="-1" role="dialog" data-keyboard="false"
+			data-backdrop="static" aria-labelledby="myModalLabel"
+			aria-hidden="true" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<h:form id="formModalPlanPago">
+						<div class="modal-header">
+							<!-- INIT HEADER -->
+							<h4 id="myModalLabel" class="modal-title">
+								<strong>PLAN DE PAGO - CLIENTE</strong>
+							</h4>
+							<!-- END HEADER -->
+						</div>
+						<div class="modal-body">
+							<!-- INIT BODY -->
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<div class="col-md-5">Coef. Interes</div>
+										<div class="col-md-7">
+											<p:spinner stepFactor="0.1" min="0" max="100"
+												value="#{cotizacionController.detalleCotizacion.coeficienteInteres}"
+												style=" color: #555555; background-image: none; padding: 0 10px;">
+												<p:ajax event="change" update="formModalPlanPago,form001"
+													listener="#{cotizacionController.actionReloadPlanPago()}" />
+											</p:spinner>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group ">
+										<div class="col-md-5">Nº Cuotas</div>
+										<div class="col-md-7">
+											<p:spinner min="1" max="144"
+												value="#{cotizacionController.detalleCotizacion.numeroCuotas}"
+												style=" color: #555555; background-image: none; padding: 0 10px;">
+												<p:ajax event="change" update="formModalPlanPago,form001"
+													listener="#{cotizacionController.actionReloadChangeNumberCout()}" />
+											</p:spinner>
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr />
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group ">
+										<div class="col-md-5">
+											<p:outputLabel value="Monto Inicial Bs."
+												rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}" />
+											<p:outputLabel value="Monto Inicial $us."
+												rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}" />
+										</div>
+										<div class="col-md-7">
+											<p:inputText
+												rendered="#{cotizacionController.cotizacion.moneda.equals('BOLIVIANOS')}"
+												value="#{cotizacionController.detalleCotizacion.precioCuotaInicialNacional}"
+												style=" color: #555555; background-image: none; padding: 0 10px;"
+												styleClass="input-sm form-control">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+												<p:ajax event="change" update="formModalPlanPago,form001"
+													listener="#{cotizacionController.actionReloadPlanPago()}" />
+											</p:inputText>
+											<p:inputText
+												rendered="#{cotizacionController.cotizacion.moneda.equals('DOLAR')}"
+												value="#{cotizacionController.detalleCotizacion.precioCuotaInicialExtranjera}"
+												style=" color: #555555; background-image: none; padding: 0 10px;"
+												styleClass="input-sm form-control">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+												<p:ajax event="change" update="formModalPlanPago,form001"
+													listener="#{cotizacionController.actionReloadPlanPago()}" />
+											</p:inputText>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group ">
+										<div class="col-md-5">Porc. Inicial</div>
+										<div class="col-md-7">
+											<p:spinner stepFactor="0.1" prefix="%" min="0" max="100"
+												value="#{cotizacionController.detalleCotizacion.porcentajeCuotaInicial}"
+												style=" color: #555555; background-image: none; padding: 0 10px;">
+												<p:ajax event="change" update="formModalPlanPago,form001"
+													listener="#{cotizacionController.actionReloadPlanPago()}" />
+											</p:spinner>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<!-- END BODY -->
+						</div>
+						<div class="modal-footer">
+							<!-- INIT FOOTER -->
+							<div class="row">
+								<div class="col-md-4"></div>
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonCancelar01" value="&#160; Atras."
+										styleClass="btn btn-warning btn-block ion-minus-circled"
+										immediate="true" style="height:31px; padding:center"
+										actionListener="#{cotizacionController.closeModalPlanPago()}">
+									</p:commandLink>
+								</div>
+								<ui:fragment rendered="false">
+									<div class="col-md-4">
+										<p:commandLink id="buttonRegistrar01" value="&#160; Registrar"
+											styleClass="btn btn-success btn-block ion-checkmark"
+											style="height:31px; padding:center" immediate="true"
+											action="#{cotizacionController.registrarReservaVenta()}">
+										</p:commandLink>
+									</div>
+								</ui:fragment>
+							</div>
+							<!-- END FOOTER -->
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+
+		<div id="m-r-2" data-keyboard="false" data-backdrop="static"
+			aria-hidden="true" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<h:form id="formModalCliente">
+						<div class="modal-header">
+							<!-- INIT HEADER -->
+							<h4 id="myModalLabel" class="modal-title">
+								<strong>REGISTRO NUEVO CLIENTE</strong>
+							</h4>
+							<!-- END HEADER -->
+						</div>
+						<div class="modal-body">
+							<!-- INIT BODY -->
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group ">
+										<div class="col-md-5">
+											<h:outputLabel value="Tipo Cliente" for="tipoPersona" />
+										</div>
+										<div class="col-md-7">
+											<h:selectOneMenu id="tipoPersona"
+												value="#{cotizacionController.newCliente.tipo}"
+												styleClass="form-control">
+												<p:ajax event="change" update="formModalCliente"
+													immediate="true"></p:ajax>
+												<f:selectItem itemValue="NATURAL" itemLabel="NATURAL" />
+												<f:selectItem itemValue="JURIDICO" itemLabel="JURIDICO" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<ui:fragment
+								rendered="#{cotizacionController.newCliente.tipo.equals('JURIDICO')}">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group ">
+											<div class="col-md-5">Nit</div>
+											<div class="col-md-7">
+												<h:inputText value="#{cotizacionController.newCliente.nit}"
+													style=" color: #555555; background-image: none;"
+													styleClass="input-sm form-control ">
+													<p:ajax event="change" />
+												</h:inputText>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group ">
+											<div class="col-md-5">Razon Social</div>
+											<div class="col-md-7">
+												<h:inputText
+													value="#{cotizacionController.newCliente.razonSocial}"
+													style=" color: #555555; background-image: none;"
+													styleClass="input-sm form-control ">
+													<p:ajax event="change" />
+												</h:inputText>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+							</ui:fragment>
+							<ui:fragment
+								rendered="#{cotizacionController.newCliente.tipo.equals('NATURAL')}">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group ">
+											<div class="col-md-5">Doc. Identidad</div>
+											<div class="col-md-7">
+												<h:inputText value="#{cotizacionController.newCliente.ci}"
+													style=" color: #555555; background-image: none;"
+													styleClass="input-sm form-control ">
+													<p:ajax event="change" />
+												</h:inputText>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group ">
+											<div class="col-md-5">Nombre(s)</div>
+											<div class="col-md-7">
+												<h:inputText
+													value="#{cotizacionController.newCliente.nombres}"
+													style=" color: #555555; background-image: none;"
+													styleClass="input-sm form-control">
+													<p:ajax event="change" />
+												</h:inputText>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group ">
+											<div class="col-md-5">Apellidos</div>
+											<div class="col-md-7">
+												<h:inputText
+													value="#{cotizacionController.newCliente.apellidos}"
+													style=" color: #555555; background-image: none;"
+													styleClass="input-sm form-control">
+													<p:ajax event="change" />
+												</h:inputText>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group ">
+											<div class="col-md-5">Celular 1</div>
+											<div class="col-md-7">
+												<h:inputText
+													value="#{cotizacionController.newCliente.celular1}"
+													style=" color: #555555; background-image: none;"
+													styleClass="input-sm form-control">
+													<p:ajax event="change" />
+												</h:inputText>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group ">
+											<div class="col-md-5">Celular 2</div>
+											<div class="col-md-7">
+												<h:inputText
+													value="#{cotizacionController.newCliente.celular2}"
+													style=" color: #555555; background-image: none;"
+													styleClass="input-sm form-control">
+													<p:ajax event="change" />
+												</h:inputText>
+											</div>
+										</div>
+									</div>
+								</div>
+							</ui:fragment>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group ">
+										<div class="col-md-5">Telefono</div>
+										<div class="col-md-7">
+											<h:inputText
+												value="#{cotizacionController.newCliente.telefono}"
+												style=" color: #555555; background-image: none;"
+												styleClass="input-sm form-control">
+												<p:ajax event="change" />
+											</h:inputText>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group ">
+										<div class="col-md-5">Correo</div>
+										<div class="col-md-7">
+											<h:inputText
+												value="#{cotizacionController.newCliente.correo}"
+												style=" color: #555555; background-image: none;"
+												styleClass="input-sm form-control">
+												<p:ajax event="change" />
+											</h:inputText>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group ">
+										<div class="col-md-5">Dirección</div>
+										<div class="col-md-7">
+											<p:inputTextarea id="descripcionID" style="padding: 0 10px;"
+												styleClass="form-control" size="40"
+												value="#{cotizacionController.newCliente.direccion}"
+												maxlength="250" rows="2">
+												<p:ajax event="change" />
+											</p:inputTextarea>
+										</div>
+									</div>
+								</div>
+							</div>
+							<ui:fragment rendered="false">
+								<br />
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group ">
+											<div class="col-md-5">Fotografía</div>
+											<div class="col-md-5">
+												<p:graphicImage id="imgClienteId" rendered="true"
+													value="#{dynamicResourceClienteController.streamedContentImage}"
+													cache="false" width="50%">
+													<f:param name="param"
+														value="#{cotizacionController.newCliente.id}" />
+												</p:graphicImage>
+											</div>
+											<div class="col-md-2">
+												<center>
+													<p:commandLink styleClass="btn btn-primary ion-camera"
+														style="height:31px;" immediate="true"
+														oncomplete="PF('dlgphotoCam').show();">
+													</p:commandLink>
+													<p:commandLink
+														styleClass="btn btn-primary  ion-android-folder"
+														update="form001" style="height:31px; padding:center"
+														action="#{cotizacionController.loadDialogImage()}">
+													</p:commandLink>
+												</center>
+											</div>
+										</div>
+									</div>
+								</div>
+							</ui:fragment>
+							<br />
+
+							<!-- END BODY -->
+						</div>
+						<div class="modal-footer">
+							<!-- INIT FOOTER -->
+							<div class="row">
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonCancelar01" value="&#160; Cancelar"
+										styleClass="btn btn-warning btn-block ion-minus-circled"
+										update="form001" immediate="true"
+										style="height:31px; padding:center"
+										actionListener="#{cotizacionController.closeModalCliente()}">
+									</p:commandLink>
+								</div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonRegistrar01" value="&#160; Registrar"
+										styleClass="btn btn-success btn-block ion-checkmark"
+										style="height:31px; padding:center" immediate="true">
+										<p:ajax update="form001"
+											listener="#{cotizacionController.registrarCliente()}" />
+									</p:commandLink>
+								</div>
+							</div>
+							<!-- END FOOTER -->
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+		<!-- END MODAL -->
+
+
+	</ui:define>
+
+	<ui:insert name="scripts">
+
+	</ui:insert>
+</ui:composition>
