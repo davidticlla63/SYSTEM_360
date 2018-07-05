@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- center boxes -->
+	<div class="Container100 NoIndent Flex FlexWrap">
+		<div class="Container100 Responsive100 Flex">
+			<div class="Card">
+				<div class="CardBigTopic">LISTADO DE MOVIMIENTOS SIN
+					COMPROBANTES</div>
+				<div class="SeparatorFull"></div>
+				<div class="Container100 Responsive100">
+					<div class="Container40 Responsive50 TexAlLeft">
+						<p:outputLabel value="Glosa"></p:outputLabel>
+						<p:inputTextarea style="width: 95%;" value="#{cajaOperacdionController.glosa}"
+							rows="1" autoResize="true">
+							<p:ajax event="change" />
+						</p:inputTextarea>
+					</div>
+					<div class="Container30 Responsive50 TexAlLeft">
+						<p:outputLabel value="Recibido De:"/>
+						<p:inputText style="width: 95%;" value="#{cajaOperacdionController.razonSocial}">
+							<p:ajax event="change" />
+						</p:inputText>
+					</div>
+					<div class="Container10 Responsive50 TexAlRight">
+						<p:splitButton value="Registrar" disabled="#{cajaOperacdionController.cajaMovimientoSinComprobantes.size()==0}" immediate="true" update="form001"
+							icon="fa fa-save" styleClass="Fs14 White GreenButton"
+							actionListener="#{cajaOperacdionController.registrarComprobante()}">
+							<p:menuitem value="Reporte Caja Resumido" update="form001"
+								icon="fa fa-file-text"
+								actionListener="#{cajaMovimientoConsultasController.verReporteResumido()}">
+							</p:menuitem>
+							
+						</p:splitButton>
+					</div>
+
+				</div>
+				<div class="CardBigTopic Container100 Responsive50 TexAlRight"
+					style="padding-top: 0px; padding-bottom: 1px; height: 25px;">
+					<h:commandLink>
+						<p:graphicImage library="img" name="excel.png" />
+						<p:dataExporter type="xls" target="singleDT2"
+							fileName="listaCajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage library="img" name="pdf.png" height="20px" />
+						<p:dataExporter type="pdf" target="singleDT2"
+							fileName="listaCajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage library="img" name="csv.png" />
+						<p:dataExporter type="csv" target="singleDT2"
+							fileName="listaCajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage library="img" name="xml.png" />
+						<p:dataExporter type="xml" target="singleDT2"
+							fileName="listaCajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+				</div>
+				<div class="Container100 ui-fluid">
+					<p:dataTable id="singleDT2" var="var"
+						value="#{cajaOperacdionController.cajaMovimientoSinComprobantes}"
+						rowIndexVar="index" rowKey="#{var.id}" paginator="true"
+						emptyMessage="No se encontraron registros." reflow="true">
+
+						<p:ajax update="form001" event="rowSelect" />
+
+						<p:column headerText="Nº" width="5%" style="text-align:center;">
+							<h:outputText value="#{index+1}" style="font-size: 12px;" />
+						</p:column>
+						<p:column width="10%" headerText="Fecha Registro"
+							filterStyle="width: 100%; height:25px;" style="text-align:left;"
+							filterBy="#{var.fechaRegistro}" filterMatchMode="contains">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.fechaRegistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column width="15%" headerText="Concepto" filterBy="#{var.tipo}">
+							<h:outputText style="font-size: 12px;" value="#{var.descripcion}" />
+						</p:column>
+						<p:column width="10%" headerText="Tipo Pago"
+							filterBy="#{var.tipoPago}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.tipoPago.label}" />
+						</p:column>
+						<p:column width="10%" headerText="Importe"
+							style="text-align:right;" filterBy="#{var.monto}">
+							<h:outputText style="font-size: 12px;" value="#{var.monto}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
+						</p:column>
+						<p:column width="35%" headerText="Plan Cuenta"
+							filterBy="#{var.tipo}">
+							<p:selectOneMenu value="#{var.planCuenta.id}">
+								<f:selectItem itemValue="0" itemLabel="Seleccione Uno" />
+								<f:selectItems var="plan" style="width: 50% font-size: 12px;"
+									value="#{cajaOperacdionController.listPlanCuenta}"
+									itemDescription="#{plan.codigoAuxiliar}"
+									itemLabel="#{plan.descripcion}" itemValue="#{plan.id}" />
+								<p:ajax event="change" update="form001:singleDT2" />
+							</p:selectOneMenu>
+						</p:column>
+
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column colspan="4" style="text-align:right"
+									footerText="Totals:" />
+								<p:column>
+									<f:facet name="footer">
+										<h:outputText style="font-size: 12px;"
+											value="#{cajaOperacdionController.totalNacional}">
+											<f:convertNumber pattern="#,##0.00" locale="en" />
+										</h:outputText>
+										<h:outputText style="font-size: 12px;" value="Bs." />
+									</f:facet>
+								</p:column>
+
+							</p:row>
+						</p:columnGroup>
+
+						<f:facet name="footer">
+							<h:outputText style="font-size: 12px;"
+								value="#{cajaOperacdionController.cajaMovimientoSinComprobantes.size()} Registros en Total" />
+						</f:facet>
+					</p:dataTable>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</ui:composition>

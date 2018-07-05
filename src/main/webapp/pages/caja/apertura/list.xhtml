@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<div class="row">
+
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">LISTADO DE SESIONES APERTURADAS</h3>
+				</div>
+				<div class="form-group">
+					<!-- center boxes -->
+
+					<p:dataTable id="singleDT" var="var"
+						value="#{cajaOperacdionController.listaAperturaCaja}"
+						selection="#{cajaOperacdionController.cajaSesion}"
+						style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+						rowKey="#{var.id}" paginator="true"
+						emptyMessage="No se encontraron registros." reflow="true">
+
+						<p:ajax update="form001" event="rowSelect" />
+
+						<p:column width="5%" headerText="Código" filterBy="#{var.id}"
+							filterStyle="width: 100%; height:25px;">
+							<h:outputText style="font-size: 12px;" value="#{var.id}" />
+						</p:column>
+
+						<p:column width="15%" headerText="Caja "
+							filterBy="#{var.caja.nombre}"
+							filterStyle="width: 100%; height:25px;">
+							<h:outputText style="font-size: 12px;" value="#{var.caja.nombre}" />
+						</p:column>
+
+						<p:column width="20%" headerText="Cajero "
+							filterBy="#{var.usuario.nombre}"
+							filterStyle="width: 100%; height:25px;"
+							filterMatchMode="contains">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.usuario.nombre}" />
+						</p:column>
+
+						<p:column width="10%" headerText="Monto Apertura"
+							filterBy="#{var.montoInicial}" style="text-align:right;"
+							filterStyle="width: 100%; height:25px;">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.montoInicial}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column width="10%" headerText="Estado"
+							style="text-align:center;"
+							filterStyle="width: 100%; height:25px;">
+							<span class="label label-success"> <h:outputText 
+									rendered="#{var.procesada=='true'}" value="Procesada"></h:outputText>
+							</span>
+							<span class="label label-danger"> <h:outputText
+									rendered="#{var.procesada=='false'}" value="En Sesion"></h:outputText>
+							</span>
+						</p:column>
+						<p:column width="10%" headerText="Fecha Apertura"
+							style="text-align:center;" filterBy="#{var.fechaApertura}"
+							filterStyle="width: 100%; height:25px;"
+							filterMatchMode="contains">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.fechaApertura}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column width="10%" exportable="false">
+							<p:panelGrid columns="3"
+								style="border:0px none; background-color:transparent; width: 100%;"
+								layout="grid" styleClass="ui-panelgrid-blank">
+								<p:commandLink id="editLink" title="Imprimir"
+									styleClass="ui-icon ui-icon-print">
+									<p:ajax update="form001"
+										listener="#{cajaOperacdionController.visualizarReporte(var)}" />
+								</p:commandLink>
+								<p:commandLink id="editLink2" title="Ver"
+									styleClass="ui-icon ui-icon-search">
+									<p:ajax update="form001"
+										listener="#{cajaOperacdionController.mostrarMovimietos(var)}" />
+								</p:commandLink>
+								<p:commandLink id="editLink3" title="Comprobante"
+									styleClass="ui-icon ui-icon-document">
+									<p:ajax update="form001"
+										listener="#{cajaOperacdionController.verMovimientosSinComprobantes(var)}" />
+								</p:commandLink>
+							</p:panelGrid>
+						</p:column>
+						<f:facet name="footer">
+							<h:outputText style="font-size: 12px;"
+								value="#{cajaOperacdionController.listaAperturaCaja.size()} Registros en Total" />
+						</f:facet>
+					</p:dataTable>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</ui:composition>

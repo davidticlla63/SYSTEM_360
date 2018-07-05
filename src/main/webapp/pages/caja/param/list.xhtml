@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- center boxes -->
+<div class="row">
+
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">LISTADO DE CAJAS</h3>
+				</div>
+				<div class="form-group">
+					<p:dataTable id="singleDT" var="var"
+						value="#{cajaController.listaCajas}" selectionMode="single"
+						selection="#{cajaController.caja}" rowKey="#{var.id}"
+						style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+						paginator="true" emptyMessage="No se encontraron registros."
+						reflow="true" 
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+						
+						<p:ajax update="form001" event="rowSelect" listener="#{cajaController.onRowSelect}" />
+
+						<p:column width="8%" headerText="Código" style="text-align:center;"
+							filterStyle="width: 100%; height:25px;" filterBy="#{var.codigo}">
+							<h:outputText style="font-size: 12px;"  value="#{var.codigo}" />
+						</p:column>
+
+						<p:column width="18%" headerText="Nombre" style="text-align:center;"
+							filterStyle="width: 100%; height:25px;"  filterBy="#{var.nombre}">
+							<h:outputText style="font-size: 12px;"  value="#{var.nombre}" />
+						</p:column>
+
+						<p:column width="20%" headerText="Descripcion" style="text-align:center;"
+							filterStyle="width: 100%; height:25px;" 
+							filterBy="#{var.descripcion}">
+							<h:outputText style="font-size: 12px;"  value="#{var.descripcion}" />
+						</p:column>
+						
+						<p:column width="10%" headerText="Estado"
+							style="text-align:center;"
+							filterStyle="width: 100%; height:25px;"  filterBy="#{var.opcion}">
+							<p:outputLabel styleClass="FontLatoBold Green"
+								rendered="#{var.opcion=='AB'}" value="Abierta"></p:outputLabel>
+							<p:outputLabel styleClass="FontLatoBold Red"
+								rendered="#{var.opcion=='CE'}" value="Cerrada"></p:outputLabel>
+						</p:column>
+						<p:column width="10%" headerText="Fecha Registro"
+							style="text-align:center;"
+							filterStyle="width: 100%; height:25px;"  filterBy="#{var.fechaRegistro}">
+							<h:outputText style="font-size: 12px;"  value="#{var.fechaRegistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<f:facet name="footer">
+							<h:outputText style="font-size: 12px;" 
+								value="#{cajaController.listaCajas.size()} Registros en Total" />
+						</f:facet>
+					</p:dataTable>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</ui:composition>

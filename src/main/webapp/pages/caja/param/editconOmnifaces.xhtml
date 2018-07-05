@@ -1,0 +1,83 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:p="http://primefaces.org/ui">
+	<style type="text/css">
+.column1 {
+	width: 25%;
+	height: auto
+}
+
+.column2 {
+	width: 50%;
+	height: auto
+}
+
+.column3 {
+	width: 20%;
+	height: auto
+}
+</style>
+	<!-- center boxes -->
+	<div class="Container100 ui-fluid">
+
+		<div class="Card">
+			<p:panel id="panelcabecera" header="CAJA">
+				<div class="Container100 NoIndent">
+
+					<div class="Container50 Responsive100 NoIndent">
+						<p:focus for="codigo" />
+						<div class="EmptyBox10"></div>
+
+						<p:panelGrid id="grid6" columns="3"
+							columnClasses="column1,column2,column3"
+							style="border:0px none; background-color:transparent; width: 100%;"
+							layout="grid" styleClass="ui-panelgrid-blank">
+
+
+
+							<p:outputLabel for="codigo" value="Codigo " />
+							<p:inputText id="codigo" value="#{cajaController.caja.codigo}"
+								readonly="true">
+
+							</p:inputText>
+							<p:message for="codigo" display="tooltip" />
+
+
+							<p:outputLabel for="nombre" value="Nombre " />
+							<p:inputText id="nombre" value="#{cajaController.caja.nombre}"
+								required="true">
+
+							</p:inputText>
+							<p:message for="nombre" display="tooltip" />
+
+							<p:outputLabel for="descripcion" value="Descripcion " />
+							<p:inputTextarea rows="3" id="descripcion" value="#{cajaController.caja.descripcion}"
+								required="true">
+
+						</p:inputTextarea>
+							<p:message for="descripcion" display="tooltip" />
+
+
+						</p:panelGrid>
+					</div>
+					<div class="Container50 Responsive100 NoIndent">
+					<div class="EmptyBox10"></div>
+					 <p:pickList id="pickList" value="#{cajaController.listaUsuarios}" var="f" itemLabel="#{f.nombre}" 
+					  itemValue="#{f}"  filterMatchMode="contains" responsive="true"
+					showSourceFilter="true" showTargetFilter="true">
+					 <o:converter converterId="omnifaces.ListIndexConverter" list="#{cajaController.listaUsuariosConsultados}" />
+					 </p:pickList>
+					
+					</div>
+				</div>
+				<div class="EmptyBox5"></div>
+			</p:panel>
+
+		</div>
+	</div>
+
+</ui:composition>
