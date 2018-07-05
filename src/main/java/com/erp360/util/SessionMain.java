@@ -15,8 +15,6 @@ import com.erp360.dao.PrivilegioDao;
 import com.erp360.dao.TipoCambioDao;
 import com.erp360.dao.UsuarioDao;
 import com.erp360.dao.UsuarioRolDao;
-import com.erp360.dao.UsuarioSucursalDao;
-import com.erp360.interfaces.ITipoCambioDao;
 import com.erp360.interfaces.IUsuarioSucursalDao;
 import com.erp360.model.CajaSesion;
 import com.erp360.model.Empresa;
@@ -53,7 +51,7 @@ public class SessionMain implements Serializable {
 	private @Inject GestionDao gestionDao;
 	private @Inject PrivilegioDao privilegioDao;
 	private @Inject UsuarioRolDao usuarioRolDao;
-	private @Inject ITipoCambioDao tipoCambioDao;
+	private @Inject TipoCambioDao tipoCambioDao;
 	private @Inject IUsuarioSucursalDao usuarioSucursalDao;
 	
 	//Object
