@@ -17,8 +17,10 @@ import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.experimental.categories.Categories.IncludeCategory;
 import org.primefaces.event.SelectEvent;
 
+import com.erp360.dao.ParametroVentaDao;
 import com.erp360.enums.TipoMovimiento;
 import com.erp360.interfaces.ICajaMovimientoDao;
 import com.erp360.model.CajaMovimiento;
@@ -40,6 +42,7 @@ public class CajaMovimientoController implements Serializable {
 	// DAO
 	private @Inject SessionMain sessionDao;
 	private @Inject ICajaMovimientoDao cajaMovimientoDao;
+	private @Inject ParametroVentaDao parametroVentaDao;
 
 	// OBJECT
 	private CajaSesion cajaSesion;
@@ -56,9 +59,9 @@ public class CajaMovimientoController implements Serializable {
 	private boolean nuevo;
 	private boolean registrar;
 	private boolean seleccionado;
-	
+
 	private boolean activado;
-	private String cuenta="bs";
+	private String cuenta = "bs";
 	private String urlReport;
 	private boolean ver;
 
@@ -68,20 +71,22 @@ public class CajaMovimientoController implements Serializable {
 	}
 
 	public void loadDefault() {
-		//parametroVenta=parametroVentaDao.obtenerPorEmpresa(sessionDao.getEmpresaLogin());
+		 parametroVenta=parametroVentaDao.obtenerPorEmpresa(sessionDao.getEmpresaLogin());
 		System.out.println(parametroVenta);
-		if (parametroVenta!=null) {
-		nuevo = true;
-		seleccionado = false;
-		registrar = false;
-		setVer(false);
-		cajaSesion = sessionDao.getCajaSesion();
-//		selectedConceptoCaja= new ConceptoCaja();
-//		setConceptoCajas(new ArrayList<ConceptoCaja>());
-		if (cajaSesion != null) {
-			cajaMovimientos = cajaMovimientoDao
-					.listarMovimientosPorSesion(cajaSesion);
-		}
+		if (parametroVenta != null) {
+			nuevo = true;
+			seleccionado = false;
+			registrar = false;
+			setVer(false);
+			cajaSesion = sessionDao.getCajaSesion();
+			// selectedConceptoCaja= new ConceptoCaja();
+			// setConceptoCajas(new ArrayList<ConceptoCaja>());
+			if (cajaSesion != null) {
+				System.out
+						.println("caja : " + cajaSesion.getCaja().getNombre());
+				cajaMovimientos = cajaMovimientoDao
+						.listarMovimientosPorSesion(cajaSesion);
+			}
 		}
 	}
 
@@ -122,20 +127,18 @@ public class CajaMovimientoController implements Serializable {
 					.getNombre());
 			cajaMovimiento.setFechaRegistro(new Date());
 			cajaMovimiento.setProcesada(false);
-			
-			
-			CajaMovimiento co=null;
-				co = cajaMovimientoDao.registrar(cajaMovimiento);
-			
+
+			CajaMovimiento co = null;
+			co = cajaMovimientoDao.registrar(cajaMovimiento);
 
 			if (co != null) {
 				verReporte();
 				loadDefault();
-//				currentPage = "/pages/caja/movimiento/list.xhtml";
+				// currentPage = "/pages/caja/movimiento/list.xhtml";
 			} else {
 				FacesUtil.infoMessage("Informacion", "ERROR AL INSERTAR");
 			}
-		}else{
+		} else {
 			FacesUtil.errorMessage("Ingrese el monto de Movimiento");
 		}
 	}
@@ -154,26 +157,21 @@ public class CajaMovimientoController implements Serializable {
 	}
 
 	public void actualizarExtranjero(AjaxBehaviorEvent event) {
-		cajaMovimiento.setMontoExtranjero(cajaMovimiento.getMonto()
-				/ 6.9);
-//		cajaMovimiento.setMontoExtranjero(cajaMovimiento.getMonto()
-//				/ sessionDao.getTipoCambioActual().getUnidad());
+		cajaMovimiento.setMontoExtranjero(cajaMovimiento.getMonto() / 6.9);
+		// cajaMovimiento.setMontoExtranjero(cajaMovimiento.getMonto()
+		// / sessionDao.getTipoCambioActual().getUnidad());
 	}
 
 	public void actualizarNacional(AjaxBehaviorEvent event) {
-		cajaMovimiento.setMonto(cajaMovimiento.getMontoExtranjero()
-				* 6.9);
-//		cajaMovimiento.setMonto(cajaMovimiento.getMontoExtranjero()
-//				* sessionDao.getTipoCambioActual().getUnidad());
+		cajaMovimiento.setMonto(cajaMovimiento.getMontoExtranjero() * 6.9);
+		// cajaMovimiento.setMonto(cajaMovimiento.getMontoExtranjero()
+		// * sessionDao.getTipoCambioActual().getUnidad());
 	}
 
 	public void actualizarCambio(AjaxBehaviorEvent event) {
 		cajaMovimiento.setCambio(cajaMovimiento.getMontoRecibido()
 				- cajaMovimiento.getMonto());
 	}
-	
-	
-
 
 	private SelectItem[] items = new SelectItem[3];
 
@@ -211,18 +209,17 @@ public class CajaMovimientoController implements Serializable {
 		}
 		return items;
 	}
-	
-	public void visualizarReporte(CajaMovimiento cajaMovimiento){
-		this.cajaMovimiento=cajaMovimiento;
+
+	public void visualizarReporte(CajaMovimiento cajaMovimiento) {
+		this.cajaMovimiento = cajaMovimiento;
 		verReporte();
-		
+
 	}
 
-	
 	public void verReporte() {
 		try {
 			setVer(true);
-			registrar=true;
+			registrar = true;
 			System.out.println("Ingreso a verReporteResumido");
 			HttpServletRequest request = (HttpServletRequest) facesContext
 					.getCurrentInstance().getExternalContext().getRequest();
@@ -231,45 +228,47 @@ public class CajaMovimientoController implements Serializable {
 					- request.getRequestURI().length())
 					+ request.getContextPath() + "/";
 
-//			String URL_SERVLET_LOGO = urlPath + "ServletImageLogo?id="
-//					+ sessionMain.getEmpresaLogin().getId() + "&type=EMPRESA";
-			
+			// String URL_SERVLET_LOGO = urlPath + "ServletImageLogo?id="
+			// + sessionMain.getEmpresaLogin().getId() + "&type=EMPRESA";
+
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("ID", cajaMovimiento.getId());
 			map.put("USUARIO", sessionDao.getUsuarioLogin().getLogin());
-//			map.put("pais", notaVenta.getSucursal().getCiudad().getPais().getNombre());
-//			map.put("logo", URL_SERVLET_LOGO);
+			// map.put("pais",
+			// notaVenta.getSucursal().getCiudad().getPais().getNombre());
+			// map.put("logo", URL_SERVLET_LOGO);
 			map.put("REPORT_LOCALE", new Locale("en", "US"));
-			
-			String reportPath = urlPath +
-							"resources/report/caja/movimientos/reportReciboCaja.jasper";		
-			
+
+			String reportPath = urlPath
+					+ "resources/report/caja/movimientos/reportReciboCaja.jasper";
+
 			request.getSession().setAttribute("parameter", map);
 			request.getSession().setAttribute("path", reportPath);
 			setUrlReport(urlPath + "ReportPdfServlet");
 			currentPage = "/pages/caja/movimiento/report.xhtml";
-//			FacesUtil.updateComponent("formReporte");
-//			FacesUtil.showDialog("dlgrReporte");
+			// FacesUtil.updateComponent("formReporte");
+			// FacesUtil.showDialog("dlgrReporte");
 		} catch (Exception e) {
 			System.out.println("Fallo en " + e.toString());
 		}
 
 	}
-	
-	
+
 	// ONCOMPLETETEXT CUENTA
-//	public List<ConceptoCaja> completeConcepto(String query) {
-//		conceptoCajas= conceptoCajaDao.obtenerPorEmpresaAutoComplete(query.toUpperCase(), sessionDao.getEmpresaLogin());
-//		
-//		return conceptoCajas;
-//	}
-//
-//	public void onRowConceptoClick1(SelectEvent event) {
-//				selectedConceptoCaja = ((ConceptoCaja)event.getObject());
-//				cajaMovimiento.setDescripcion(selectedConceptoCaja.getNombre());
-//				cajaMovimiento.setPlanCuenta(selectedConceptoCaja.getPlanCuenta());
-//				return;
-//	}
+	// public List<ConceptoCaja> completeConcepto(String query) {
+	// conceptoCajas=
+	// conceptoCajaDao.obtenerPorEmpresaAutoComplete(query.toUpperCase(),
+	// sessionDao.getEmpresaLogin());
+	//
+	// return conceptoCajas;
+	// }
+	//
+	// public void onRowConceptoClick1(SelectEvent event) {
+	// selectedConceptoCaja = ((ConceptoCaja)event.getObject());
+	// cajaMovimiento.setDescripcion(selectedConceptoCaja.getNombre());
+	// cajaMovimiento.setPlanCuenta(selectedConceptoCaja.getPlanCuenta());
+	// return;
+	// }
 	/* SETTERS AND GETTERS */
 
 	public boolean isNuevo() {
@@ -336,8 +335,6 @@ public class CajaMovimientoController implements Serializable {
 		this.items = items;
 	}
 
-	
-
 	public boolean isActivado() {
 		return activado;
 	}
@@ -370,20 +367,20 @@ public class CajaMovimientoController implements Serializable {
 		this.ver = ver;
 	}
 
-//	public List<ConceptoCaja> getConceptoCajas() {
-//		return conceptoCajas;
-//	}
-//
-//	public void setConceptoCajas(List<ConceptoCaja> conceptoCajas) {
-//		this.conceptoCajas = conceptoCajas;
-//	}
-//
-//	public ConceptoCaja getSelectedConceptoCaja() {
-//		return selectedConceptoCaja;
-//	}
-//
-//	public void setSelectedConceptoCaja(ConceptoCaja selectedConceptoCaja) {
-//		this.selectedConceptoCaja = selectedConceptoCaja;
-//	}
+	// public List<ConceptoCaja> getConceptoCajas() {
+	// return conceptoCajas;
+	// }
+	//
+	// public void setConceptoCajas(List<ConceptoCaja> conceptoCajas) {
+	// this.conceptoCajas = conceptoCajas;
+	// }
+	//
+	// public ConceptoCaja getSelectedConceptoCaja() {
+	// return selectedConceptoCaja;
+	// }
+	//
+	// public void setSelectedConceptoCaja(ConceptoCaja selectedConceptoCaja) {
+	// this.selectedConceptoCaja = selectedConceptoCaja;
+	// }
 
 }

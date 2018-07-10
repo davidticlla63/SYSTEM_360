@@ -1,0 +1,118 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<style type="text/css">
+.column1 {
+	width: 25%;
+	height: auto
+}
+
+.column2 {
+	width: 50%;
+	height: auto
+}
+
+.column3 {
+	width: 20%;
+	height: auto
+}
+</style>
+	<!-- center boxes -->
+	<div class="Container100 ui-fluid">
+
+		<div class="Card">
+
+			<div class="Container100 NoIndent">
+
+				<div class="Container50 Responsive50 NoIndent">
+					<p:panel id="panelcabecera" header="Flujo de Caja">
+						<div class="EmptyBox10"></div>
+
+						<p:panelGrid id="grid" columns="3"
+							columnClasses="column1,column2,column3"
+							style="border:0px none; background-color:transparent; width: 100%;"
+							layout="grid" styleClass="ui-panelgrid-blank">
+
+							<p:outputLabel for="fechaApertura" value="Fecha Apertura: " />
+							<h:outputText id="fechaApertura"
+								value="#{cajaCierreController.cajaSesion.fechaRegistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+							<p:message for="fechaApertura" display="tooltip" />
+
+
+							<p:outputLabel for="monto" value="Monto Base " />
+							<p:outputLabel id="monto"
+								value="Bs. #{cajaCierreController.cajaSesion.montoInicial}"
+								readonly="true">
+							</p:outputLabel>
+							<p:message for="monto" display="tooltip" />
+
+						</p:panelGrid>
+					</p:panel>
+				</div>
+			</div>
+			<div class="EmptyBox5"></div>
+
+
+		</div>
+	</div>
+
+	<!-- EMPIEZA LA PARTE DE DETALLE -->
+	<div class="Container100 ui-fluid">
+		<div class="Card">
+
+
+			<div class="EmptyBox10"></div>
+
+			<div class="Container100 NoIndent">
+
+				<div class="Container50 Responsive100 NoIndent">
+					<p:panel id="panelIngresos" header="Movimientos">
+
+						<div class="EmptyBox10" />
+
+						<p:dataTable var="var" id="tablaFlujo"
+							value="#{cajaCierreController.listaFlujoCaja}" reflow="true"
+							emptyMessage="No se encontraron registros.">
+
+
+
+							<p:column width="18%" headerText="Documento">
+								<h:outputText value="#{var.numeroDocumento}" />
+							</p:column>
+
+							<p:column width="20%" headerText="Concepto ">
+								<h:outputText value="#{var.concepto}" />
+							</p:column>
+
+							<p:column width="30%" headerText="Tipo Movimiento ">
+								<h:outputText value="#{var.tipoMovimiento}" />
+							</p:column>
+
+							<p:column width="20%" headerText="Tipo Pago">
+								<h:outputText value="#{var.tipoPago}" />
+							</p:column>
+
+							<p:column width="20%" headerText="Monto">
+								<h:outputText value="Bs. #{var.monto}" />
+							</p:column>
+
+							<f:facet name="footer">
+								<h:outputText
+									value="#{cajaCierreController.listaFlujoCaja.size()} Registros en Total" />
+							</f:facet>
+						</p:dataTable>
+					</p:panel>
+				</div>
+
+
+			</div>
+
+			<!-- DATATABLE -->
+		</div>
+	</div>
+
+</ui:composition>

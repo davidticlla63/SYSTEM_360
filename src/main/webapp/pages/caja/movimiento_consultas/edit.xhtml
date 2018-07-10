@@ -1,0 +1,148 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui" xmlns:p="http://primefaces.org/ui">
+	<style type="text/css">
+.column1 {
+	width: 25%;
+	height: auto
+}
+
+.column2 {
+	width: 50%;
+	height: auto
+}
+
+.column3 {
+	width: 20%;
+	height: auto
+}
+</style>
+	<!-- center boxes -->
+	<div class="Container100 ui-fluid">
+
+		<div class="Card">
+			<p:panel id="panelcabecera" header="CAJA MOVIMIENTO">
+				<div class="Container100 NoIndent">
+
+					<div class="Container50 Responsive100 NoIndent">
+						<p:focus for="caja" />
+						<div class="EmptyBox10"></div>
+
+						<p:panelGrid id="grid6" columns="3"
+							columnClasses="column1,column2,column3"
+							style="border:0px none; background-color:transparent; width: 100%;"
+							layout="grid" styleClass="ui-panelgrid-blank">
+
+
+
+							<p:outputLabel for="caja" value="Caja " />
+							<p:inputText id="caja"
+								value="#{cajaMovimientoConsultasController.cajaMovimiento.cajaSesion.caja.nombre}"
+								readonly="true">
+							</p:inputText>
+							<p:message for="caja" display="tooltip" />
+
+
+							<p:outputLabel for="tipo" value="Tipo " />
+							<p:selectOneRadio id="tipo" style="align:left;"
+								value="#{cajaMovimientoConsultasController.cajaMovimiento.tipo}">
+								<f:selectItem noSelectionOption="true" itemLabel="Ingreso"
+									itemValue="I" />
+								<f:selectItem itemLabel="Egreso" itemValue="E" />
+								<p:ajax event="change" update="form001"
+									listener="#{cajaMovimientoConsultasController.getTipoMovimientos()}" />
+							</p:selectOneRadio>
+							<p:message for="tipo" display="tooltip" />
+
+							<p:outputLabel for="tipoPago" value="Tipo Pago" />
+							<p:selectOneRadio id="tipoPago" style="align:left;"
+								value="#{cajaMovimientoConsultasController.cajaMovimiento.tipoPago}">
+								<p:ajax update="tipoPago" />
+								<f:selectItem itemLabel="Efectivo" itemValue="EFE" />
+								<f:selectItem
+									itemDisabled="#{cajaMovimientoConsultasController.cajaMovimiento.tipo=='E'}"
+									itemLabel="Tarjeta" itemValue="TAR" />
+								<f:selectItem
+									itemDisabled="#{cajaMovimientoConsultasController.cajaMovimiento.tipo=='E'}"
+									itemLabel="Cheque" itemValue="CHE" />
+							</p:selectOneRadio>
+							<p:message for="tipoPago" display="tooltip" />
+
+							<p:outputLabel for="tipoMovimiento" value="Tipo Movimiento " />
+							<p:selectOneRadio id="tipoMovimiento" style="align:left;"
+								value="#{cajaMovimientoConsultasController.cajaMovimiento.tipoMovimiento}">
+								<f:selectItems var="tipo"
+									value="#{cajaMovimientoConsultasController.items}"
+									itemLabel="#{tipo.label}" itemValue="#{tipo}" />
+								<p:ajax update="tipoMovimiento" />
+							</p:selectOneRadio>
+							<p:message for="tipoMovimiento" display="tooltip" />
+
+							<p:outputLabel for="descripcion" value="Descripcion " />
+							<p:inputTextarea id="descripcion" rows="1" autoResize="true"
+								value="#{cajaMovimientoConsultasController.cajaMovimiento.descripcion}">
+							</p:inputTextarea>
+							<p:message for="descripcion" display="tooltip" />
+
+						</p:panelGrid>
+					</div>
+					<div class="Container50 Responsive100 NoIndent">
+						<div class="EmptyBox10"></div>
+
+						<p:panelGrid id="grid5" columns="3"
+							columnClasses="column1,column2,column3"
+							style="border:0px none; background-color:transparent; width: 100%;"
+							layout="grid" styleClass="ui-panelgrid-blank">
+
+
+
+							<p:outputLabel for="monto" value="Monto " />
+							<p:inputNumber id="monto"
+								value="#{cajaMovimientoConsultasController.cajaMovimiento.monto}"
+								symbol=" Bs" symbolPosition="s" decimalSeparator=","
+								thousandSeparator="." required="true" style="align:right;">
+								<p:ajax event="change" update="montosus,monto"
+									listener="#{cajaMovimientoConsultasController.actualizarExtranjero}" />
+							</p:inputNumber>
+							<p:message for="monto" display="tooltip" />
+
+							<p:outputLabel for="montosus" value="Monto $us" />
+							<p:inputNumber id="montosus"
+								value="#{cajaMovimientoConsultasController.cajaMovimiento.montoExtranjero}"
+								symbol=" $us" symbolPosition="s" decimalSeparator=","
+								thousandSeparator="." required="true" style="align:right;">
+								<p:ajax event="change" update="montosus,monto"
+									listener="#{cajaMovimientoConsultasController.actualizarNacional}" />
+							</p:inputNumber>
+							<p:message for="montosus" display="tooltip" />
+
+							<p:outputLabel for="montoRecibido" value="Monto Recibido" />
+							<p:inputNumber id="montoRecibido"
+								value="#{cajaMovimientoConsultasController.cajaMovimiento.montoRecibido}"
+								symbol=" Bs" symbolPosition="s" decimalSeparator=","
+								thousandSeparator="." required="true" style="align:right;">
+								<p:ajax event="change" update="montoRecibido,cambio"
+									listener="#{cajaMovimientoConsultasController.actualizarCambio}" />
+							</p:inputNumber>
+							<p:message for="montoRecibido" display="tooltip" />
+
+							<p:outputLabel for="cambio" value="Monto Recibido" />
+							<p:inputNumber id="cambio"
+								value="#{cajaMovimientoConsultasController.cajaMovimiento.cambio}"
+								symbol=" Bs" symbolPosition="s" decimalSeparator=","
+								thousandSeparator="." required="true" style="align:right;">
+								<p:ajax event="change" update="cambio" />
+							</p:inputNumber>
+							<p:message for="cambio" display="tooltip" />
+						</p:panelGrid>
+					</div>
+				</div>
+				<div class="EmptyBox5"></div>
+			</p:panel>
+
+		</div>
+	</div>
+
+</ui:composition>

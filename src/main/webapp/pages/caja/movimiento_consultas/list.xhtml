@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui" xmlns:p="http://primefaces.org/ui">
+
+	<!-- center boxes -->
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel-body box-content no-padding">
+				<div class="col-md-4">
+					<p:outputLabel for="caja" value="Caja" />
+					<p:autoComplete id="caja" required="true"
+						value="#{cajaMovimientoConsultasController.caja}" var="theme"
+						converter="cajaConverter" itemLabel="#{theme.nombre}"
+						itemValue="#{theme}"
+						completeMethod="#{cajaMovimientoConsultasController.onCompleteCaja}"
+						forceSelection="true" dropdown="true" placeholder="Caja">
+						<p:ajax event="itemSelect"
+							listener="#{cajaMovimientoConsultasController.onSelectCaja}"
+							update="form001" />
+					</p:autoComplete>
+					<p:message for="caja" display="tooltip" />
+				</div>
+				<div class="col-md-4">
+					<p:outputLabel for="fechaInicio" value="Fecha Inicio" />
+					<p:calendar id="fechaInicio" navigator="true" required="true"
+						requiredMessage="Ingrese la fecha de nacimiento del paciente por favor."
+						effect="fold"
+						value="#{cajaMovimientoConsultasController.fechaInicio}"
+						pattern="dd-MM-yyyy" mask="true">
+						<p:ajax event="change" update="form001" />
+						<p:ajax event="dateSelect" update="form001" />
+					</p:calendar>
+				</div>
+				<div class="col-md-4">
+					<p:outputLabel for="fechaFin" value="Fecha Fin" />
+					<p:calendar id="fechaFin" navigator="true" required="true"
+						requiredMessage="Ingrese la fecha de nacimiento del paciente por favor."
+						effect="fold"
+						value="#{cajaMovimientoConsultasController.fechaFin}"
+						pattern="dd-MM-yyyy" mask="true">
+						<p:ajax event="change" update="form001" />
+						<p:ajax event="dateSelect" update="form001" />
+					</p:calendar>
+				</div>
+				<div class="col-md-4">
+					<p:splitButton value="Buscar" immediate="true" update="form001"
+						icon="fa fa-search" styleClass="Fs14 White GreenButton"
+						actionListener="#{cajaMovimientoConsultasController.consulta()}">
+						<p:menuitem value="Reporte Caja Resumido" update="form001"
+							icon="fa fa-file-text"
+							actionListener="#{cajaMovimientoConsultasController.verReporteResumido()}">
+						</p:menuitem>
+						<p:menuitem value="Reporte Caja Detallado" update="form001"
+							icon="fa fa-file-text"
+							actionListener="#{cajaMovimientoConsultasController.verReporteDetallado()}">
+						</p:menuitem>
+
+						<p:menuitem value="Rendicion Caja Chica" update="form001"
+							icon="fa fa-file-text"
+							actionListener="#{cajaMovimientoConsultasController.verReporteRendicion()}">
+						</p:menuitem>
+					</p:splitButton>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">LISTADO DE MOVIMIENTOS</h3>
+				
+					<h:commandLink>
+						<p:graphicImage library="img" name="excel.png" />
+						<p:dataExporter type="xls" target="singleDT"
+							fileName="cajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage library="img" name="pdf.png" height="20px" />
+						<p:dataExporter type="pdf" target="singleDT"
+							fileName="cajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage library="img" name="csv.png" />
+						<p:dataExporter type="csv" target="singleDT"
+							fileName="cajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage library="img" name="xml.png" />
+						<p:dataExporter type="xml" target="singleDT"
+							fileName="cajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+				</div>
+				<div class="form-group">
+
+					<p:dataTable id="singleDT" var="var"
+						value="#{cajaMovimientoConsultasController.cajaMovimientos}"
+						rowIndexVar="index" rowKey="#{var.id}" paginator="true"
+						emptyMessage="No se encontraron registros." reflow="true">
+
+						<p:ajax update="form001" event="rowSelect" />
+
+						<p:column headerText="Nº" width="8%" style="text-align:center;">
+							<h:outputText value="#{index+1}" style="font-size: 12px;" />
+						</p:column>
+						<p:column width="10%" headerText="Fecha Registro"
+							filterStyle="width: 100%; height:25px;" style="text-align:left;"
+							filterBy="#{var.fechaRegistro}" filterMatchMode="contains">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.fechaRegistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column width="20%" headerText="Concepto" filterBy="#{var.tipo}">
+							<h:outputText style="font-size: 12px;" value="#{var.descripcion}" />
+						</p:column>
+						<p:column width="10%" headerText="Importe" filterBy="#{var.monto}"
+							style="text-align:right;">
+							<h:outputText style="font-size: 12px;" value="#{var.monto}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
+						</p:column>
+
+
+
+						<p:column width="10%" headerText="Tipo" filterBy="#{var.tipo}">
+							<h:outputText style="font-size: 12px;"
+								rendered="#{var.tipo=='I'}" value="Ingreso" />
+							<h:outputText style="font-size: 12px;"
+								rendered="#{var.tipo=='E'}" value="Egreso" />
+						</p:column>
+
+						<p:column width="10%" headerText="Tipo Mov" filterBy="#{var.tipo}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.tipoMovimiento.label}" />
+						</p:column>
+
+						<p:column width="10%" headerText="Tipo Pago"
+							filterBy="#{var.tipoPago}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.tipoPago.label}" />
+						</p:column>
+
+						<p:column width="10%" headerText="Caja "
+							filterBy="#{var.cajaSesion.caja.nombre}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.cajaSesion.caja.nombre}" />
+						</p:column>
+
+						<f:facet name="footer">
+							<h:outputText style="font-size: 12px;"
+								value="#{cajaMovimientoConsultasController.cajaMovimientos.size()} Registros en Total" />
+						</f:facet>
+					</p:dataTable>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</ui:composition>

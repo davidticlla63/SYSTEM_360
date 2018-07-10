@@ -46,6 +46,10 @@ public class ParametroVenta implements Serializable {
 	
 	@Column(name="usuario_registro",nullable=false )
 	private String usuarioRegistro;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_empresa", nullable=true, referencedColumnName ="id")
+	private Empresa empresa;
 
 	public ParametroVenta() {
 		super();
@@ -154,6 +158,14 @@ public class ParametroVenta implements Serializable {
 
 	public void setContrato(String contrato) {
 		this.contrato = contrato;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 }
 
