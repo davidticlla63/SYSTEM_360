@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportKardex" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e927cf42-8539-40dd-8102-7448b23426c3">
+	<property name="ireport.zoom" value="1.4641000000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="usuario" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\WILSON\\workspacejbossdeveloper8\\erp360\\src\\main\\webapp\\resources\\report\\inventario\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="listaMovimientos" class="java.util.List"/>
+	<parameter name="producto" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<variable name="stock" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="64" splitType="Stretch">
+			<staticText>
+				<reportElement x="173" y="14" width="241" height="40" uuid="63433c49-c0a6-4fd8-80f4-316e992b49c4"/>
+				<textElement textAlignment="Center">
+					<font size="22" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Informe de Kardex]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="472" y="3" width="100" height="13" uuid="fe596374-524f-480a-899e-b43dd24ba17c"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="472" y="16" width="39" height="13" uuid="fe697c63-d895-4085-9a24-d248c64d562b"/>
+				<text><![CDATA[Pagina:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="511" y="16" width="50" height="13" uuid="66be7a2c-d4e3-4207-9346-db7cdea988a6"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="472" y="29" width="100" height="13" uuid="60faf2da-2437-40c4-83d6-88050b331541"/>
+				<textFieldExpression><![CDATA[$P{usuario}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="50">
+			<rectangle radius="5">
+				<reportElement x="0" y="0" width="572" height="50" uuid="a5d02134-c26c-4959-82c1-2b41016b6349"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="18" width="119" height="15" uuid="2b6f5d78-7108-4de2-866f-c00a4f13dae3"/>
+				<textElement>
+					<font fontName="SansSerif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRODUCTO :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="149" y="18" width="221" height="20" uuid="35b662f2-45e4-4215-9d81-5f23ada4fde8"/>
+				<textFieldExpression><![CDATA[$P{producto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="123" splitType="Stretch">
+			<subreport>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="3" width="572" height="114" uuid="fd71b0b4-2421-4507-9831-8aaf5df5e2bd"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{listaMovimientos})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Kardex_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

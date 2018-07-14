@@ -142,7 +142,9 @@
 						<p:outputLabel for="monto" value="Monto " />
 						<p:inputText id="monto"
 							value="#{cajaMovimientoController.cajaMovimiento.monto}"
-							 required="true" style="align:right;">
+							 required="true" style="align:right;" rendered="true">
+							 <f:convertNumber type="number" groupingUsed="true"
+								minFractionDigits="2" pattern="#0.00" />
 							<p:ajax event="change" update="montosus,monto"
 								listener="#{cajaMovimientoController.actualizarExtranjero}" />
 						</p:inputText>
@@ -151,7 +153,9 @@
 						<p:outputLabel for="montosus" value="Monto $us" />
 						<p:inputText id="montosus"
 							value="#{cajaMovimientoController.cajaMovimiento.montoExtranjero}"
-							 required="true" style="align:right;">
+							 required="true" style="align:right;" rendered="true">
+							 <f:convertNumber type="number" groupingUsed="true"
+								minFractionDigits="2" pattern="#0.00" />
 							<p:ajax event="change" update="montosus,monto"
 								listener="#{cajaMovimientoController.actualizarNacional}" />
 						</p:inputText>

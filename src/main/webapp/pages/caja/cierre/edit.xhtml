@@ -54,14 +54,14 @@
 						<p:message for="cajero" display="tooltip" />
 
 						<p:outputLabel for="suma" value="Total Efectivo " />
-						<p:inputText id="suma" 
-							value="#{cajaCierreController.totales}" readonly="true">
+						<p:inputText id="suma" value="#{cajaCierreController.totales}"
+							readonly="true">
 
 						</p:inputText>
 						<p:message for="suma" display="tooltip" />
 
 						<p:outputLabel for="montoCierre" value="Efectivo en Caja" />
-						<p:inputText id="montoCierre" 
+						<p:inputText id="montoCierre"
 							value="#{cajaCierreController.cajaSesion.montoFinal}"
 							required="true">
 							<p:ajax listener="#{cajaCierreController.actualizarDiferencia}"
@@ -70,7 +70,7 @@
 						<p:message for="montoCierre" display="tooltip" />
 
 						<p:outputLabel for="diferencia" value="Diferencia" />
-						<p:inputText id="diferencia" 
+						<p:inputText id="diferencia"
 							value="#{cajaCierreController.cajaSesion.diferencia}"
 							readonly="true">
 
@@ -80,10 +80,9 @@
 
 					</p:panelGrid>
 				</div>
-				<div class="Container50 Responsive100 NoIndent">
+				<div class="panel-body box-content no-padding">
 
 
-					<div class="EmptyBox10"></div>
 					<p:panelGrid id="grid" columns="3"
 						columnClasses="column1,column2,column3"
 						style="border:0px none; background-color:transparent; width: 100%;"
@@ -106,99 +105,84 @@
 						<p:outputLabel for="monto" value="Monto Base " />
 						<p:inputText id="monto"
 							value="#{cajaCierreController.cajaSesion.montoInicial}"
-							 readonly="true">
+							readonly="true">
 						</p:inputText>
 						<p:message for="monto" display="tooltip" />
 
 					</p:panelGrid>
 				</div>
+				</p:panel>
+
 			</div>
-			<div class="EmptyBox5"></div>
-			</p:panel>
-
 		</div>
-	</div>
+</div>
+		<!-- EMPIEZA LA PARTE DE DETALLE -->
+		<div class="row">
+			<div class="col-md-4">
+				<p:panel id="panelIngresos" header="INGRESOS">
 
-	<!-- EMPIEZA LA PARTE DE DETALLE -->
-	<div class="Container100 ui-fluid">
-		<div class="Card">
+					<p:panelGrid id="gridTotalIngresos" columns="3"
+						columnClasses="column1,column2,column3"
+						style="border:0px none; background-color:transparent; width: 100%;"
+						layout="grid" styleClass="ui-panelgrid-blank">
 
+						<p:outputLabel for="totalIngresos" value="Total Ingresos" />
+						<p:inputText id="totalIngresos" readonly="true" symbol="Bs. "
+							value="#{cajaCierreController.totalIngresos}">
+						</p:inputText>
+						<p:message for="totalIngresos" display="tooltip" />
+					</p:panelGrid>
+					<div class="EmptyBox10"></div>
+					<p:dataTable var="var" id="tablaDetalleIngresos"
+						value="#{cajaCierreController.listaIngresos}" reflow="true"
+						editable="true" emptyMessage="No se encontraron registros.">
 
-			<div class="EmptyBox10"></div>
+						<p:column width="30%" headerText="Tipo de Pago ">
+							<h:outputText value="#{var.tipoPago.label}" />
+						</p:column>
 
-			<div class="Container100 NoIndent">
-
-				<div class="Container50 Responsive100 NoIndent">
-					<p:panel id="panelIngresos" header="INGRESOS">
-
-						<div class="EmptyBox10"></div>
-
-						<p:panelGrid id="gridTotalIngresos" columns="3"
-							columnClasses="column1,column2,column3"
-							style="border:0px none; background-color:transparent; width: 100%;"
-							layout="grid" styleClass="ui-panelgrid-blank">
-
-							<p:outputLabel for="totalIngresos" value="Total Ingresos" />
-							<p:inputText id="totalIngresos" readonly="true" symbol="Bs. "
-								value="#{cajaCierreController.totalIngresos}">
-							</p:inputText>
-							<p:message for="totalIngresos" display="tooltip" />
-						</p:panelGrid>
-						<div class="EmptyBox10"></div>
-						<p:dataTable var="var" id="tablaDetalleIngresos"
-							value="#{cajaCierreController.listaIngresos}" reflow="true"
-							editable="true" emptyMessage="No se encontraron registros.">
-
-							<p:column width="30%" headerText="Tipo de Pago ">
-								<h:outputText value="#{var.tipoPago.label}" />
-							</p:column>
-
-							<p:column width="20%" headerText="Monto M/N">
-								<h:outputText value="#{var.suma}" />
-							</p:column>
+						<p:column width="20%" headerText="Monto M/N">
+							<h:outputText value="#{var.suma}" />
+						</p:column>
 
 
-						</p:dataTable>
-					</p:panel>
-				</div>
-
-				<div class="Container50 Responsive100 NoIndent">
-					<p:panel id="panelEgresos" header="EGRESOS">
-
-						<div class="EmptyBox10"></div>
-
-						<p:panelGrid id="gridTotalEgresos" columns="3"
-							columnClasses="column1,column2,column3"
-							style="border:0px none; background-color:transparent; width: 100%;"
-							layout="grid" styleClass="ui-panelgrid-blank">
-
-							<p:outputLabel for="totalEgresos" value="Total Egresos" />
-							<p:inputText id="totalEgresos" readonly="true" 
-								value="#{cajaCierreController.totalEgresos}">
-							</p:inputText>
-							<p:message for="totalEgresos" display="tooltip" />
-						</p:panelGrid>
-						<div class="EmptyBox10"></div>
-
-						<p:dataTable var="var" id="tablaDetalleEgresos"
-							value="#{cajaCierreController.listaEgresos}" reflow="true"
-							editable="true" emptyMessage="No se encontraron registros.">
-
-							<p:column width="30%" headerText="Tipo de Pago">
-								<h:outputText value="#{var.tipoPago.label}" />
-							</p:column>
-
-							<p:column width="20%" headerText="Monto M/N">
-								<h:outputText value="#{var.suma}" />
-							</p:column>
-
-						</p:dataTable>
-					</p:panel>
-				</div>
+					</p:dataTable>
+				</p:panel>
 			</div>
-
-			<!-- DATATABLE -->
 		</div>
-	</div>
+		<div class="row">
+			<div class="col-md-4">
+				<p:panel id="panelEgresos" header="EGRESOS">
 
+					<p:panelGrid id="gridTotalEgresos" columns="3"
+						columnClasses="column1,column2,column3"
+						style="border:0px none; background-color:transparent; width: 100%;"
+						layout="grid" styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="totalEgresos" value="Total Egresos" />
+						<p:inputText id="totalEgresos" readonly="true"
+							value="#{cajaCierreController.totalEgresos}">
+						</p:inputText>
+						<p:message for="totalEgresos" display="tooltip" />
+					</p:panelGrid>
+					<div class="EmptyBox10"></div>
+
+					<p:dataTable var="var" id="tablaDetalleEgresos"
+						value="#{cajaCierreController.listaEgresos}" reflow="true"
+						editable="true" emptyMessage="No se encontraron registros.">
+
+						<p:column width="30%" headerText="Tipo de Pago">
+							<h:outputText value="#{var.tipoPago.label}" />
+						</p:column>
+
+						<p:column width="20%" headerText="Monto M/N">
+							<h:outputText value="#{var.suma}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:panel>
+			</div>
+		</div>
+
+		<!-- DATATABLE -->
 </ui:composition>

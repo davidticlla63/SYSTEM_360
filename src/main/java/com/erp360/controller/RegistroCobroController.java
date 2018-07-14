@@ -193,6 +193,10 @@ public class RegistroCobroController implements Serializable {
 	}
 
 	public void loadDialogCollectMoney(){
+		if (sessionMain.getCajaSesion()==null) {
+			FacesUtil.infoMessage("Verificación", "No hay Cajas abiertas con el Cajero : "+sessionMain.getUsuarioLogin().getNombre());
+			return;
+		}
 		FacesUtil.updateComponent("formModalCobro");
 		FacesUtil.showModal("m-r-2");
 	}

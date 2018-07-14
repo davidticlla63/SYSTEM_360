@@ -194,4 +194,11 @@ try {
 	}
 
 
+	@Override
+	public  boolean esCajero(Usuario usuario,Caja caja){
+		String query="select c from Caja c join c.listaUsuarios lu join lu.usuario us where us.id= "+usuario.getId()+" and c.id="+caja.getId()+" and c.opcion='CE'";
+		return executeQueryResulList(query).size()>0;
+	}
+	
+	
 }

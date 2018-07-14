@@ -123,11 +123,11 @@
 				</a><a data-toggle="offcanvas" class="sidebar-toggle pull-right"><i
 					class="fa fa-bars"></i></a>
 			</div>
-			<nav role="navigation" class="navbar navbar-static-top">
-<p:outputLabel style="font-size:11px;" value="CAJA: " />
-						#{sessionMain.caja.toUpperCase()} 
+			<nav role="navigation" class="navbar navbar-static-top"> <p:outputLabel
+				style="font-size:11px;" value="CAJA: " />
+			#{sessionMain.caja.toUpperCase()}
 			<div class="navbar-right">
-			
+
 				<ul class="nav navbar-nav">
 
 					<!-- PERFIL Y FOTOGRAFIA -->
@@ -259,7 +259,7 @@
 								href="#{request.contextPath}/pages/cliente/index.xhtml"> <i
 									class="icon-globe"></i><span class="sidebar-text">Gestionar</span>
 							</a></li>
-							
+
 							<li
 								class="#{(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}"><a
 								href="#{request.contextPath}/pages/cliente/kardex/index.xhtml">
@@ -313,11 +313,11 @@
 									</a></li>
 								</ui:fragment>
 								<li
-								class="#{(view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/cliente/cuenta_cobrar/index.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Cuentas
-										Por Cobrar</span>
-							</a></li>
+									class="#{(view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :'inactive'}"><a
+									href="#{request.contextPath}/pages/cliente/cuenta_cobrar/index.xhtml">
+										<i class="icon-globe"></i><span class="sidebar-text">Cuentas
+											Por Cobrar</span>
+								</a></li>
 								<ui:fragment
 									rendered="#{sessionMain.verificarPermiso('PARAMETRIZACION COBRANZA')}">
 									<li
@@ -500,6 +500,56 @@
 						</li>
 					</ui:fragment>
 
+
+					<ui:fragment
+						rendered="#{sessionMain.verificarPermiso('PARAMETROS CAJA') 
+						or sessionMain.verificarPermiso('APERTURA CAJA')
+						or sessionMain.verificarPermiso('CIERRE CAJA')
+						or sessionMain.verificarPermiso('MOVIMIENTO CAJA')}">
+						<li
+							class="#{(view.viewId.equals('/pages/caja/param/index.xhtml')) ? 'active' : (view.viewId.equals('/pages/caja/apertura/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/caja/cierre/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/caja/movimiento/index.xhtml')) ? 'active':'inactive'}">
+							<a href="#"><i class="icon-bar-chart"></i><span
+								class="sidebar-text">Caja</span></a>
+							<ul class="nav nav-second-level">
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('PARAMETROS CAJA')}">
+									<li
+										class="#{(view.viewId.equals('/pages/caja/param/index.xhtml')) ? 'active' :'inactive'}"><a
+										href="#{request.contextPath}/pages/caja/param/index.xhtml">
+											<i class="icon-notebook"></i> <span class="sidebar-text">Parametros
+												Caja</span>
+									</a></li>
+								</ui:fragment>
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('APERTURA CAJA')}">
+									<li
+										class="#{(view.viewId.equals('/pages/caja/apertura/index.xhtml')) ? 'active' :'inactive'}"><a
+										href="#{request.contextPath}/pages/caja/apertura/index.xhtml">
+											<i class="icon-notebook"></i> <span class="sidebar-text">Apertura
+												Caja</span>
+									</a></li>
+								</ui:fragment>
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('CIERRE CAJA')}">
+									<li
+										class="#{(view.viewId.equals('/pages/caja/cierre/index.xhtml')) ? 'active' :'inactive'}"><a
+										href="#{request.contextPath}/pages/caja/cierre/index.xhtml">
+											<i class="icon-notebook"></i> <span class="sidebar-text">Cierre
+												Caja</span>
+									</a></li>
+								</ui:fragment>
+								<ui:fragment
+									rendered="#{sessionMain.verificarPermiso('MOVIMIENTO CAJA')}">
+									<li
+										class="#{(view.viewId.equals('/pages/caja/movimiento/index.xhtml')) ? 'active' :'inactive'}"><a
+										href="#{request.contextPath}/pages/caja/movimiento/index.xhtml">
+											<i class="icon-notebook"></i> <span class="sidebar-text">Movimiento
+												Caja</span>
+									</a></li>
+								</ui:fragment>
+							</ul>
+						</li>
+					</ui:fragment>
 					<ui:fragment
 						rendered="#{sessionMain.verificarPermiso('CUENTAS CLIENTE') or sessionMain.verificarPermiso('VENTAS')}">
 						<li

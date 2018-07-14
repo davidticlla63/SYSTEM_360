@@ -20,14 +20,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.event.SelectEvent;
 
+import com.erp360.enums.TipoMovimiento;
+import com.erp360.enums.TipoPago;
 import com.erp360.interfaces.ICajaMovimientoDao;
 import com.erp360.interfaces.ICajaSesionDao;
+import com.erp360.model.CajaMovimiento;
 import com.erp360.model.CajaSesion;
 import com.erp360.model.Empresa;
 import com.erp360.model.Usuario;
 import com.erp360.util.CajaIngreso;
 import com.erp360.util.EDFlujoCaja;
 import com.erp360.util.FacesUtil;
+import com.erp360.util.FacturacionUtil;
 import com.erp360.util.SessionMain;
 
 
@@ -181,15 +185,32 @@ public class CajaCierreController {
 		cajaSesion.setProcesada(true);
 		
 		
+		CajaMovimiento cajaMovimiento= new CajaMovimiento();
+		cajaMovimiento.setCajaSesion(cajaSesion);
+		cajaMovimiento.setMonto(cajaSesion.getMontoFinal());
+		cajaMovimiento.setMontoExtranjero(cajaSesion.getMontoFinal()/sessionDao.getTipoCambio().getUnidad());
+		cajaMovimiento.setDescripcion("Cierre de Caja :"+cajaSesion.getCaja().getNombre());
+		cajaMovimiento.setTipo("E");
+		cajaMovimiento.setTipoMovimiento(TipoMovimiento.CIE);
+		cajaMovimiento.setTipoPago(TipoPago.EFE);
+		cajaMovimiento.setTipoCambio(sessionDao.getTipoCambio().getUnidad());
+		cajaMovimiento.setFechaModificacion(new Date());
+		cajaMovimiento.setFechaRegistro(new Date());
+		cajaMovimiento.setSucursal(sessionDao.getSucursalLogin());
+		cajaMovimiento.setMontoLiteral(FacturacionUtil.obtenerMontoLiteral(cajaMovimiento.getMonto()));
+		cajaMovimiento.setRazonSocial(sessionDao.getUsuarioLogin().getNombre());
+//		cajaMovimiento.setSaldoExtranjero(cajaMovimiento.getMontoExtranjero());
+//		cajaMovimiento.setSaldoNacional(cajaMovimiento.getMonto());
+		cajaSesion.getListaCajaMovimientos().add(cajaMovimiento);
 		boolean co=false;
 		co= cajaSesionDao.modificar(cajaSesion);
 		if (co) {
 			sessionDao.setCajaSesion(null);
 			reporteCierre();
-		       FacesUtil.updateComponent("formReporte");
-		        FacesUtil.showDialog("dlgReporte");
+//		       FacesUtil.updateComponent("formReporte");
+//		        FacesUtil.showDialog("dlgReporte");
+//		        currentPage = "/pages/caja/cierre/list.xhtml";
 			loadDefault();				
-//			currentPage = "/pages/caja/cierre/list.xhtml";
 		} else {
 			FacesUtil.infoMessage("Informacion", "El detalle no debe estar vacio");
 		}
@@ -237,7 +258,7 @@ public class CajaCierreController {
 				System.out.println("Fallo en "+e.toString());
 			}
 			//resetearValores();
-			currentPage = "/pages/inventario/reporte/reporte.xhtml";
+			currentPage = "/pages/caja/cierre/report.xhtml";
 	//	}else{
 
 		//	FacesUtil.showDialog("dlg2"); 

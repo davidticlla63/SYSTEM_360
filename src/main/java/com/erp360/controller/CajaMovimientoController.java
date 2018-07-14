@@ -27,6 +27,7 @@ import com.erp360.model.CajaMovimiento;
 import com.erp360.model.CajaSesion;
 import com.erp360.model.ParametroVenta;
 import com.erp360.util.FacesUtil;
+import com.erp360.util.FacturacionUtil;
 import com.erp360.util.SessionMain;
 
 /**
@@ -127,13 +128,13 @@ public class CajaMovimientoController implements Serializable {
 					.getNombre());
 			cajaMovimiento.setFechaRegistro(new Date());
 			cajaMovimiento.setProcesada(false);
-
+			cajaMovimiento.setMontoLiteral(FacturacionUtil.obtenerMontoLiteral(cajaMovimiento.getMonto()));
 			CajaMovimiento co = null;
 			co = cajaMovimientoDao.registrar(cajaMovimiento);
 
 			if (co != null) {
 				verReporte();
-				loadDefault();
+				//loadDefault();
 				// currentPage = "/pages/caja/movimiento/list.xhtml";
 			} else {
 				FacesUtil.infoMessage("Informacion", "ERROR AL INSERTAR");
@@ -157,13 +158,15 @@ public class CajaMovimientoController implements Serializable {
 	}
 
 	public void actualizarExtranjero(AjaxBehaviorEvent event) {
-		cajaMovimiento.setMontoExtranjero(cajaMovimiento.getMonto() / 6.9);
+		cajaMovimiento.setMontoExtranjero(cajaMovimiento.getMonto() / sessionDao.getTipoCambio().getUnidad());
+		cajaMovimiento.setTipoCambio(sessionDao.getTipoCambio().getUnidad());
 		// cajaMovimiento.setMontoExtranjero(cajaMovimiento.getMonto()
 		// / sessionDao.getTipoCambioActual().getUnidad());
 	}
 
 	public void actualizarNacional(AjaxBehaviorEvent event) {
-		cajaMovimiento.setMonto(cajaMovimiento.getMontoExtranjero() * 6.9);
+		cajaMovimiento.setMonto(cajaMovimiento.getMontoExtranjero() * sessionDao.getTipoCambio().getUnidad());
+		cajaMovimiento.setTipoCambio(sessionDao.getTipoCambio().getUnidad());
 		// cajaMovimiento.setMonto(cajaMovimiento.getMontoExtranjero()
 		// * sessionDao.getTipoCambioActual().getUnidad());
 	}
@@ -220,6 +223,7 @@ public class CajaMovimientoController implements Serializable {
 		try {
 			setVer(true);
 			registrar = true;
+			nuevo=false;
 			System.out.println("Ingreso a verReporteResumido");
 			HttpServletRequest request = (HttpServletRequest) facesContext
 					.getCurrentInstance().getExternalContext().getRequest();

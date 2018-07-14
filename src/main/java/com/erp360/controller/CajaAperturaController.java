@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.event.SelectEvent;
 
+import com.erp360.enums.TipoMovimiento;
+import com.erp360.enums.TipoPago;
 import com.erp360.interfaces.ICajaDao;
 import com.erp360.interfaces.ICajaMovimientoDao;
 import com.erp360.interfaces.ICajaSesionDao;
@@ -26,8 +28,10 @@ import com.erp360.model.Caja;
 import com.erp360.model.CajaMovimiento;
 import com.erp360.model.CajaSesion;
 import com.erp360.model.Empresa;
+import com.erp360.model.MovimientoCaja;
 import com.erp360.model.Usuario;
 import com.erp360.util.FacesUtil;
+import com.erp360.util.FacturacionUtil;
 import com.erp360.util.SessionMain;
 import com.erp360.util.Time;
 
@@ -330,6 +334,7 @@ public class CajaAperturaController {
 			registrar = true;
 			cajaSesion = new CajaSesion();
 			usuario = sessionDao.getUsuarioLogin();
+			
 			currentPage = "/pages/caja/apertura/edit.xhtml";
 		} else {
 			this.mensaje = "CAJA "
@@ -344,13 +349,35 @@ public class CajaAperturaController {
 
 	public void procesar() {
 
+		if (!cajaDao.esCajero(usuario, cajaSesion.getCaja())) {
+			FacesUtil.infoMessage("Informacion", usuario.getNombre()+ " no es cajero de : "+cajaSesion.getCaja().getNombre());
+			return;
+		}
 		cajaSesion.setEstado("AC");
 		cajaSesion.setFechaApertura(new Date());
 		cajaSesion.setUsuarioRegistro(sessionDao.getUsuarioLogin().getNombre());
 		cajaSesion.setUsuario(sessionDao.getUsuarioLogin());
 		cajaSesion.setFechaRegistro(new Date());
 		cajaSesion.setProcesada(false);
-
+		CajaMovimiento movimientoCaja= new CajaMovimiento();
+		
+		
+		movimientoCaja.setCajaSesion(cajaSesion);
+		movimientoCaja.setMonto(cajaSesion.getMontoInicial());
+		movimientoCaja.setMontoExtranjero(cajaSesion.getMontoInicial()/sessionDao.getTipoCambio().getUnidad());
+		movimientoCaja.setDescripcion("Apertura Caja :"+cajaSesion.getCaja().getNombre());
+		movimientoCaja.setTipo("I");
+		movimientoCaja.setTipoMovimiento(TipoMovimiento.APE);
+		movimientoCaja.setTipoPago(TipoPago.EFE);
+		movimientoCaja.setTipoCambio(sessionDao.getTipoCambio().getUnidad());
+		movimientoCaja.setFechaModificacion(new Date());
+		movimientoCaja.setFechaRegistro(new Date());
+		movimientoCaja.setSucursal(sessionDao.getSucursalLogin());
+		movimientoCaja.setMontoLiteral(FacturacionUtil.obtenerMontoLiteral(movimientoCaja.getMonto()));
+		movimientoCaja.setRazonSocial(sessionDao.getUsuarioLogin().getNombre());
+//		movimientoCaja.setSaldoExtranjero(movimientoCaja.getMontoExtranjero());
+//		movimientoCaja.setSaldoNacional(movimientoCaja.getMonto());
+		cajaSesion.getListaCajaMovimientos().add(movimientoCaja);
 		CajaSesion co = cajaSesionDao.registrar(cajaSesion);
 
 		if (co != null) {
@@ -394,6 +421,9 @@ public class CajaAperturaController {
 
 	public void onSelectCaja(SelectEvent event) {
 		cajaSesion.setCaja((Caja) event.getObject());
+		if (!cajaDao.esCajero(usuario, cajaSesion.getCaja())) {
+			FacesUtil.infoMessage("Informacion", usuario.getNombre()+ " no es cajero de : "+cajaSesion.getCaja().getNombre());
+		}
 
 	}
 

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.primefaces.event.CaptureEvent;
 import org.primefaces.event.SelectEvent;
 
+import com.erp360.caja.behaviors.CajaServicio;
 import com.erp360.dao.AlmacenProductoDao;
 import com.erp360.dao.ClienteAdicionalDao;
 import com.erp360.dao.ClienteDao;
@@ -150,11 +151,17 @@ public class NotaVentaController implements Serializable {
 	public void init() {
 		empresaSession = sessionMain.getEmpresaLogin();
 		gestionSesion = sessionMain.getGestionLogin();
+//		System.out.println("empresa "+sessionMain.getEmpresaLogin().getRazonSocial());
+//		System.out.println("usuario "+sessionMain.getUsuarioLogin().getLogin());
+//		CajaSesion cajaSesion= cajaSesionDao.obtenerPorUsuarioyEmpresa(sessionMain.getUsuarioLogin(), sessionMain.getEmpresaLogin());
+//		System.out.println("caja session "+cajaSesion.getObservacion());
 		loadTypeOrder();
 		//text = "";
 	}
 
 	public void loadDefault(){
+		
+		
 		pendingQuotation = false;
 		modoVista = false;
 		urlReporteNotaCargo = "";
@@ -591,6 +598,10 @@ public class NotaVentaController implements Serializable {
 	}
 
 	public void loadPagoCliente(){
+		if (sessionMain.getCajaSesion()==null) {
+			FacesUtil.infoMessage("Verificación", "No hay Cajas abiertas con el Cajero : "+sessionMain.getUsuarioLogin().getNombre());
+			return;
+		}
 		if(selectedCliente.getId() == 0){
 			FacesUtil.infoMessage("Verificación", "Seleccione un cliente");
 			return;
@@ -701,6 +712,7 @@ public class NotaVentaController implements Serializable {
 		notaVenta.setEncargadoVenta(selectedVendedor);
 		NotaVenta nv = notaVentaDao.registrar(observacion,sessionMain.getUsuarioLogin(),notaVenta,listDetalleNotaVenta,listPlanPago,gestionSesion,selectedParametroInventario,selectedParametroCobranza ,selectedParametroVenta);
 		if(nv != null){
+			//CajaMovimiento c=cajaMovimientoDao.registrar(cajaServicio.IngresoPorVenta(notaVenta));
 			cargarReporteAmortizacion();
 			cargarReporteContrato();
 			closeModalPlanPago();

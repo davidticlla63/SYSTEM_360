@@ -44,6 +44,10 @@ public class Sucursal implements Serializable {
     @JoinColumn(name="id_empresa", nullable=false)
 	private Empresa empresa;
 	
+	@ManyToOne(fetch=FetchType.LAZY, optional=true)
+    @JoinColumn(name="id_ciudad", nullable=true)
+	private Ciudad ciudad;
+	
 	@Size(max = 2) //AC , IN
 	private String estado;
 	
@@ -192,5 +196,15 @@ public class Sucursal implements Serializable {
 
 	public void setActividad(String actividad) {
 		this.actividad = actividad;
+	}
+
+	
+
+	public Ciudad getCiudad() {
+		return ciudad;
+	}
+
+	public void setCiudad(Ciudad ciudad) {
+		this.ciudad = ciudad;
 	}
 }
