@@ -203,6 +203,17 @@ public abstract class DataAccessObjectGeneric<T> {
 						cb.equal(object.get(parameterTwo), valorTwo)));
 		return this.em.createQuery(criteria).getResultList();
 	}
+	
+	public List<T> findAllByParameterObjectTheeQueryOr(String parameter,
+			String parameterTwo,String parameterThree, Object valor, Object valorTwo, Object valorThree) {
+		CriteriaBuilder cb = this.em.getCriteriaBuilder();
+		CriteriaQuery<T> criteria = cb.createQuery(this.typeT);
+		Root<T> object = criteria.from(this.typeT);
+		criteria.select(object).where(
+				cb.or(cb.equal(object.get(parameter), valor),
+						cb.equal(object.get(parameterTwo), valorTwo),cb.equal(object.get(parameterThree), valorThree)));
+		return this.em.createQuery(criteria).getResultList();
+	}
 
 	public List<T> findAllActiveByParameter(String parameter, Object valor) {
 		CriteriaBuilder cb = this.em.getCriteriaBuilder();

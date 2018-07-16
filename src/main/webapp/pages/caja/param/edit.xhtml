@@ -68,77 +68,27 @@
 			</div>
 		</div>
 
-		<div class="col-md-4">
+		<div class="col-md-8">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">LISTA USUARIO</h3>
 				</div>
 				<!-- start here datatable -->
 				<div class="panel-body box-content no-padding">
-					<p:dataTable id="singleDT1" var="var"
-						value="#{cajaController.listaUsuariosSeleccionados}"
-						selectionMode="single" selection="#{cajaController.caja}"
-						rowKey="#{var.id}"
-						style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
-						emptyMessage="No se encontraron registros." reflow="true">
+					<p:pickList id="pickList" value="#{cajaController.listaUsuarios}"
+						var="f" itemLabel="#{f.nombre}" itemValue="#{f}"
+						filterMatchMode="contains" responsive="true"
+						converter="primeFacesPickListConverter" showSourceFilter="true"
+						showTargetFilter="true">
+						<f:facet name="sourceCaption">Usuarios Sistema</f:facet>
+						<f:facet name="targetCaption">Usuarios Asignados</f:facet>
+					</p:pickList>
 
-						<p:ajax update="form001" event="rowSelect"
-							listener="#{cajaController.onRowSelect}" />
-
-						<p:column width="60%" headerText="Usuario"
-							style="text-align:center;"
-							filterStyle="width: 100%; height:25px;" filterBy="#{var.nombre}">
-							<h:outputText style="font-size: 12px;" value="#{var.nombre}" />
-						</p:column>
-
-						<p:column width="18%" headerText="Nombre"
-							style="text-align:center;"
-							filterStyle="width: 100%; height:25px;" filterBy="#{var.login}">
-							<h:outputText style="font-size: 12px;" value="#{var.login}" />
-						</p:column>
-
-
-						<p:column width="10%" headerText="Fecha Registro"
-							style="text-align:center;"
-							filterStyle="width: 100%; height:25px;"
-							filterBy="#{var.fechaRegistro}">
-							<h:outputText style="font-size: 12px;"
-								value="#{var.fechaRegistro}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputText>
-						</p:column>
-						<f:facet name="footer">
-							<h:outputText style="font-size: 12px;"
-								value="#{cajaController.listaUsuariosSeleccionados.size()} Registros en Total" />
-						</f:facet>
-					</p:dataTable>
+					
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- 	<div class="Container100 ui-fluid"> -->
-
-	<!-- 		<div class="Card"> -->
-	<!-- 			<p:panel id="panelcabecera" header="CAJA"> -->
-	<!-- 				<div class="Container100 NoIndent"> -->
-
-
-	<!-- 					<div class="Container50 Responsive100 NoIndent"> -->
-	<!-- 						<div class="EmptyBox10"></div> -->
-	<!-- 						<p:pickList id="pickList" value="#{cajaController.listaUsuarios}" -->
-	<!-- 							var="f" itemLabel="#{f.nombre}" itemValue="#{f}" -->
-	<!-- 							filterMatchMode="contains" responsive="true" -->
-	<!-- 							converter="primeFacesPickListConverter" showSourceFilter="true" -->
-	<!-- 							showTargetFilter="true"> -->
-	<!-- 							<f:facet name="sourceCaption">Usuarios Sistema</f:facet> -->
-	<!-- 							<f:facet name="targetCaption">Usuarios Asignados</f:facet> -->
-	<!-- 						</p:pickList> -->
-	<!-- 					</div> -->
-	<!-- 				</div> -->
-	<!-- 				<div class="EmptyBox5"></div> -->
-	<!-- 			</p:panel> -->
-
-	<!-- 		</div> -->
-	<!-- 	</div> -->
+	
 
 </ui:composition>

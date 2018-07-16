@@ -47,5 +47,6 @@ public interface ICajaDao {
 	//List<Caja> obtenerTodasPorEmpresa();
 	//List<Caja> onComplete(String query);
 	List<Caja> obtenerPorEmpresa(String nombre, Empresa empresa);
+	boolean esCajero(Usuario usuario, Caja caja);
   
 }

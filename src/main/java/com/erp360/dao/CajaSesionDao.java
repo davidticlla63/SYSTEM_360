@@ -253,6 +253,7 @@ implements ICajaSesionDao {
 	@Override
 	public CajaSesion obtenerPorUsuarioyEmpresa(Usuario usuario, Empresa empresa){
 		//Falta validar Por usuario y compañia	
+		System.out.println("obtenerPorUsuarioyEmpresa..");
 		String query =  "select c from CajaSesion c where c.procesada=false and c.caja.empresa.id="+empresa.getId()+" and c.usuario.id="+usuario.getId()+" ORDER BY c.id DESC ";
 		System.out.println("query : "+query);
 		Query q = getEntityManager().createQuery(query);

@@ -15,6 +15,7 @@ import com.erp360.dao.PrivilegioDao;
 import com.erp360.dao.TipoCambioDao;
 import com.erp360.dao.UsuarioDao;
 import com.erp360.dao.UsuarioRolDao;
+import com.erp360.interfaces.ICajaSesionDao;
 import com.erp360.interfaces.IUsuarioSucursalDao;
 import com.erp360.model.CajaSesion;
 import com.erp360.model.Empresa;
@@ -54,6 +55,7 @@ public class SessionMain implements Serializable {
 	private @Inject TipoCambioDao tipoCambioDao;
 	private @Inject IUsuarioSucursalDao usuarioSucursalDao;
 	
+	
 	//Object
 	private Usuario usuarioLogin;
 	private Empresa empresaLogin;
@@ -75,17 +77,17 @@ public class SessionMain implements Serializable {
 		usuarioLogin = null;
 		setEmpresaLogin(null);
 		gestionLogin = null;
-		
+		sucursalLogin= new Sucursal();
 		pathFisico = "";
 		urlPath = "";
 		
-		tipoCambio = tipoCambioDao.obtenerPorEmpresaYFecha(getEmpresaLogin(), new Date());
+		tipoCambio = tipoCambioDao.obtenerPorEmpresaYFecha(getEmpresaLogin(), new Date());		
 		System.out.println("tipoCambio: "+tipoCambio);
 		if( tipoCambio == null ){
 			Date fechaActual = new Date();
 			TipoCambio tipoCambio2 = tipoCambioDao.obtenerUltimoRegistro(getEmpresaLogin());
 			System.out.println("tipoCambio2: "+tipoCambio2);
-			tipoCambio2.setId(0);
+			tipoCambio2.setId(null);
 			tipoCambio2.setFecha(fechaActual);
 			tipoCambio2.setFechaRegistro(fechaActual);
 			tipoCambio2.setUsuarioRegistro("system");
@@ -276,6 +278,7 @@ public class SessionMain implements Serializable {
 		this.tipoCambio = tipoCambio;
 	}
 	public CajaSesion getCajaSesion() {
+		//setCajaSesion(cajaSesionDao.obtenerPorUsuarioyEmpresa(getUsuarioLogin(), getEmpresaLogin()));
 		return cajaSesion;
 	}
 
@@ -297,6 +300,11 @@ public class SessionMain implements Serializable {
 	}
 
 	public Sucursal getSucursalLogin() {
+		if (sucursalLogin==null) {
+			sucursalLogin = new Sucursal();
+			sucursalLogin.setId(1);
+			sucursalLogin.setNombre("CASA MATRIZ");
+		}else
 		if (sucursalLogin.getId().equals(0)) {
 			List<UsuarioSucursal> listAux = usuarioSucursalDao
 					.obtenerTodosPorUsuario(getUsuarioLogin());

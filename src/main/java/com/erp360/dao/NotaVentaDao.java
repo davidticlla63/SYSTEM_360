@@ -9,8 +9,11 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import com.erp360.caja.behaviors.CajaServicio;
+import com.erp360.interfaces.ICajaMovimientoDao;
 import com.erp360.model.Almacen;
 import com.erp360.model.AlmacenProducto;
+import com.erp360.model.CajaMovimiento;
 import com.erp360.model.Cliente;
 import com.erp360.model.CuentaCobrar;
 import com.erp360.model.DetalleNotaVenta;
@@ -38,7 +41,7 @@ import com.erp360.util.W;
  */
 
 @Stateless
-public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta,PlanCobranza,OrdenSalida,DetalleOrdenSalida, AlmacenProducto, KardexProducto, U, V, W> {
+public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta,PlanCobranza,OrdenSalida,DetalleOrdenSalida, AlmacenProducto, KardexProducto, CajaMovimiento, V, W> {
 
 	private @Inject MovimientoCajaDao movimientoCajaDao;
 	private @Inject CuentaCobrarDao deudaClienteDao;
@@ -46,9 +49,11 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 	private @Inject OrdenSalidaDao ordenSalidaDao;
 	private @Inject KardexClienteDao kardexClienteDao;
 	private @Inject KardexProductoDao kardexProductoDao;
+	private @Inject ICajaMovimientoDao cajaMovimientoDao;
+	private @Inject CajaServicio cajaServicio;
 
 	public NotaVentaDao(){
-		super(NotaVenta.class,DetalleNotaVenta.class,PlanCobranza.class,OrdenSalida.class,DetalleOrdenSalida.class,AlmacenProducto.class,KardexProducto.class);
+		super(NotaVenta.class,DetalleNotaVenta.class,PlanCobranza.class,OrdenSalida.class,DetalleOrdenSalida.class,AlmacenProducto.class,KardexProducto.class,CajaMovimiento.class);
 	}
 	
 	public NotaVenta anularNotaVenta(NotaVenta notaVenta, Almacen almacen){
@@ -357,6 +362,8 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 				movimientoCaja = movimientoCajaDao.registrarBasic(movimientoCaja);
 				notaVenta.setMovimientoCaja(movimientoCaja);
 				notaVenta = create(notaVenta);
+				//caja movimiento
+				CajaMovimiento c=cajaMovimientoDao.create(cajaServicio.IngresoPorVenta(notaVenta));
 				movimientoCaja.setNumeroDocumento(notaVenta.getCodigo());
 				//kardex cliente
 				KardexCliente kcEgreso = generarKardexEgreso(notaVenta,notaVenta.getCliente(),notaVenta.getFechaRegistro(),notaVenta.getCodigo(),notaVenta.getTipoCambio(),notaVenta.getMontoTotalExtranjero(),notaVenta.getMontoTotal(),notaVenta.getMontoReservaExtranjero(),notaVenta.getMontoReserva(),notaVenta.getEstadoPago(),notaVenta.getUsuarioRegistro());

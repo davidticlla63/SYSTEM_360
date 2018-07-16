@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="head">
+		<h:outputScript name="js/validator.js" library="mbr" />
+	</ui:define>
+	<ui:define name="content">
+		<div class="content">
+			<section class="main-content">
+				<h:form id="form001">
+					<!-- top buttons-->
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink icon="fa fa-arrow-left"
+											rendered="#{cajaCierreController.registrar}"
+											styleClass="btn btn-warning ion-minus-circled"
+											value="Cancelar" update="form001" immediate="true"
+											actionListener="#{cajaCierreController.actionCancelar()}">
+										</p:commandLink>
+										<p:commandLink icon="fa fa-plus"
+											rendered="#{cajaCierreController.nuevo}"
+											styleClass="btn btn-success ion-checkmark"
+											value="Cerrar Caja" update="form001" immediate="true"
+											actionListener="#{cajaCierreController.actionCerrarCaja()}">
+										</p:commandLink>
+										<p:commandLink icon="fa fa-floppy-o"
+											rendered="#{cajaCierreController.registrar}"
+											styleClass="btn btn-primary ion-checkmark" value="Confirmar"
+											update="form001"
+											actionListener="#{cajaCierreController.cerrarCaja()}">
+										</p:commandLink>
+
+
+
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<p:breadCrumb>
+										<p:menuitem value="." url="/dashboard.xhtml" />
+										<p:menuitem value="Caja"
+											url="/pages/inventario/proceso/orden_traspaso/index.xhtml" />
+										<p:menuitem value="Cierre"
+											url="/pages/inventario/proceso/orden_traspaso/index.xhtml" />
+
+									</p:breadCrumb>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- center boxes -->
+						<ui:include src="#{cajaCierreController.currentPage}" />
+
+					<p:growl id="growl" showDetail="true" />
+					<ui:include src="/WEB-INF/confirmation.xhtml" />
+				</h:form>
+			</section>
+		</div>
+		<!-- BEGIN DIALOG -->
+		<!-- BEGIN DIALOG -->
+		<p:dialog header="Informacion" widgetVar="dlg2" modal="true"
+			height="100">
+			<h:form id="form002">
+				<h:outputText value="#{cajaCierreController.mensaje}" />
+			</h:form>
+		</p:dialog>
+
+		<!-- BEGIN DIALOG -->
+		<p:dialog header="REPORTE" widgetVar="dlgReporte" id="report"
+			responsive="true" modal="true" resizable="false" closable="true">
+			<h:form id="formReporte">
+				<p:media cache="false" value="/reporteLista" player="pdf"
+					width="900" height="600" />
+			</h:form>
+		</p:dialog>
+		<!-- END DIALOG -->
+	</ui:define>
+
+</ui:composition>

@@ -542,25 +542,17 @@ public abstract class DataAccessObjectJpa<T, E, R, S, O, P, Q, U, V, W> implemen
 
 	@Override
 	public void beginTransaction() {
-		//tx = em.getTransaction();
-		//if (!tx.isActive()) {
-		//	System.out.println("EXECUTE BEGIN TRANSACTION");
-		//	tx.begin();
-		//}
+
 	}
 
 	@Override
 	public void commitTransaction() {
-		//System.out.println("EXECUTE COMMIT");
-		//tx.commit();
+
 	}
 
 	@Override
 	public void rollbackTransaction() {
-		//if (!tx.isActive()) {
-		//	System.out.println("EXECUTE ROLLBACK");
-		//	tx.rollback();
-		//}
+
 	}
 
 	@Override

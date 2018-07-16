@@ -1,0 +1,188 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<style type="text/css">
+.column1 {
+	width: 25%;
+	height: auto
+}
+
+.column2 {
+	width: 50%;
+	height: auto
+}
+
+.column3 {
+	width: 20%;
+	height: auto
+}
+</style>
+
+
+	<div class="row">
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">CIERRE DE CAJA</h3>
+				</div>
+				<!-- start here datatable -->
+				<div class="panel-body box-content no-padding">
+					<!-- center boxes -->
+
+					<p:focus for="montoCierre" />
+
+					<p:panelGrid id="grid6" columns="3"
+						columnClasses="column1,column2,column3"
+						style="border:0px none; background-color:transparent; width: 100%;"
+						layout="grid" styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="caja" value="Caja " />
+						<p:inputText id="caja"
+							value="#{cajaCierreController.cajaSesion.caja.nombre}"
+							readonly="true">
+
+						</p:inputText>
+						<p:message for="caja" display="tooltip" />
+
+						<p:outputLabel for="cajero" value="Cajero " />
+						<p:inputText id="cajero"
+							value="#{cajaCierreController.usuario.nombre}" readonly="true">
+
+						</p:inputText>
+						<p:message for="cajero" display="tooltip" />
+
+						<p:outputLabel for="suma" value="Total Efectivo " />
+						<p:inputText id="suma" value="#{cajaCierreController.totales}"
+							readonly="true">
+
+						</p:inputText>
+						<p:message for="suma" display="tooltip" />
+
+						<p:outputLabel for="montoCierre" value="Efectivo en Caja" />
+						<p:inputText id="montoCierre"
+							value="#{cajaCierreController.cajaSesion.montoFinal}"
+							required="true">
+							<p:ajax listener="#{cajaCierreController.actualizarDiferencia}"
+								update="diferencia"></p:ajax>
+						</p:inputText>
+						<p:message for="montoCierre" display="tooltip" />
+
+						<p:outputLabel for="diferencia" value="Diferencia" />
+						<p:inputText id="diferencia"
+							value="#{cajaCierreController.cajaSesion.diferencia}"
+							readonly="true">
+
+						</p:inputText>
+						<p:message for="montoCierre" display="tooltip" />
+
+
+					</p:panelGrid>
+				</div>
+				<div class="panel-body box-content no-padding">
+
+
+					<p:panelGrid id="grid" columns="3"
+						columnClasses="column1,column2,column3"
+						style="border:0px none; background-color:transparent; width: 100%;"
+						layout="grid" styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="fechaApertura" value="Fecha Apertura: " />
+						<h:outputText id="fechaApertura"
+							value="#{cajaCierreController.cajaSesion.fechaRegistro}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+						<p:message for="fechaApertura" display="tooltip" />
+
+						<p:outputLabel for="fechaCierre" value="Fecha Cierre: " />
+						<h:outputText id="fechaCierre"
+							value="#{cajaCierreController.fechaCierre}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+						<p:message for="fechaCierre" display="tooltip" />
+
+						<p:outputLabel for="monto" value="Monto Base " />
+						<p:inputText id="monto"
+							value="#{cajaCierreController.cajaSesion.montoInicial}"
+							readonly="true">
+						</p:inputText>
+						<p:message for="monto" display="tooltip" />
+
+					</p:panelGrid>
+				</div>
+				</p:panel>
+
+			</div>
+		</div>
+</div>
+		<!-- EMPIEZA LA PARTE DE DETALLE -->
+		<div class="row">
+			<div class="col-md-4">
+				<p:panel id="panelIngresos" header="INGRESOS">
+
+					<p:panelGrid id="gridTotalIngresos" columns="3"
+						columnClasses="column1,column2,column3"
+						style="border:0px none; background-color:transparent; width: 100%;"
+						layout="grid" styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="totalIngresos" value="Total Ingresos" />
+						<p:inputText id="totalIngresos" readonly="true" symbol="Bs. "
+							value="#{cajaCierreController.totalIngresos}">
+						</p:inputText>
+						<p:message for="totalIngresos" display="tooltip" />
+					</p:panelGrid>
+					<div class="EmptyBox10"></div>
+					<p:dataTable var="var" id="tablaDetalleIngresos"
+						value="#{cajaCierreController.listaIngresos}" reflow="true"
+						editable="true" emptyMessage="No se encontraron registros.">
+
+						<p:column width="30%" headerText="Tipo de Pago ">
+							<h:outputText value="#{var.tipoPago.label}" />
+						</p:column>
+
+						<p:column width="20%" headerText="Monto M/N">
+							<h:outputText value="#{var.suma}" />
+						</p:column>
+
+
+					</p:dataTable>
+				</p:panel>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<p:panel id="panelEgresos" header="EGRESOS">
+
+					<p:panelGrid id="gridTotalEgresos" columns="3"
+						columnClasses="column1,column2,column3"
+						style="border:0px none; background-color:transparent; width: 100%;"
+						layout="grid" styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="totalEgresos" value="Total Egresos" />
+						<p:inputText id="totalEgresos" readonly="true"
+							value="#{cajaCierreController.totalEgresos}">
+						</p:inputText>
+						<p:message for="totalEgresos" display="tooltip" />
+					</p:panelGrid>
+					<div class="EmptyBox10"></div>
+
+					<p:dataTable var="var" id="tablaDetalleEgresos"
+						value="#{cajaCierreController.listaEgresos}" reflow="true"
+						editable="true" emptyMessage="No se encontraron registros.">
+
+						<p:column width="30%" headerText="Tipo de Pago">
+							<h:outputText value="#{var.tipoPago.label}" />
+						</p:column>
+
+						<p:column width="20%" headerText="Monto M/N">
+							<h:outputText value="#{var.suma}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:panel>
+			</div>
+		</div>
+
+		<!-- DATATABLE -->
+</ui:composition>

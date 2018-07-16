@@ -191,7 +191,8 @@ public class Usuario1Dao extends DataAccessObjectGeneric<Usuario> implements IUs
 
 	@Override
 	public List<Usuario> obtenerTodosActivosEInactivosPorCompaniaPorOrdenAsc(Empresa empresa){
-		return findAllByParameterObjectTwoQueryOr("state", "state", "AC","IN");
+//		return findAllByParameterObjectTwoQueryOr("state", "state", "AC","IN");
+		return findAllByParameterObjectTheeQueryOr("state", "state","state", "AC","IN","SU");
 	}
 
 	/* (non-Javadoc)

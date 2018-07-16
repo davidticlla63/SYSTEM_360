@@ -5,8 +5,11 @@ package com.erp360.model;
  * @author david
  */
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,6 +20,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -34,7 +38,7 @@ import com.erp360.enums.TipoPago;
 
 /**
  * 
- * @author mauriciobejaranorivera
+ * @author david
  *
  */
 @Entity
@@ -121,6 +125,17 @@ public class CajaMovimiento implements Serializable {
 	@Column(name = "monto_literal", nullable = true)
 	private String montoLiteral;
 	
+//	@Column(name = "saldo_nacional", nullable = false)
+//	private Double saldoNacional;
+//	
+//	@Column(name = "saldo_extranjero", nullable = false)
+//	private Double saldoExtranjero;
+//	
+	
+	
+	@OneToMany(mappedBy = "cajaMovimiento", orphanRemoval=true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<CajaMovimientoDetalle> listaCajaMovimientoDetalles = new ArrayList<CajaMovimientoDetalle>();
+	
 	public CajaMovimiento() {
 		this.id = 0;
 		this.estado = "AC";
@@ -129,6 +144,8 @@ public class CajaMovimiento implements Serializable {
 		this.montoExtranjero=new Double(0);
 		this.montoRecibido=new Double(0);
 		this.cambio=new Double(0);
+//		this.saldoExtranjero=new Double(0);
+//		this.saldoNacional= new Double(0);
 		this.tipo="E";
 		this.tipoPago=TipoPago.EFE;
 		this.tipoMovimiento=TipoMovimiento.PAG;
@@ -346,4 +363,29 @@ public class CajaMovimiento implements Serializable {
 		this.montoLiteral = montoLiteral;
 	}
 
+	public List<CajaMovimientoDetalle> getListaCajaMovimientoDetalles() {
+		return listaCajaMovimientoDetalles;
+	}
+
+	public void setListaCajaMovimientoDetalles(
+			List<CajaMovimientoDetalle> listaCajaMovimientoDetalles) {
+		this.listaCajaMovimientoDetalles = listaCajaMovimientoDetalles;
+	}
+
+//	public Double getSaldoNacional() {
+//		return saldoNacional;
+//	}
+//
+//	public void setSaldoNacional(Double saldoNacional) {
+//		this.saldoNacional = saldoNacional;
+//	}
+//
+//	public Double getSaldoExtranjero() {
+//		return saldoExtranjero;
+//	}
+//
+//	public void setSaldoExtranjero(Double saldoExtranjero) {
+//		this.saldoExtranjero = saldoExtranjero;
+//	}
+//
 	}

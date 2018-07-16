@@ -78,6 +78,7 @@ public class EmpresaController implements Serializable {
 		this.nuevaGestion = String.valueOf(obtenerGestionActiva().getGestion());
 		this.gestionIniciada = obtenerGestionActiva().isIniciada()?"SI":"NO";
 		this.newEmpresa = empresaDao.findById(1);
+		System.out.println("Empresa : "+newEmpresa.getRazonSocial());
 	}
 
 	private Gestion obtenerGestionActiva(){

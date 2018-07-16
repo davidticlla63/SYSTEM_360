@@ -8,6 +8,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import com.erp360.caja.behaviors.CajaServicio;
+import com.erp360.interfaces.ICajaMovimientoDao;
+import com.erp360.model.CajaMovimiento;
 import com.erp360.model.Cliente;
 import com.erp360.model.Cobranza;
 import com.erp360.model.CuentaCobrar;
@@ -33,16 +36,18 @@ import com.erp360.util.W;
  *
  */
 @Stateless
-public class CobranzaDao extends DataAccessObjectJpa<Cobranza,PlanCobranza,NotaVenta,S,O, P, Q, U, V, W> {
+public class CobranzaDao extends DataAccessObjectJpa<Cobranza,PlanCobranza,NotaVenta,CajaMovimiento,O, P, Q, U, V, W> {
 
 	public CobranzaDao(){
-		super(Cobranza.class,PlanCobranza.class,NotaVenta.class);
+		super(Cobranza.class,PlanCobranza.class,NotaVenta.class,CajaMovimiento.class);
 	}
 	
 	private @Inject MovimientoCajaDao movimientoCajaDao;
 	private @Inject KardexClienteDao kardexClienteDao;
 	private @Inject CuentaCobrarDao deudaClienteDao;
 	private @Inject NotaVentaDao notaVentaDao;
+	private @Inject ICajaMovimientoDao cajaMovimientoDao;
+	private @Inject CajaServicio cajaServicio;
 
 	public Cobranza registrar(Usuario usuario,Cobranza cobranza,List<PlanCobranza> planCobranzas,Cliente cliente,int numeroCuotasPendientePorCobrar){
 		try{
@@ -71,6 +76,9 @@ public class CobranzaDao extends DataAccessObjectJpa<Cobranza,PlanCobranza,NotaV
 			//registro de cobranza
 			cobranza.setMovimientoCaja(movimientoCaja);
 			cobranza = create(cobranza);
+			
+			//caja movimiento
+			CajaMovimiento c=cajaMovimientoDao.create(cajaServicio.IngresoPorCobranza(cobranza));
 			//modificacion plan cobranza
 			for(PlanCobranza pc: planCobranzas){
 				pc.setEstadoCobro("CO");

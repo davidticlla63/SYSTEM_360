@@ -26,6 +26,7 @@ import com.erp360.dao.EmpresaDao;
 import com.erp360.dao.PrivilegioDao;
 import com.erp360.dao.UsuarioDao;
 import com.erp360.dao.UsuarioRolDao;
+import com.erp360.interfaces.ICajaSesionDao;
 import com.erp360.model.Empresa;
 import com.erp360.model.Usuario;
 import com.erp360.model.UsuarioRol;
@@ -45,6 +46,7 @@ public class LoginController implements Serializable {
 	private @Inject UsuarioDao usuarioDao;
 	private @Inject EmpresaDao empresaDao;
 	private @Inject PrivilegioDao privilegioDao;
+	private @Inject ICajaSesionDao cajaSesionDao;
 
 	private String username;
 	private String password;
@@ -113,7 +115,9 @@ public class LoginController implements Serializable {
 	private void load(Usuario usuario){
 		this.usuarioSession = usuario;
 		UsuarioRol usuarioRolV1 = usuarioRolDao.obtenerPorUsuario(usuario);
+		
 		sessionMain.setUsuarioLogin(usuario);
+		sessionMain.setCajaSesion(cajaSesionDao.obtenerPorUsuarioyEmpresa(usuario, sessionMain.getEmpresaLogin()));
 		//sessionMain.cargarPermisos(usuarioRolV1.getRoles());
 		setImageUserSession();
 		setImageLogo();

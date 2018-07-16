@@ -18,6 +18,7 @@ import javax.faces.convert.FacesConverter;
 import javax.servlet.http.HttpServletRequest;
 
 import com.erp360.controller.CajaAperturaController;
+import com.erp360.controller.CajaMovimientoConsultasController;
 import com.erp360.model.Caja;
 
 @FacesConverter("cajaConverter")
@@ -54,7 +55,7 @@ public class CajaConverter implements Converter {
 						.equalsIgnoreCase("index.xhtml")) {
 					if (protocolo[protocolo.length - 2]
 							.equalsIgnoreCase("movimiento_consultas")) {
-						//pacientes = CajaMovimientoConsultasController.cajas;
+						pacientes = CajaMovimientoConsultasController.cajas;
 					} else if (protocolo[protocolo.length - 2]
 							.equalsIgnoreCase("apertura")) {
 						pacientes = CajaAperturaController.cajas;

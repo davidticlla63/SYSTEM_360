@@ -51,6 +51,10 @@ public class ParametroVenta implements Serializable {
 	@ManyToOne(fetch=FetchType.EAGER)
 	private Almacen almacenVenta;
 
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_empresa", nullable=true, referencedColumnName ="id")
+	private Empresa empresa;
+
 	public ParametroVenta() {
 		super();
 		this.id = 0;
@@ -166,6 +170,14 @@ public class ParametroVenta implements Serializable {
 
 	public void setAlmacenVenta(Almacen almacenVenta) {
 		this.almacenVenta = almacenVenta;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 }
 

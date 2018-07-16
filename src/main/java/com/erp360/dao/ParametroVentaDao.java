@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import com.erp360.model.Empresa;
 import com.erp360.model.ParametroCuota;
 import com.erp360.model.ParametroVenta;
-import com.erp360.util.E;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.O;
 import com.erp360.util.P;
@@ -53,6 +53,16 @@ public class ParametroVentaDao extends DataAccessObjectJpa<ParametroVenta,Parame
 
 	public ParametroVenta obtener(){
 		return findById(1);
+	}
+	
+	public ParametroVenta obtenerPorEmpresa(Empresa empresa){
+		try{
+			String query = "SELECT em FROM ParametroVenta em WHERE em.empresa.id="+empresa.getId();
+			System.out.println("query : "+query);
+			return executeQuerySingleResult(query);
+		}catch(Exception e){
+			return null;
+		}
 	}
 
 }

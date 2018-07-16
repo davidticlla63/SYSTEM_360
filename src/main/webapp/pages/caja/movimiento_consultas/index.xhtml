@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="head">
+		<h:outputScript name="js/validator.js" library="mbr" />
+	</ui:define>
+	<ui:define name="content">
+		<div class="content">
+			<section class="main-content">
+				<h:form id="form001">
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink icon="fa fa-arrow-left"
+											rendered="#{cajaMovimientoConsultasController.registrar}"
+											styleClass="btn btn-warning ion-minus-circled"
+											value="Cancelar" update="form001" immediate="true"
+											actionListener="#{cajaMovimientoConsultasController.actionCancelar()}">
+										</p:commandLink>
+
+
+									</div>
+								</div>
+								<div class="Container30 Responsive100 TexAlRight"></div>
+
+							</div>
+							<div class="pull-right">
+								<p:breadCrumb>
+									<p:menuitem value="." url="/dashboard.xhtml" />
+									<p:menuitem value="Movimientos"
+										url="/pages/caja/movimiento/index.xhtml" />
+
+								</p:breadCrumb>
+							</div>
+						</section>
+					</div>
+
+					<!-- center boxes -->
+					<ui:include src="#{cajaMovimientoConsultasController.currentPage}" />
+
+					<p:growl id="growl" showDetail="true" />
+					<ui:include src="/WEB-INF/confirmation.xhtml" />
+				</h:form>
+			</section>
+		</div>
+		<!-- BEGIN DIALOG -->
+		<!-- BEGIN DIALOG -->
+		<p:dialog header="Informacion" widgetVar="dlg2" modal="true"
+			height="100">
+			<h:form id="form002">
+				<h:outputText value="Caja no Aperturada" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>
