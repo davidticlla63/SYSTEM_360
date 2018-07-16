@@ -51,6 +51,13 @@
 											update="form001" disabled="true"
 											action="#{listOrdenSalidaController.actionModificar()}">
 										</p:commandLink>
+										
+										<p:commandLink id="buttonVerDetalle" value="&#160; Ver Detalle"
+											rendered="#{listOrdenSalidaController.ver}"
+											styleClass="btn btn-primary " style="height:31px;"
+											update="form001" 
+											action="#{listOrdenSalidaController.prepareViewDetail()}">
+										</p:commandLink>
 
 										<p:commandLink id="buttonEliminar" value="&#160; Revertir"
 											disabled="true" styleClass="btn btn-danger ion-trash-b"

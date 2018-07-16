@@ -164,7 +164,7 @@
 													<div class="col-md-4">Fecha Pedido</div>
 													<div class="col-md-8">
 														<p:calendar pattern="dd/MM/yyyy" id="fechaPedido"
-															styleClass="myWid100" locale="es"
+															styleClass="myWid100" locale="es" disabled="#{ordenSalidaController.verDetalle}"
 															value="#{ordenSalidaController.newOrdenSalida.fechaPedido}"
 															onkeypress="return permiteKey(event, 'none')"
 															style=" color: #555555; background-image: none;">
@@ -184,7 +184,7 @@
 															minQueryLength="3" dropdown="true" required="true"
 															requiredMessage="Almacen Requerido."
 															forceSelection="true" var="_var" itemLabel="#{_var}"
-															itemValue="#{_var.nombre}"
+															itemValue="#{_var.nombre}" disabled="#{ordenSalidaController.verDetalle}"
 															placeholder="[Escriba Almacén]" scrollHeight="300">
 
 															<p:ajax event="itemSelect" update="form001"
@@ -201,7 +201,7 @@
 													<div class="col-md-8">
 														<p:inputTextarea id="descripcionID"
 															style="padding: 4px 10px;" styleClass="form-control"
-															size="255"
+															size="255" disabled="#{ordenSalidaController.verDetalle}"
 															value="#{ordenSalidaController.newOrdenSalida.observacion}"
 															required="true" requiredMessage="Requerido." rows="5">
 															<p:ajax event="change" />
@@ -222,7 +222,7 @@
 										<div class="actions mtn">
 											<div class="btn-group btn-group-xs">
 												<p:commandLink id="buttonDlgTelefono" value="&#160; ITEM"
-													styleClass="btn btn-success btn-outlined ion-plus"
+													styleClass="btn btn-success btn-outlined ion-plus" disabled="#{ordenSalidaController.verDetalle}"
 													style="height:27px; padding-top: 5px" immediate="true"
 													action="#{ordenSalidaController.actionLoadDialogProducto()}">
 												</p:commandLink>
@@ -354,15 +354,17 @@
 							<div class="col-sm-9">
 
 								<p:autoComplete id="productoID"
-									value="#{ordenSalidaController.selectedProducto}"
 									converter="productoConverter"
+									value="#{ordenSalidaController.selectedProducto}"
 									completeMethod="#{ordenSalidaController.completeProducto}"
-									minQueryLength="3" size="35" dropdown="true" required="true"
-									requiredMessage="Producto Requerido." forceSelection="true"
-									var="_var" itemLabel="#{_var.nombre}" itemValue="#{_var}"
-									placeholder="[Escriba Producto]" scrollHeight="300">
+									minQueryLength="2" required="true"
+									requiredMessage="Producto Requerido." 
+									forceSelection="true" var="_var"
+									itemLabel="#{_var.nombre}#{_var.descripcion}"
+									itemValue="#{_var}"
+									placeholder=" [Escriba Producto]" maxResults="10">
 
-									<p:ajax event="itemSelect" update="formDialogProducto,formGrowl"
+									<p:ajax event="itemSelect" update="descripcionID,productoID,formGrowl" process="@all"
 										listener="#{ordenSalidaController.onRowSelectProductoClick}" />
 
 									<p:column>

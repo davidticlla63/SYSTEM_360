@@ -23,6 +23,7 @@ import com.erp360.dao.AlmacenProductoDao;
 import com.erp360.dao.DetalleOrdenSalidaDao;
 import com.erp360.dao.DetalleProductoDao;
 import com.erp360.dao.OrdenSalidaDao;
+import com.erp360.dao.ProductoDao;
 import com.erp360.dao.UsuarioDao;
 import com.erp360.model.Almacen;
 import com.erp360.model.AlmacenProducto;
@@ -61,6 +62,7 @@ public class OrdenSalidaController implements Serializable {
 	private @Inject DetalleOrdenSalidaDao detalleOrdenSalidaRepository;
 	private @Inject DetalleProductoDao detalleProductoRepository;
 	private @Inject AlmacenProductoDao almacenProductoRepository;
+	private @Inject ProductoDao productoDao; 
 
 	//STATE
 	private boolean modificar = false;
@@ -69,6 +71,7 @@ public class OrdenSalidaController implements Serializable {
 	private boolean editarOrdenSalida = false;
 	private boolean verProcesar = true;
 	private boolean verReport = false;
+	private boolean verDetalle= false;
 	private boolean verButtonAnular;
 	private boolean atencionCliente=false;
 
@@ -91,7 +94,7 @@ public class OrdenSalidaController implements Serializable {
 	//LIST
 	private List<Usuario> listUsuario = new ArrayList<Usuario>();
 	private List<DetalleOrdenSalida> listaDetalleOrdenSalida = new ArrayList<DetalleOrdenSalida>(); // ITEMS
-	private List<OrdenSalida> listaOrdenSalida = new ArrayList<OrdenSalida>();
+	//private List<OrdenSalida> listaOrdenSalida = new ArrayList<OrdenSalida>();
 	private List<Almacen> listaAlmacen = new ArrayList<Almacen>();
 	private List<DetalleOrdenSalida> listDetalleOrdenSalidaEliminados = new ArrayList<DetalleOrdenSalida>();
 	private List<Producto> listaProducto= new ArrayList<Producto>();
@@ -129,21 +132,34 @@ public class OrdenSalidaController implements Serializable {
 		atencionCliente=false;
 		verProcesar = true;
 		verReport = false;
+		verDetalle = false;
 
-		listaDetalleOrdenSalida = new ArrayList<DetalleOrdenSalida>();
-		listaOrdenSalida = ordenSalidaRepository.findAllOrderedByIDGestion(gestionSesion);
-
-		//obtener la primer unidad solicitante
-		//List<DetalleUnidad> l = detalleUnidadRepository.findAll100UltimosDetalleUnidad();
-		//selectedDetalleUnidad = l.size()>0?l.get(0):new DetalleUnidad();
-		int numeroCorrelativo = ordenSalidaRepository.obtenerNumeroOrdenSalida(gestionSesion);
-		newOrdenSalida = new OrdenSalida();
-		newOrdenSalida.setCorrelativo(cargarCorrelativo(numeroCorrelativo));
-		newOrdenSalida.setEstado("AC");
-		newOrdenSalida.setGestion(gestionSesion);
-		newOrdenSalida.setFechaPedido(new Date());
-		newOrdenSalida.setFechaRegistro(new Date());
-		newOrdenSalida.setUsuarioRegistro(usuarioSession);
+		if(FacesUtil.getSessionAttribute("pIdOrdenSalida")!=null){
+			//modo ver detalle de la nota de venta
+			Integer pIdOrdenSalida = (Integer) FacesUtil.getSessionAttribute("pIdOrdenSalida");
+			FacesUtil.setSessionAttribute("pIdOrdenSalida",null);
+			newOrdenSalida = ordenSalidaRepository.findById(pIdOrdenSalida);
+			listaDetalleOrdenSalida = newOrdenSalida.getDetalleOrdenSalida();
+			System.out.println("listaDetalleOrdenSalida: "+listaDetalleOrdenSalida);
+			selectedAlmacen = newOrdenSalida.getAlmacen();
+			verButtonAnular= false;
+			modificar = false;
+			registrar = false;
+			atencionCliente=false;
+			verProcesar = false;
+			verReport = false;
+			verDetalle = true;
+		}else{
+			listaDetalleOrdenSalida = new ArrayList<DetalleOrdenSalida>();
+			int numeroCorrelativo = ordenSalidaRepository.obtenerNumeroOrdenSalida(gestionSesion);
+			newOrdenSalida = new OrdenSalida();
+			newOrdenSalida.setCorrelativo(cargarCorrelativo(numeroCorrelativo));
+			newOrdenSalida.setEstado("AC");
+			newOrdenSalida.setGestion(gestionSesion);
+			newOrdenSalida.setFechaPedido(new Date());
+			newOrdenSalida.setFechaRegistro(new Date());
+			newOrdenSalida.setUsuarioRegistro(usuarioSession);
+		}
 	}
 
 	public void initConversation() {
@@ -613,7 +629,8 @@ public class OrdenSalidaController implements Serializable {
 			return;
 		}
 		//verificar si hay stock del producto
-		double cantidad =  cantidadExistenciasByProductoAlmacen(selectedAlmacen,selectedProducto);
+		//double cantidad =  cantidadExistenciasByProductoAlmacen(selectedAlmacen,selectedProducto);
+		double cantidad = stockDisponible;
 		if( cantidad==0 ){ 
 			textDialogExistencias = "El almacen "+selectedAlmacen.getNombre()+" no tiene existencias del producto "+selectedProducto.getNombre();
 			//ocultar dialgo
@@ -728,6 +745,16 @@ public class OrdenSalidaController implements Serializable {
 	// ONCOMPLETETEXT PRODUCTO
 	public List<Producto> completeProducto(String query) {
 		String upperQuery = query.toUpperCase();
+		//listAlmacenProducto = almacenProductoRepository.findAllProductoForQueryNombreAndAlmacen(upperQuery,selectedAlmacen);
+		listaProducto =  productoDao.obtenerTodosPorNombreCodigo(upperQuery);
+		//for(AlmacenProducto ap: listAlmacenProducto){
+		//	listaProducto.add(ap.getProducto());
+		//}
+		return listaProducto;
+	}
+
+	public List<Producto> completeProducto2(String query) {
+		String upperQuery = query.toUpperCase();
 		listAlmacenProducto = almacenProductoRepository.findAllProductoForQueryNombreAndAlmacen(upperQuery,selectedAlmacen);
 		listaProducto =  new ArrayList<>();
 		for(AlmacenProducto ap: listAlmacenProducto){
@@ -735,15 +762,45 @@ public class OrdenSalidaController implements Serializable {
 		}
 		return listaProducto;
 	}
-
+	
 	public void onRowSelectProductoClick(SelectEvent event) {
+		//Integer id =  ((Producto) event.getObject()).getId();
+		//Producto p = new Producto();
+		Producto p = (Producto)event.getObject();
+		//p.setId(id);
+		selectedProducto = listaProducto.get(listaProducto.indexOf(p));
+		System.out.println("getDescripcion: "+selectedProducto.getDescripcion());
+		System.out.println("getNombre: "+selectedProducto.getNombre());
+		System.out.println("id: "+selectedProducto.getId());
+		selectedProducto.setDescripcion(" "+selectedProducto.getDescripcion());
+		AlmacenProducto ap = almacenProductoRepository.findByProductoConStockPromedio(sessionMain.getGestionLogin(),selectedProducto,selectedAlmacen);
+		//for(AlmacenProducto ap : listAlmacenProducto){
+			//if(ap.getProducto().getId().equals(id)){
+				selectedProducto = ap.getProducto();
+				selectedDetalleOrdenSalida.setCantidadSolicitada(ap.getStock());
+				stockDisponible = ap.getStock();
+				if(ap.getStock()==0){
+					stockDisponible = 0;
+					FacesUtil.infoMessage("Validación", "Este producto no tiene stock");
+				}
+			//	return;
+			//}
+		//}
+	}
+	
+	private double stockDisponible = 0;
+	
+	public void onRowSelectProductoClick2(SelectEvent event) {
 		Integer id =  ((Producto) event.getObject()).getId();
+		
 		System.out.println("id onrow: "+id);
 		for(AlmacenProducto ap : listAlmacenProducto){
 			if(ap.getProducto().getId().equals(id)){
 				selectedProducto = ap.getProducto();
 				selectedDetalleOrdenSalida.setCantidadSolicitada(ap.getStock());
+				stockDisponible = ap.getStock();
 				if(ap.getStock()==0){
+					stockDisponible = 0;
 					FacesUtil.infoMessage("Validación", "Este producto no tiene stock");
 				}
 				return;
@@ -903,14 +960,6 @@ public class OrdenSalidaController implements Serializable {
 		this.listaDetalleOrdenSalida = listaDetalleOrdenSalida;
 	}
 
-	public List<OrdenSalida> getListaOrdenSalida() {
-		return listaOrdenSalida;
-	}
-
-	public void setListaOrdenSalida(List<OrdenSalida> listaOrdenSalida) {
-		this.listaOrdenSalida = listaOrdenSalida;
-	}
-
 	public List<DetalleOrdenSalida> getListDetalleOrdenSalidaEliminados() {
 		return listDetalleOrdenSalidaEliminados;
 	}
@@ -950,6 +999,22 @@ public class OrdenSalidaController implements Serializable {
 
 	public void setVerButtonAnular(boolean verButtonAnular) {
 		this.verButtonAnular = verButtonAnular;
+	}
+
+	public boolean isVerDetalle() {
+		return verDetalle;
+	}
+
+	public void setVerDetalle(boolean verDetalle) {
+		this.verDetalle = verDetalle;
+	}
+
+	public double getStockDisponible() {
+		return stockDisponible;
+	}
+
+	public void setStockDisponible(double stockDisponible) {
+		this.stockDisponible = stockDisponible;
 	}
 
 }

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+	<ui:define name="head">
+		<title>Inventarios de Productos</title>
+	</ui:define>
+	<ui:define name="content">
+		<!--BEGIN CONTENT-->
+		<div class="content">
+
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+
+				<h:form id="form001">
+
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 10px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonVerReporte"
+											value="&#160; Ver Reporte" 
+											styleClass="btn btn-info ion-printer"
+											style="height:31px; padding:center"
+											rendered="false">
+											<p:ajax update="form001"
+												listener="#{stockProductoController.cargarReporte()}" />
+										</p:commandLink>
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											immediate="true"
+											rendered="#{stockProductoController.verReporte}"
+											style="height:31px; padding:center" update="form001"
+											action="#{stockProductoController.loadDefault()}">
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/inventario/stock_producto.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inventario</a></li>
+									<li class="active" style="font-size: 12px;">Inventarios de
+										Productos</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+							<div class="col-md-12" align="left">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Inventarios de Productos</h3>
+									</div>
+									<!-- start here datatable -->
+									<div class="box-content no-padding">
+										<p:treeTable value="#{inventoriesController.rootProduct}" scrollable="true" scrollHeight="500"
+											var="document" id="tree" binding="#{tree}" paginator="true"
+											paginatorAlwaysVisible="true" widgetVar="tree">
+								
+											<p:column headerText="" style="width:300px;">
+												<h:outputText value="#{document.a_NameParent}" />
+											</p:column>
+								
+											<p:column headerText="" style="width:300px;">
+												<f:facet name="header">
+													<div style="text-align: center">
+														<h:outputText value="Producto" />
+													</div>
+												</f:facet>
+												<div style="text-align: center">
+													<h:outputText value="#{document.b_NameProduct}" />
+												</div>
+											</p:column>
+								
+											<p:column>
+												<f:facet name="header">
+													<div style="text-align: center">
+														<h:outputText value="Fecha Ingreso" />
+													</div>
+												</f:facet>
+												<div style="text-align: center">
+													<h:outputText value="#{document.c_Date}" />
+												</div>
+											</p:column>
+								
+											<p:column>
+												<f:facet name="header">
+													<div style="text-align: center">
+														<h:outputText value="Fecha Expiración" />
+													</div>
+												</f:facet>
+												<div style="text-align: center">
+													<h:outputText value="#{document.d_ExpireDate}" />
+												</div>
+											</p:column>
+								
+											<p:column>
+												<f:facet name="header">
+													<div style="text-align: center">
+														<h:outputText value="Nro. Lote" />
+													</div>
+												</f:facet>
+												<div style="text-align: center">
+													<h:outputText value="#{document.e_NroLote}" />
+												</div>
+											</p:column>
+											
+											<p:column>
+												<f:facet name="header">
+													<div style="text-align: center">
+														<h:outputText value="Ubicación Física" />
+													</div>
+												</f:facet>
+												<div style="text-align: center">
+													<h:outputText value="#{document.e1_PhysicalLocation}" />
+												</div>
+											</p:column>
+								
+											<p:column headerText="" style="width:80px;">
+												<f:facet name="header">
+													<div style="text-align: center">
+														<h:outputText value="Stock" />
+													</div>
+												</f:facet>
+												<div style="text-align: center">
+													<h:outputText value="#{document.g_OnHand}" />
+												</div>
+											</p:column>
+								
+										</p:treeTable>
+									</div>
+
+									<!-- end here datatable -->
+									<div class="panel-body"></div>
+
+								</div>
+							</div>
+					</div>
+					<!-- END PANEL TABLE -->
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui" xmlns:p="http://primefaces.org/ui">
+	<style type="text/css">
+.column1 {
+	width: 35%;
+	height: auto
+}
+
+.column2 {
+	width: 50%;
+	height: auto
+}
+
+.column3 {
+	width: 15%;
+	height: auto
+}
+</style>
+	<!-- center boxes -->
+
+
+	<div class="row">
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">CAJA</h3>
+				</div>
+				<!-- start here datatable -->
+				<div class="panel-body box-content no-padding">
+					<p:focus for="caja" />
+					<p:panelGrid id="grid6" columns="3"
+						columnClasses="column1,column2,column3"
+						style="border:0px none; background-color:transparent; width: 100%;"
+						layout="grid" styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="caja" value="Caja " />
+						<p:autoComplete id="caja" required="true"
+							value="#{cajaOperacdionController.cajaSesion.caja}" var="theme"
+							converter="cajaConverter" itemLabel="#{theme.nombre}"
+							itemValue="#{theme}"
+							completeMethod="#{cajaOperacdionController.onCompleteCaja}"
+							forceSelection="true" dropdown="true" placeholder="Caja">
+							<p:ajax event="itemSelect"
+								listener="#{cajaOperacdionController.onSelectCaja}"
+								update="form001" />
+						</p:autoComplete>
+						<p:message for="caja" display="tooltip" />
+
+
+
+						<p:outputLabel for="cajero" value="Cajero " />
+						<p:inputText id="cajero"
+							value="#{cajaOperacdionController.usuario.nombre}"
+							readonly="true">
+
+						</p:inputText>
+						<p:message for="cajero" display="tooltip" />
+
+
+						<p:outputLabel for="monto" value="Monto " />
+						<p:inputText id="monto"
+							value="#{cajaOperacdionController.cajaSesion.montoInicial}"
+							required="true">
+							<f:convertNumber type="number" groupingUsed="true"
+								minFractionDigits="2" pattern="#0.00" />
+						</p:inputText>
+						<p:message for="monto" display="tooltip" />
+
+						<p:outputLabel for="observacion" value="Observación " />
+						<p:inputTextarea id="observacion" required="true" rows="3"
+							value="#{cajaOperacdionController.cajaSesion.observacion}">
+
+						</p:inputTextarea>
+						<p:message for="observacion" display="tooltip" />
+
+					</p:panelGrid>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</ui:composition>

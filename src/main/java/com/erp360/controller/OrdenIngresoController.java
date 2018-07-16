@@ -278,6 +278,9 @@ public class OrdenIngresoController implements Serializable {
 //		System.out.println("calcular() p="+precio+",c="+cantidad);
 //		selectedDetalleOrdenIngreso.setTotal(precio * cantidad);
 //		selectedDetalleOrdenIngreso.setTotalCompra(precioCompra * cantidad);
+		if(selectedProducto == null){
+			return;
+		}
 		double precioCompra = selectedDetalleOrdenIngreso.getPrecioCompra();
 		//1000*0,25
 		double porcentajeContado = selectedProducto.getLineaProducto().getGrupoProducto().getPorcentajeVentaContado() / 100;
@@ -463,6 +466,9 @@ public class OrdenIngresoController implements Serializable {
 		List<AlmacenProducto> listAlmacenProducto = new ArrayList<>();
 		Proveedor proveedor = selectedOrdenIngreso.getProveedor();
 		for(DetalleOrdenIngreso d: listDetalleOrdenIngreso){
+			System.out.println("FechaExpiracion: "+d.getFechaExpiracion());
+			System.out.println("NumeroLote: "+d.getNumeroLote());
+			System.out.println("UbicacionFisica: "+d.getUbicacionFisica());
 			Producto prod = d.getProducto();
 			AlmacenProducto almProd = new AlmacenProducto();
 			almProd = new AlmacenProducto();
@@ -473,7 +479,8 @@ public class OrdenIngresoController implements Serializable {
 			almProd.setPrecioCompra(d.getPrecioCompra());
 			almProd.setPrecioVentaContado(d.getPrecioVentaContado());
 			almProd.setPrecioVentaCredito(d.getPrecioVentaCredito());
-			almProd.setStockMin(d.getCantidadMinima());
+			almProd.setStockMin(prod.getStockMin());
+			almProd.setStockMax(prod.getStockMax());
 			almProd.setPrecioCompra(d.getPrecioCompra());
 			almProd.setPrecioVentaContado(d.getPrecioVentaContado());
 			almProd.setPrecioVentaCredito(d.getPrecioVentaCredito());
@@ -481,6 +488,9 @@ public class OrdenIngresoController implements Serializable {
 			almProd.setFechaRegistro(fechaActual);
 			almProd.setUsuarioRegistro(usuarioSession.getLogin());
 			almProd.setGestion(gestionSesion);
+			almProd.setFechaExpiracion(d.getFechaExpiracion());
+			almProd.setNumeroLote(d.getNumeroLote());
+			almProd.setUbicacionFisica(d.getUbicacionFisica());
 			listAlmacenProducto.add(almProd);
 		}
 		boolean sw = ordenIngresaDao.procesar(empresaLogin,"ORDEN INGRESO X "+selectedOrdenIngreso.getMotivoIngreso(),usuarioSession,selectedOrdenIngreso, listAlmacenProducto);

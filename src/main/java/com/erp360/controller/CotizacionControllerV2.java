@@ -521,13 +521,13 @@ public class CotizacionControllerV2 implements Serializable {
 		AlmacenProducto almacenProducto = new AlmacenProducto();
 		switch (valuacionInventario) {
 		case  "PEPS":
-			almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorPEPS(selectedProducto);
+			//almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorPEPS(selectedProducto);
 			break;
 		case  "UEPS":
-			almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorUEPS(selectedProducto);
+			//almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorUEPS(selectedProducto);
 			break;
 		case  "PPP":
-			almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorPPP(selectedProducto);
+			//almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorPPP(selectedProducto);
 			break;
 		default:
 			break;

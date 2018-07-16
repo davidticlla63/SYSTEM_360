@@ -51,7 +51,7 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 		super(NotaVenta.class,DetalleNotaVenta.class,PlanCobranza.class,OrdenSalida.class,DetalleOrdenSalida.class,AlmacenProducto.class,KardexProducto.class);
 	}
 	
-	public NotaVenta anularNotaVenta(NotaVenta notaVenta){
+	public NotaVenta anularNotaVenta(NotaVenta notaVenta, Almacen almacen){
 		try{
 			beginTransaction();
 			// cambiar el estado
@@ -69,7 +69,7 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 			}
 			for(DetalleNotaVenta dnv : notaVenta.getDetailSalesNotes()){
 				// inventario (ultimo almacen_producto)
-				AlmacenProducto ap = almacenProductoDao.obtenerAlmacenProductoPorPEPS(dnv.getProducto());
+				AlmacenProducto ap = almacenProductoDao.obtenerAlmacenProductoPorPEPS(dnv.getProducto(),almacen);
 				ap.setStock(ap.getStock()+dnv.getCantidad());
 				almacenProductoDao.update(ap);
 				System.out.println("ap: "+ap.getEstado());
@@ -204,14 +204,13 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 					//createR(pc); si se agrego nuevos
 				}
 			}
-			
-				//-----Verificar el Tipo Disminucion de stock, o si no tiene mas de 1 almacen entonces entrar por Orden de Salida
-				if(param2.getTipoDisminucionStock().equals("VOS") || !existenMuchosAlmacenes(listDetalleNotaVenta,param) ){
+				//-----Verificar el Tipo Disminucion de stock
+				if(param2.getTipoDisminucionStock().equals("VOS")  ){
 					//GENERA VARIAS ORDEN DE SALIDA
 					List<OrdenSalida> lsitOrdenSalida = new ArrayList<>();
 					List<DetalleOrdenSalida> listDetalleOrdenSalida = new ArrayList<>();
 					for(DetalleNotaVenta detalleNotaVenta : listDetalleNotaVenta){
-						AlmacenProducto almacenProducto = productoTieneStock(detalleNotaVenta.getProducto(),param);
+						AlmacenProducto almacenProducto = productoTieneStock(detalleNotaVenta.getProducto(),param,param3.getAlmacenVenta());
 						if(almacenProducto==null){
 							FacesUtil.infoMessage("Validación de Stock", "El producto "+detalleNotaVenta.getProducto().getNombre()+" NO tiene existencia, y no se puede proceder a hacer la venta.");
 							rollbackTransaction();
@@ -246,7 +245,7 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 					for(DetalleNotaVenta detalleNotaVenta : listDetalleNotaVenta){
 						//verificar y agrupar productos por almacen -> metodo que recupera la orden de servicio de acuerdo al almacen
 						//luego se debe saber a cual orden de salida debe ser asigndaa el detalle de la orden de salida
-						AlmacenProducto almacenProducto = productoTieneStock(detalleNotaVenta.getProducto(),param);
+						AlmacenProducto almacenProducto = productoTieneStock(detalleNotaVenta.getProducto(),param,param3.getAlmacenVenta());
 						OrdenSalida ordenSalida = obtenerOrdenSalidadPorAlmacen(lsitOrdenSalida,almacenProducto.getAlmacen());
 						DetalleOrdenSalida detalleOrdenSalida = new DetalleOrdenSalida();
 						detalleOrdenSalida.setCantidadEntregada(detalleNotaVenta.getCantidad());
@@ -409,13 +408,13 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 			}
 			//solo deberia registrar si la venta es diferente a RE=RESERVA
 			if(!notaVenta.getEstadoPago().equals("CO")){
-				//-----Verificar el Tipo Disminucion de stock, o si no tiene mas de 1 almacen entonces entrar por Orden de Salida
-				if(param2.getTipoDisminucionStock().equals("VOS") || !existenMuchosAlmacenes(listDetalleNotaVenta,param) ){
+				//-----Verificar el Tipo Disminucion de stock
+				if(param2.getTipoDisminucionStock().equals("VOS") ){
 					//GENERA VARIAS ORDEN DE SALIDA
 					List<OrdenSalida> lsitOrdenSalida = new ArrayList<>();
 					List<DetalleOrdenSalida> listDetalleOrdenSalida = new ArrayList<>();
 					for(DetalleNotaVenta detalleNotaVenta : listDetalleNotaVenta){
-						AlmacenProducto almacenProducto = productoTieneStock(detalleNotaVenta.getProducto(),param);
+						AlmacenProducto almacenProducto = productoTieneStock(detalleNotaVenta.getProducto(),param,param3.getAlmacenVenta());
 						if(almacenProducto==null){
 							FacesUtil.infoMessage("Validación de Stock", "El producto "+detalleNotaVenta.getProducto().getNombre()+" NO tiene existencia, y no se puede proceder a hacer la venta.");
 							rollbackTransaction();
@@ -450,7 +449,7 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 					for(DetalleNotaVenta detalleNotaVenta : listDetalleNotaVenta){
 						//verificar y agrupar productos por almacen -> metodo que recupera la orden de servicio de acuerdo al almacen
 						//luego se debe saber a cual orden de salida debe ser asigndaa el detalle de la orden de salida
-						AlmacenProducto almacenProducto = productoTieneStock(detalleNotaVenta.getProducto(),param);
+						AlmacenProducto almacenProducto = productoTieneStock(detalleNotaVenta.getProducto(),param,param3.getAlmacenVenta());
 						OrdenSalida ordenSalida = obtenerOrdenSalidadPorAlmacen(lsitOrdenSalida,almacenProducto.getAlmacen());
 						DetalleOrdenSalida detalleOrdenSalida = new DetalleOrdenSalida();
 						detalleOrdenSalida.setCantidadEntregada(detalleNotaVenta.getCantidad());
@@ -595,31 +594,21 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 		return false;
 	}
 
-	private boolean existenMuchosAlmacenes(List<DetalleNotaVenta> listDetalleNotaVenta,ParametroInventario param){
-		List<Almacen> list = new ArrayList<Almacen>();
-		for(DetalleNotaVenta dnv: listDetalleNotaVenta){
-			Almacen almacen = productoTieneStock(dnv.getProducto(),param).getAlmacen();
-			if(! list.contains(almacen)){
-				list.add(almacen);
-			}
-		}
-		return list.size()>1;
-	}
 
-	private AlmacenProducto productoTieneStock(Producto selectedProducto,ParametroInventario param){
+	private AlmacenProducto productoTieneStock(Producto selectedProducto,ParametroInventario param,Almacen almacen){
 		//Verificar que tipo de Metodo {PEPS | UEPS | PPP}
 		String valuacionInventario = param.getTipoValuacion();
 		//Verificar si tiene stock
 		AlmacenProducto almacenProducto = new AlmacenProducto();
 		switch (valuacionInventario) {
 		case  "PEPS":
-			almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorPEPS(selectedProducto);
+			almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorPEPS(selectedProducto,almacen);
 			break;
 		case  "UEPS":
-			almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorUEPS(selectedProducto);
+			almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorUEPS(selectedProducto,almacen);
 			break;
 		case  "PPP":
-			almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorPPP(selectedProducto);
+			almacenProducto = almacenProductoDao.obtenerAlmacenProductoPorPPP(selectedProducto,almacen);
 			break;
 
 		default:

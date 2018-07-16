@@ -137,8 +137,8 @@ public class OrdenTraspasoController implements Serializable {
 		tituloPanel = "Registrar Orden Traspaso";
 
 		modificar = false;
-		registrar = false;
-		crear = true;
+		registrar = true;
+		crear = false;
 		atencionCliente=false;
 		verProcesar = true;
 		verReport = false;

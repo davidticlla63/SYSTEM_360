@@ -172,6 +172,49 @@
 												</div>
 											</div>
 										</p:tab>
+										
+										<p:tab title="Param. General">
+											<div class="row">
+												<div class="col-md-12"
+													style="padding-left: 30px; padding-right: 30px;">
+													<h4 class="pbm border-bottom">
+														Almacen para descantar en la Venta
+													</h4>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group ">
+														<div class="col-md-12">
+															<div class="form-group ">
+													<div class="col-md-4">Almacén</div>
+													<div class="col-md-8">
+
+														<p:autoComplete id="almacenID" style="width: 93%"
+															inputStyle="width: 93%; color: #555555; background-image: none;padding: 4px 10px;"
+															value="#{parametroVentaController.selectedAlmacen.nombre}"
+															completeMethod="#{parametroVentaController.completeAlmacen}"
+															minQueryLength="3" dropdown="true" required="true"
+															requiredMessage="Almacen Requerido."
+															forceSelection="true" var="_var" itemLabel="#{_var}"
+															itemValue="#{_var.nombre}"
+															placeholder="[Escriba Almacen]" scrollHeight="300">
+
+															<p:ajax event="itemSelect" update="form001"
+																listener="#{parametroVentaController.onRowSelectAlmacenClick}" />
+
+															<p:column>
+																<h:outputText value="#{_var.nombre}" />
+															</p:column>
+
+														</p:autoComplete>
+													</div>
+												</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</p:tab>
 									</p:tabView>
 								</div>
 							</div>

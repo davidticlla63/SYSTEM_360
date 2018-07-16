@@ -68,6 +68,12 @@ public class Producto implements Serializable {
 	@Column(name="precio_compra",nullable=true)
 	private double precioCompra;
 	
+	@Column(name="stock_min")
+	private double stockMin;
+
+	@Column(name="stock_max")
+	private double stockMax;
+	
 	public Producto(Integer id, String codigo,String nombre,String descripcion) {
 		this.id= id;
 		this.codigo = codigo;
@@ -243,6 +249,22 @@ public class Producto implements Serializable {
 
 	public void setModelo(String modelo) {
 		this.modelo = modelo;
+	}
+
+	public double getStockMin() {
+		return stockMin;
+	}
+
+	public void setStockMin(double stockMin) {
+		this.stockMin = stockMin;
+	}
+
+	public double getStockMax() {
+		return stockMax;
+	}
+
+	public void setStockMax(double stockMax) {
+		this.stockMax = stockMax;
 	}
 
 }

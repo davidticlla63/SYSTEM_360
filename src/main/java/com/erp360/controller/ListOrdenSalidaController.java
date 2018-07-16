@@ -19,6 +19,7 @@ import com.erp360.model.Empresa;
 import com.erp360.model.Gestion;
 import com.erp360.model.OrdenSalida;
 import com.erp360.model.Usuario;
+import com.erp360.util.FacesUtil;
 import com.erp360.util.PageUtil;
 import com.erp360.util.SessionMain;
 
@@ -46,6 +47,7 @@ public class ListOrdenSalidaController implements Serializable {
 
 	//STATE
 	private boolean modificar ;
+	private boolean ver;
 
 	//OBJECT
 	private OrdenSalida selectedOrdenSalida;
@@ -73,7 +75,7 @@ public class ListOrdenSalidaController implements Serializable {
 
 		selectedOrdenSalida = new OrdenSalida();
 		modificar = false;
-		
+		ver = false;
 		listaOrdenSalida = ordenSalidaDao.findAllOrderedByIDGestion(gestionSesion);
 	}
 
@@ -94,15 +96,25 @@ public class ListOrdenSalidaController implements Serializable {
 
 	// ------- action & event ------
 	public void actionModificar(){
-		sessionMain.setAttributeSession("pIdOrdenSalida", String.valueOf(selectedOrdenSalida.getId()));
+		FacesUtil.setSessionAttribute("pIdOrdenSalida", selectedOrdenSalida.getId());
 		String page = "pages/proceso/orden_salida.xhtml";
 		PageUtil.cargarPagina(page);
 	}
 
 	public void onRowSelect(SelectEvent event) {
 		modificar = true;
+		ver = true;
 	}
 
+	public void prepareViewDetail(){
+		try{
+			FacesUtil.setSessionAttribute("pIdOrdenSalida", selectedOrdenSalida.getId());
+			String page = "pages/proceso/orden_salida.xhtml";
+			PageUtil.cargarPagina(page);
+		}catch(Exception e){
+			System.out.println("Error : " +e.getMessage());
+		}
+	}
 
 	// -------- get and set -------
 	public boolean isModificar() {
@@ -127,6 +139,14 @@ public class ListOrdenSalidaController implements Serializable {
 
 	public void setListaOrdenSalida(List<OrdenSalida> listaOrdenSalida) {
 		this.listaOrdenSalida = listaOrdenSalida;
+	}
+
+	public boolean isVer() {
+		return ver;
+	}
+
+	public void setVer(boolean ver) {
+		this.ver = ver;
 	}
 
 }

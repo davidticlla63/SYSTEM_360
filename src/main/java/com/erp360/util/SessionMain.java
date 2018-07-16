@@ -15,12 +15,16 @@ import com.erp360.dao.PrivilegioDao;
 import com.erp360.dao.TipoCambioDao;
 import com.erp360.dao.UsuarioDao;
 import com.erp360.dao.UsuarioRolDao;
+import com.erp360.interfaces.IUsuarioSucursalDao;
+import com.erp360.model.CajaSesion;
 import com.erp360.model.Empresa;
 import com.erp360.model.Gestion;
 import com.erp360.model.Privilegio;
 import com.erp360.model.Roles;
+import com.erp360.model.Sucursal;
 import com.erp360.model.TipoCambio;
 import com.erp360.model.Usuario;
+import com.erp360.model.UsuarioSucursal;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -48,15 +52,20 @@ public class SessionMain implements Serializable {
 	private @Inject PrivilegioDao privilegioDao;
 	private @Inject UsuarioRolDao usuarioRolDao;
 	private @Inject TipoCambioDao tipoCambioDao;
+	private @Inject IUsuarioSucursalDao usuarioSucursalDao;
 	
 	//Object
 	private Usuario usuarioLogin;
 	private Empresa empresaLogin;
 	private Gestion gestionLogin;
 	private TipoCambio tipoCambio;
+	private Sucursal sucursalLogin;
+	private CajaSesion cajaSesion;
+	
 	
 	private String pathFisico;
 	private String urlPath;
+	private String caja;
 
 	private boolean seActualizoTipoCambio = false;
 
@@ -266,6 +275,45 @@ public class SessionMain implements Serializable {
 	public void setTipoCambio(TipoCambio tipoCambio) {
 		this.tipoCambio = tipoCambio;
 	}
+	public CajaSesion getCajaSesion() {
+		return cajaSesion;
+	}
 
+	public void setCajaSesion(CajaSesion cajaSesion) {
+		if (cajaSesion==null) {
+			setCaja("Sin CAJA");
+		}else{
+			setCaja(cajaSesion.getCaja().getNombre());
+		}
+		this.cajaSesion = cajaSesion;
+	}
 
+	public String getCaja() {
+		return caja;
+	}
+
+	public void setCaja(String caja) {
+		this.caja = caja;
+	}
+
+	public Sucursal getSucursalLogin() {
+		if (sucursalLogin.getId().equals(0)) {
+			List<UsuarioSucursal> listAux = usuarioSucursalDao
+					.obtenerTodosPorUsuario(getUsuarioLogin());
+			if (listAux.size() > 0) {
+				sucursalLogin = listAux.get(0).getSucursal();
+			} else {
+				// temporal
+				sucursalLogin = new Sucursal();
+				sucursalLogin.setId(1);
+				sucursalLogin.setNombre("CASA MATRIZ");
+			}
+		}
+//		System.out.println("Sucursal Session: " + sucursalLogin);
+		return sucursalLogin;
+	}
+
+	public void setSucursalLogin(Sucursal sucursalLogin) {
+		this.sucursalLogin = sucursalLogin;
+	}
 }

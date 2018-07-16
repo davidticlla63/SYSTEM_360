@@ -97,19 +97,19 @@ public class AlmacenProductoDao extends DataAccessObjectJpa<AlmacenProducto,E,R,
 	 * @param producto
 	 * @return AlmacenProducto
 	 */
-	public AlmacenProducto obtenerAlmacenProductoPorPEPS(Producto producto){
-		String query = "select em from AlmacenProducto em where em.estado='AC' and em.stock>0 and em.producto.id="+producto.getId()+" order by em.id asc";
+	public AlmacenProducto obtenerAlmacenProductoPorPEPS(Producto producto,Almacen almacen){
+		String query = "select em from AlmacenProducto em where em.estado='AC' and em.stock>0 and em.producto.id="+producto.getId()+" and em.almacen.id="+almacen.getId()+" order by em.id asc";
 		List<AlmacenProducto> list = executeQueryResulList(query);
 		return list.size()>0?list.get(0):null;
 	}
 	
-	public AlmacenProducto obtenerAlmacenProductoPorUEPS(Producto producto){
-		String query = "select em from AlmacenProducto em where em.estado='AC' and em.stock>0 and em.producto.id="+producto.getId()+" order by em.id desc";
+	public AlmacenProducto obtenerAlmacenProductoPorUEPS(Producto producto,Almacen almacen){
+		String query = "select em from AlmacenProducto em where em.estado='AC' and em.stock>0 and em.producto.id="+producto.getId()+" and em.almacen.id="+almacen.getId()+" order by em.id desc";
 		List<AlmacenProducto> list = executeQueryResulList(query);
 		return list.size()>0?list.get(0):null;
 	}
 	
-	public AlmacenProducto obtenerAlmacenProductoPorPPP(Producto producto){
+	public AlmacenProducto obtenerAlmacenProductoPorPPP(Producto producto,Almacen almacen){
 		return null;
 	}
 	
@@ -141,13 +141,36 @@ public class AlmacenProductoDao extends DataAccessObjectJpa<AlmacenProducto,E,R,
 		}catch(Exception e){
 			return new ArrayList<AlmacenProducto>();
 		}
-	}	
+	}
+	
+	public List<AlmacenProducto> findAllAlmacenProducto(Gestion gestion,Producto producto) {
+		List<AlmacenProducto> almacenProductos = new ArrayList<AlmacenProducto>();
+		try{
+			String query = "select em from AlmacenProducto em where em.estado='AC' and em.gestion.id="+gestion.getId()+" and em.producto.id="+ producto.getId();
+			almacenProductos =  executeQueryResulList(query);
+		}catch(Exception e){
+			almacenProductos = new ArrayList<AlmacenProducto>();
+		}
+		return almacenProductos;
+	}
+	
+	public List<AlmacenProducto> findAllAlmacenProducto(Gestion gestion) {
+		List<AlmacenProducto> almacenProductos = new ArrayList<AlmacenProducto>();
+		try{
+			String query = "select em from AlmacenProducto em where em.estado='AC' and em.gestion.id="+gestion.getId();
+			almacenProductos =  executeQueryResulList(query);
+		}catch(Exception e){
+			almacenProductos = new ArrayList<AlmacenProducto>();
+		}
+		return almacenProductos;
+	}
+		
 
-	public AlmacenProducto findByProductoConStockPromedio(Gestion gestion,Producto producto) {
+	public AlmacenProducto findByProductoConStockPromedio(Gestion gestion,Producto producto, Almacen almacen) {
 		List<AlmacenProducto> almacenProductos = new ArrayList<AlmacenProducto>();
 		AlmacenProducto almacenProducto = new AlmacenProducto(0,0,0,0);
 		try{
-			String query = "select em from AlmacenProducto em where ( em.estado='AC' or em.estado='IN' ) and em.gestion.id="+gestion.getId()+" and em.producto.id="
+			String query = "select em from AlmacenProducto em where ( em.estado='AC' or em.estado='IN' ) and em.almacen.id="+almacen.getId()+" and em.gestion.id="+gestion.getId()+" and em.producto.id="
 					+ producto.getId() +" and em.stock>0";
 			almacenProductos =  executeQueryResulList(query);
 			for(AlmacenProducto ap: almacenProductos){

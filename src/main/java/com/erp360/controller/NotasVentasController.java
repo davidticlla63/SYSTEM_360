@@ -21,8 +21,10 @@ import com.erp360.dao.KardexProductoDao;
 import com.erp360.dao.MovimientoCajaDao;
 import com.erp360.dao.NotaVentaDao;
 import com.erp360.dao.OrdenSalidaDao;
+import com.erp360.dao.ParametroVentaDao;
 import com.erp360.model.MovimientoCaja;
 import com.erp360.model.NotaVenta;
+import com.erp360.model.ParametroVenta;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.SessionMain;
 
@@ -46,6 +48,9 @@ public class NotasVentasController implements Serializable {
 	private @Inject KardexClienteDao kardexClienteDao;
 	private @Inject KardexProductoDao kardexProductoDao;
 	private  @Inject SessionMain sessionMain;
+	private @Inject ParametroVentaDao parametroVentaDao;
+	
+	private ParametroVenta selectedParametroVenta;
 
 	//OBJECT
 	private NotaVenta notaVenta;
@@ -74,6 +79,7 @@ public class NotasVentasController implements Serializable {
 		currentPage = "/pages/venta/nota_venta/list.xhtml";
 		montoNotaCargoAPagar = 0;
 		cambioNotaCargoAPagar = 0;
+		selectedParametroVenta = parametroVentaDao.obtener();
 		//notaVentas = notaVentaDao.obtenerTodosOrdenadosPorFecha();
 		FacesUtil.setSessionAttribute("type", null);
 	}
@@ -124,7 +130,7 @@ public class NotasVentasController implements Serializable {
 	}
 
 	public void prepareCancellationSalesNote(){
-		notaVentaDao.anularNotaVenta(notaVenta);
+		notaVentaDao.anularNotaVenta(notaVenta,selectedParametroVenta.getAlmacenVenta());
 	}
 
 	public void prepareReport(){

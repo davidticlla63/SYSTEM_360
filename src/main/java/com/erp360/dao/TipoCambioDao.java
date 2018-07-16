@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import com.erp360.interfaces.ITipoCambioDao;
 import com.erp360.model.Empresa;
 import com.erp360.model.TipoCambio;
 import com.erp360.util.DateUtility;
@@ -32,7 +33,6 @@ public class TipoCambioDao extends DataAccessObjectJpa<TipoCambio, E, R, S, O, P
 	public TipoCambioDao(){
 		super(TipoCambio.class);
 	}
-
 	public TipoCambio registrar(TipoCambio tipoCambio){
 		try{
 			beginTransaction();
@@ -45,7 +45,6 @@ public class TipoCambioDao extends DataAccessObjectJpa<TipoCambio, E, R, S, O, P
 		}
 	}
 
-	
 	public TipoCambio modificar(TipoCambio usuario){
 		try{
 			update(usuario);
@@ -62,18 +61,18 @@ public class TipoCambioDao extends DataAccessObjectJpa<TipoCambio, E, R, S, O, P
 			return null;
 		}
 	}
-
 	public List<TipoCambio> obtenerOrdenAscPorId(){
 		return findAscAllOrderedByParameter("id");
 	}
-
+	
 	public List<TipoCambio> obtenerOrdenDescPorId(){
 		return findDescAllOrderedByParameter("id");
 	}
-
+	
 	public  List<TipoCambio> obtenerPorEmpresa(Empresa empresa){
 		return findAllActivosByParameter("empresa", empresa);
 	}
+	
 
 	public TipoCambio obtenerPorEmpresaYFecha(Empresa empresa,Date fecha){
 		try{
@@ -90,7 +89,7 @@ public class TipoCambioDao extends DataAccessObjectJpa<TipoCambio, E, R, S, O, P
 		}
 		//return findAllByParameterDateAndTwoParameter("fecha", fecha, "empresa", empresa);
 	}
-
+	
 	public TipoCambio obtenerPorEmpresaDiaAnterior(Empresa empresa){
 		try{
 			Date date1 = new Date();
@@ -106,7 +105,7 @@ public class TipoCambioDao extends DataAccessObjectJpa<TipoCambio, E, R, S, O, P
 			return null;
 		}
 	}
-
+	
 	public TipoCambio obtenerUltimoRegistro(Empresa empresa) {
 		try{
 			return findLastActiveRecord("empresa.id",empresa.getId());

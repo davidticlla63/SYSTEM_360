@@ -458,44 +458,14 @@
 		<!--   MODAL PRODUCTO -->
 		<p:dialog widgetVar="dlgProducto" resizable="false" header="AGREGAR PRODUCTO"
 			showHeader="true" modal="false" closeOnEscape="true" draggable="true"
-			position="center" style="padding: 0px 0px 0px 0px;" width="600"
+			position="center" style="padding: 0px 0px 0px 0px;" width="700"
 			visible="#{partidaController.diagloProducto}" id="modalProductoID">
 			<h:form id="formDialogProducto">
 				<ui:fragment rendered="#{ ! ordenIngresoController.nuevoProducto}">
-					<!-- ocultar si se va a creaer producto -->
-					<div class="row">
-						<ui:fragment rendered="false">
-							<div class="form-group ">
-								<div class="col-md-4">Proveedor</div>
-								<div class="col-md-8">
-									<p:autoComplete id="proveedorID" style="width: 100%"
-										inputStyle="width: 93%; color: #555555; background-image: none;padding: 4px 10px;"
-										value="#{ordenIngresoController.selectedProveedor.nombre}"
-										completeMethod="#{ordenIngresoController.completeProveedor}"
-										minQueryLength="1" dropdown="true" required="true"
-										requiredMessage="Proveedor Requerido." forceSelection="true"
-										var="_var" itemLabel="#{_var}" itemValue="#{_var.nombre}"
-										placeholder="[Escriba Proveedor]" scrollHeight="300">
-										<p:ajax event="itemSelect"
-											listener="#{ordenIngresoController.onRowSelectProveedorClick}" />
-										<p:column>
-											<h:outputText value="#{_var.codigo}" />
-										</p:column>
-										<p:column>
-											<h:outputText value="#{_var.nombre}" />
-										</p:column>
-										<p:column>
-											<h:outputText value="#{_var.direccion}" />
-										</p:column>
-									</p:autoComplete>
-								</div>
-							</div>
-						</ui:fragment>
-					</div>
 					<div class="row">
 						<div class="form-group">
-							<div class="col-md-4">Producto</div>
-							<div class="col-md-8">
+							<div class="col-md-2">Producto</div>
+							<div class="col-md-4">
 								<p:autoComplete id="productoID" style="width: 100%"
 									inputStyle="width: 93%; color: #555555; background-image: none;padding: 4px 10px;"
 									value="#{ordenIngresoController.selectedProducto}"
@@ -519,40 +489,9 @@
 
 								</p:autoComplete>
 							</div>
-							<ui:fragment rendered="false">
-								<div class="col-md-1" style="padding-right: 5px;">
-									<p:commandLink value="&#160; "
-										styleClass="btn btn-default ion-plus"
-										style="height:31px;  width: 29px; padding: 4px 6px; "
-										immediate="true">
-										<p:ajax immediate="true" update="form001"
-											listener="#{ordenIngresoController.setNuevoProducto(true)}" />
-									</p:commandLink>
-								</div>
-							</ui:fragment>
-
-						</div>
-					</div>
-					<br />
-					<div class="row">
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Garantía (Días)</label>
-							<div class="col-sm-8">
-								<p:inputText id="garantiaID" required="true"
-									requiredMessage="Garantía Requerido."
-									style="padding: 4px 10px;"
-									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.garantia}"
-									size="40">
-									<p:ajax event="change" />
-								</p:inputText>
-							</div>
-						</div>
-					</div>
-					<br />
-					<div class="row">
-						<div class="form-group">
-							<label for="descripcionID" class="col-sm-4 control-label">Observación</label>
-							<div class="col-sm-8">
+							<label class="col-md-2 control-label">Observación</label>
+							<div class="col-md-4">
+								
 								<p:inputTextarea id="descripcionID" required="true"
 									style="padding: 4px 10px;"
 									requiredMessage="Observacion Requerido."
@@ -563,60 +502,11 @@
 							</div>
 						</div>
 					</div>
-					<br />
+					
 					<div class="row">
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Precio Compra ($us)</label>
-							<div class="col-sm-8">
-								<p:inputText id="precioCompraID" required="true"
-									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
-									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioCompra}"
-									size="40">
-									<p:ajax event="change" update="precioVCoID,precioVCrID,totalID"
-										listener="#{ordenIngresoController.calcularPorcentajePrecio()}" />
-									<f:convertNumber pattern="#,##0.00" locale="en" />
-								</p:inputText>
-							</div>
-						</div>
-					</div>
-					<br />
-					<div class="row">
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Precio Venta
-								Contado ($us)</label>
-							<div class="col-sm-8">
-								<p:inputText id="precioVCoID" required="true"
-									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
-									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioVentaContado}"
-									size="40">
-									<p:ajax event="change" update="totalID"
-										listener="#{ordenIngresoController.calcular()}" />
-									<f:convertNumber pattern="#,##0.00" locale="en" />
-								</p:inputText>
-							</div>
-						</div>
-					</div>
-					<br />
-					<div class="row">
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Precio Venta
-								Credito ($us)</label>
-							<div class="col-sm-8">
-								<p:inputText id="precioVCrID" required="true"
-									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
-									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioVentaCredito}"
-									size="40">
-									<p:ajax event="change" />
-									<f:convertNumber pattern="#,##0.00" locale="en" />
-								</p:inputText>
-							</div>
-						</div>
-					</div>
-					<br />
-					<div class="row">
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Cantidad</label>
-							<div class="col-sm-8">
+							<label class="col-md-2 control-label">Cantidad</label>
+							<div class="col-md-4">
 								<p:inputText id="cantidadID" required="true"
 									requiredMessage="Cantidad Requerido."
 									style="padding: 4px 10px;"
@@ -626,14 +516,99 @@
 										listener="#{ordenIngresoController.calcular()}" />
 								</p:inputText>
 							</div>
+							<label for="descripcionID" class="col-md-2 control-label">Garantía (Días)</label>
+							<div class="col-md-4">
+								<p:inputText id="garantiaID" required="true"
+									requiredMessage="Garantía Requerido."
+									style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.garantia}"
+									size="40">
+									<p:ajax event="change" />
+								</p:inputText>
+							</div>
+							
 						</div>
 					</div>
-					<br />
 					<div class="row">
 						<div class="form-group">
-							<label for="totalID" class="col-sm-4 control-label">Total
+							<label class="col-md-2 control-label">Precio Compra ($us)</label>
+							<div class="col-md-4">
+								<p:inputText id="precioCompraID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioCompra}"
+									size="40">
+									<p:ajax event="change" update="precioVCoID,precioVCrID,totalID"
+										listener="#{ordenIngresoController.calcularPorcentajePrecio()}" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
+								</p:inputText>
+							</div>
+							<label class="col-md-2 control-label">Ubicación Física</label>
+							<div class="col-md-4">
+								<p:inputText id="ubicacionFisicaID" style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.ubicacionFisica}"
+									size="40">
+									<p:ajax event="change" />
+								</p:inputText>
+							</div>
+							
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="form-group">
+							<label class="col-md-2 control-label">Precio Venta
+								Contado ($us)</label>
+							<div class="col-md-4">
+								<p:inputText id="precioVCoID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioVentaContado}"
+									size="40">
+									<p:ajax event="change" update="totalID"
+										listener="#{ordenIngresoController.calcular()}" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
+								</p:inputText>
+							</div>
+							<label class="col-md-2 control-label">Número Lote</label>
+							<div class="col-md-4">
+								<p:inputText id="numeroLoteID" style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.numeroLote}"
+									size="40">
+									<p:ajax event="change" />
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="form-group">
+							<label class="col-md-2 control-label">Precio Venta
+								Credito ($us)</label>
+							<div class="col-md-4">
+								<p:inputText id="precioVCrID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioVentaCredito}"
+									size="40">
+									<p:ajax event="change" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
+								</p:inputText>
+							</div>
+							<label class="col-md-2 control-label">Fecha Expiración</label>
+							<div class="col-md-4">
+								<p:calendar pattern="dd/MM/yyyy" id="fechaExpiracion"
+									styleClass="myWid100" locale="es"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.fechaExpiracion}"
+									onkeypress="return permiteKey(event, 'none')">
+									<p:ajax event="dateSelect" />
+								</p:calendar>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="form-group">
+						<label for="totalID" class="col-md-2 control-label">Total
 								Compra ($us)</label>
-							<div class="col-sm-8">
+							<div class="col-md-4">
 								<p:inputText id="totalID" required="true"
 									requiredMessage="Total Requerido." readonly="true"
 									style="padding: 4px 10px;"
@@ -645,7 +620,6 @@
 						</div>
 					</div>
 
-					<br />
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="form-group">

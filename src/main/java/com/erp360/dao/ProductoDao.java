@@ -72,7 +72,8 @@ public class ProductoDao extends DataAccessObjectJpa<Producto,E,R,S,O, P, Q, U, 
 	}
 
 	public List<Producto> findAllOrderedByDescripcion() {
-		String query = "select ser from Producto ser where ser.estado='AC' or ser.estado='IN' order by ser.descripcion desc";
+		//String query = "select ser from Producto ser where ser.estado='AC' or ser.estado='IN' order by ser.descripcion desc";
+		String query = "SELECT p FROM Producto p WHERE p.id IN (SELECT i.producto.id FROM AlmacenProducto i WHERE i.estado = 'AC' AND i.stock > 0) ORDER BY p.id ASC";
 		return executeQueryResulList(query);
 	}
 

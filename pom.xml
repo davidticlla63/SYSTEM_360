@@ -178,6 +178,12 @@
 
 		<!-- ############################## Now we declare any tools needed ############################## -->
 		
+		<dependency>
+			<groupId>com.annimon</groupId>
+			<artifactId>stream</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		
 		<!-- commonts net para subir archivos FTP -->
 
 		<dependency>

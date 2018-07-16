@@ -190,6 +190,8 @@ public class ListOrdenIngresoController implements Serializable {
 			almProd.setProducto(prod);
 			almProd.setProveedor(proveedor);
 			almProd.setStock(d.getCantidad());
+			almProd.setStockMin(prod.getStockMin());
+			almProd.setStockMax(prod.getStockMax());
 			almProd.setPrecioCompra(d.getPrecioCompra());
 			almProd.setPrecioVentaContado(d.getPrecioVentaContado());
 			almProd.setPrecioVentaCredito(d.getPrecioVentaCredito());
@@ -197,6 +199,9 @@ public class ListOrdenIngresoController implements Serializable {
 			almProd.setFechaRegistro(fechaActual);
 			almProd.setUsuarioRegistro(usuarioSession.getLogin());
 			almProd.setGestion(gestionSesion);
+			almProd.setFechaExpiracion(d.getFechaExpiracion());
+			almProd.setNumeroLote(d.getNumeroLote());
+			almProd.setUbicacionFisica(d.getUbicacionFisica());
 			listAlmacenProducto.add(almProd);
 		}
 		boolean sw = ordenIngresaDao.procesar(empresaLogin,"ORDEN INGRESO X "+selectedOrdenIngreso.getMotivoIngreso(),usuarioSession,selectedOrdenIngreso, listAlmacenProducto);

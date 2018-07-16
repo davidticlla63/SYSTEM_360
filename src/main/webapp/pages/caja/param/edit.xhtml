@@ -1,0 +1,144 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<style type="text/css">
+.column1 {
+	width: 35%;
+	height: auto
+}
+
+.column2 {
+	width: 50%;
+	height: auto
+}
+
+.column3 {
+	width: 15%;
+	height: auto
+}
+</style>
+	<!-- center boxes -->
+
+	<div class="row">
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">CAJA</h3>
+				</div>
+				<!-- start here datatable -->
+				<div class="panel-body box-content no-padding">
+					<p:panelGrid id="grid6" columns="3"
+						columnClasses="column1,column2,column3"
+						style="border:0px none; background-color:transparent; width: 100%;"
+						layout="grid" styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="codigo" value="Codigo " />
+						<p:inputText id="codigo" value="#{cajaController.caja.codigo}"
+							readonly="true">
+						</p:inputText>
+						<p:message for="codigo" display="tooltip" />
+
+
+						<p:outputLabel for="nombre" value="Nombre " />
+						<p:inputText id="nombre" value="#{cajaController.caja.nombre}"
+							required="true">
+							<p:ajax event="change" update="form001" />
+						</p:inputText>
+						<p:message for="nombre" display="tooltip" />
+
+						<p:outputLabel for="descripcion" value="Descripcion " />
+						<p:inputTextarea rows="3" id="descripcion"
+							value="#{cajaController.caja.descripcion}" required="true">
+							<p:ajax event="change" update="form001" />
+						</p:inputTextarea>
+						<p:message for="descripcion" display="tooltip" />
+
+						<p:outputLabel for="unico" value="Comprobante Unico" />
+						<p:inputSwitch id="unico" offLabel="No" onLabel="Si"
+							value="#{cajaController.caja.comprobanteUnico}">
+							<p:ajax event="change" update="form001" />
+						</p:inputSwitch>
+						<p:message for="unico" display="tooltip" />
+
+
+					</p:panelGrid>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">LISTA USUARIO</h3>
+				</div>
+				<!-- start here datatable -->
+				<div class="panel-body box-content no-padding">
+					<p:dataTable id="singleDT1" var="var"
+						value="#{cajaController.listaUsuariosSeleccionados}"
+						selectionMode="single" selection="#{cajaController.caja}"
+						rowKey="#{var.id}"
+						style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+						emptyMessage="No se encontraron registros." reflow="true">
+
+						<p:ajax update="form001" event="rowSelect"
+							listener="#{cajaController.onRowSelect}" />
+
+						<p:column width="60%" headerText="Usuario"
+							style="text-align:center;"
+							filterStyle="width: 100%; height:25px;" filterBy="#{var.nombre}">
+							<h:outputText style="font-size: 12px;" value="#{var.nombre}" />
+						</p:column>
+
+						<p:column width="18%" headerText="Nombre"
+							style="text-align:center;"
+							filterStyle="width: 100%; height:25px;" filterBy="#{var.login}">
+							<h:outputText style="font-size: 12px;" value="#{var.login}" />
+						</p:column>
+
+
+						<p:column width="10%" headerText="Fecha Registro"
+							style="text-align:center;"
+							filterStyle="width: 100%; height:25px;"
+							filterBy="#{var.fechaRegistro}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.fechaRegistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<f:facet name="footer">
+							<h:outputText style="font-size: 12px;"
+								value="#{cajaController.listaUsuariosSeleccionados.size()} Registros en Total" />
+						</f:facet>
+					</p:dataTable>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 	<div class="Container100 ui-fluid"> -->
+
+	<!-- 		<div class="Card"> -->
+	<!-- 			<p:panel id="panelcabecera" header="CAJA"> -->
+	<!-- 				<div class="Container100 NoIndent"> -->
+
+
+	<!-- 					<div class="Container50 Responsive100 NoIndent"> -->
+	<!-- 						<div class="EmptyBox10"></div> -->
+	<!-- 						<p:pickList id="pickList" value="#{cajaController.listaUsuarios}" -->
+	<!-- 							var="f" itemLabel="#{f.nombre}" itemValue="#{f}" -->
+	<!-- 							filterMatchMode="contains" responsive="true" -->
+	<!-- 							converter="primeFacesPickListConverter" showSourceFilter="true" -->
+	<!-- 							showTargetFilter="true"> -->
+	<!-- 							<f:facet name="sourceCaption">Usuarios Sistema</f:facet> -->
+	<!-- 							<f:facet name="targetCaption">Usuarios Asignados</f:facet> -->
+	<!-- 						</p:pickList> -->
+	<!-- 					</div> -->
+	<!-- 				</div> -->
+	<!-- 				<div class="EmptyBox5"></div> -->
+	<!-- 			</p:panel> -->
+
+	<!-- 		</div> -->
+	<!-- 	</div> -->
+
+</ui:composition>

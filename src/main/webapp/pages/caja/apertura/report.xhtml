@@ -1,0 +1,22 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- center boxes -->
+	<div class="Container100">
+		<div class="Card">
+			<div class="CardBigTopic Container100 Responsive100 TexAlLeft">REPORTE 
+				MOVIMIENTOS</div>
+
+			<div class="SeparatorFull"></div>
+			<div class="Container100 ui-fluid">
+				<p:media player="pdf" rendered="true"
+							value="#{cajaOperacdionController.urlReport}" width="80%"
+							height="500px" />
+			</div>
+		</div>
+	</div>
+
+</ui:composition>

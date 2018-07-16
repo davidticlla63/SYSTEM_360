@@ -55,6 +55,15 @@ public class DetalleOrdenIngreso implements Serializable{
 	
 	@Column(name="porcentaje_venta_credito", nullable = true)
 	private double porcentajeVentaCredito;
+	
+	@Column(name="fecha_expiracion",nullable=true)
+	private Date fechaExpiracion;
+	
+	@Column(name = "ubicacion_fisica",nullable=true)
+	private String ubicacionFisica;
+	
+	@Column(name = "numero_lote",nullable=true)
+	private String numeroLote;
 
 	// bi-directional many-to-one association to PedidoMov
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -270,6 +279,30 @@ public class DetalleOrdenIngreso implements Serializable{
 
 	public void setTotalCompra(double totalCompra) {
 		this.totalCompra = totalCompra;
+	}
+
+	public Date getFechaExpiracion() {
+		return fechaExpiracion;
+	}
+
+	public void setFechaExpiracion(Date fechaExpiracion) {
+		this.fechaExpiracion = fechaExpiracion;
+	}
+
+	public String getUbicacionFisica() {
+		return ubicacionFisica;
+	}
+
+	public void setUbicacionFisica(String ubicacionFisica) {
+		this.ubicacionFisica = ubicacionFisica;
+	}
+
+	public String getNumeroLote() {
+		return numeroLote;
+	}
+
+	public void setNumeroLote(String numeroLote) {
+		this.numeroLote = numeroLote;
 	}
 
 }

@@ -224,6 +224,34 @@
 														</p:inputText>
 													</div>
 												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Stock Mínimo</div>
+													<div class="col-md-8">
+														<p:inputText id="stockMinimoID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.stockMin}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+															<f:convertNumber pattern="#,##0.000" locale="en" />
+														</p:inputText>
+													</div>
+												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Stock Máximo</div>
+													<div class="col-md-8">
+														<p:inputText id="stockMaximoID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.stockMax}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+															<f:convertNumber pattern="#,##0.000" locale="en" />
+														</p:inputText>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>

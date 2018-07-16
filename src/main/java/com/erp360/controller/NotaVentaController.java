@@ -869,7 +869,7 @@ public class NotaVentaController implements Serializable {
 			}
 			// verifica si tiene stock
 			if(! notaVenta.getEstadoPago().equals("CO")){
-				AlmacenProducto almProd = almacenProductoDao.findByProductoConStockPromedio(sessionMain.getGestionLogin(), selectedProducto);//selectedProducto.getAlmacenProductos().get(0);
+				AlmacenProducto almProd = almacenProductoDao.findByProductoConStockPromedio(sessionMain.getGestionLogin(), selectedProducto,selectedParametroVenta.getAlmacenVenta());//selectedProducto.getAlmacenProductos().get(0);
 				if(almProd.getStock()==0){
 					FacesUtil.showDialog("dlgpValidationStock");
 					return;
@@ -1024,7 +1024,7 @@ public class NotaVentaController implements Serializable {
 			selectedDetalleNotaVenta.setPrecioContadoNacional(selectedProducto.getPrecioVentaContado()*tipoCambio);//contado nacional
 			selectedDetalleNotaVenta.setPrecioContadoExtranjero(selectedProducto.getPrecioVentaContado());
 		}else{
-			AlmacenProducto i = almacenProductoDao.findByProductoConStockPromedio(sessionMain.getGestionLogin(), selectedProducto);//selectedProducto.getAlmacenProductos().get(0);
+			AlmacenProducto i = almacenProductoDao.findByProductoConStockPromedio(sessionMain.getGestionLogin(), selectedProducto,selectedParametroVenta.getAlmacenVenta());//selectedProducto.getAlmacenProductos().get(0);
 			
 			if(i.getStock()==0){
 				FacesUtil.showDialog("dlgpValidationStock");

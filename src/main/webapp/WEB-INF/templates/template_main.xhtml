@@ -363,10 +363,15 @@
 								class="sidebar-text">Inventario</span></a>
 							<ul class="nav nav-second-level">
 								<li
-									class="#{(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :'inactive'}"><a
+									class="#{(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/inventarios.xhtml')) ? 'active' :'inactive'}"><a
 									href="#"><i class="icon-plus"></i><span
-										class="sidebar-text">Gestión Producto</span></a>
+										class="sidebar-text">Reportes</span></a>
 									<ul class="nav nav-third-level">
+										<li
+											class="#{(view.viewId.equals('/pages/inventario/inventarios.xhtml')) ? 'active' :'inactive'}"><a
+											href="#{request.contextPath}/pages/inventario/inventarios.xhtml">
+												<i class="icon-globe"></i><span class="sidebar-text">Inventarios</span>
+										</a></li>
 										<li
 											class="#{(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :'inactive'}"><a
 											href="#{request.contextPath}/pages/inventario/stock_producto.xhtml">

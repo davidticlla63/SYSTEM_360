@@ -80,7 +80,13 @@ public class TipoCambioController implements Serializable {
 	private void cargarFechasTipoCambio(){
 		eventModelTipoCambio = new DefaultScheduleModel();
 		for(TipoCambio tc: listTipoCambio){
-			eventModelTipoCambio.addEvent(new DefaultScheduleEvent(String.valueOf(tc.getUnidad()), tc.getFecha(), tc.getFecha(), tc));
+			DefaultScheduleEvent data = new DefaultScheduleEvent(String.valueOf(tc.getUnidad()), tc.getFecha(), tc.getFecha(), tc);
+			//if(tc.getId()%2 == 0){
+			//	data.setStyleClass("style-1");
+			//}else{
+			//	data.setStyleClass("style-2");
+			//}
+			eventModelTipoCambio.addEvent(data);
 		}
 	}
 	
