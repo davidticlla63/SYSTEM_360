@@ -268,7 +268,7 @@ public class CajaMovimientoDao extends DataAccessObjectGeneric<CajaMovimiento>
 
 	@Override
 	public List<CajaMovimiento> listarMovimientosPorSesion(CajaSesion cajaSesion) {		
-		return findAllActiveByParameterDesc("cajaSesion", cajaSesion.getId());
+		return findAllActiveByParameterAsc("cajaSesion", cajaSesion.getId());
 	}
 	
 	

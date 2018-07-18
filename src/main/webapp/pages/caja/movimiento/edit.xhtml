@@ -38,6 +38,8 @@
 						style="border:0px none; background-color:transparent; width: 100%;"
 						layout="grid" styleClass="ui-panelgrid-blank">
 
+
+
 						<p:outputLabel for="caja" value="Caja " />
 						<p:inputText id="caja"
 							value="#{cajaMovimientoController.cajaMovimiento.cajaSesion.caja.nombre}"
@@ -130,6 +132,18 @@
 							display="tooltip" />
 
 
+						<p:outputLabel for="concepto" value="Concepto " />
+						<p:autoComplete id="concepto" required="true"
+							value="#{cajaMovimientoController.cajaMovimiento.concepto}"
+							var="theme" converter="conceptoConverter"
+							itemLabel="#{theme.concepto}" itemValue="#{theme}"
+							completeMethod="#{cajaMovimientoController.onCompleteConcepto}"
+							forceSelection="true" dropdown="true" placeholder="Concepto">
+							<p:ajax event="itemSelect"
+								listener="#{cajaMovimientoController.onSelectConcepto}" 
+								update="concepto"/>
+						</p:autoComplete>
+						<p:message for="concepto" display="tooltip" />
 					</p:panelGrid>
 				</div>
 				<div class="col-md-6">
@@ -142,8 +156,8 @@
 						<p:outputLabel for="monto" value="Monto " />
 						<p:inputText id="monto"
 							value="#{cajaMovimientoController.cajaMovimiento.monto}"
-							 required="true" style="align:right;" rendered="true">
-							 <f:convertNumber type="number" groupingUsed="true"
+							required="true" style="align:right;" rendered="true">
+							<f:convertNumber type="number" groupingUsed="true"
 								minFractionDigits="2" pattern="#0.00" />
 							<p:ajax event="change" update="montosus,monto"
 								listener="#{cajaMovimientoController.actualizarExtranjero}" />
@@ -153,8 +167,8 @@
 						<p:outputLabel for="montosus" value="Monto $us" />
 						<p:inputText id="montosus"
 							value="#{cajaMovimientoController.cajaMovimiento.montoExtranjero}"
-							 required="true" style="align:right;" rendered="true">
-							 <f:convertNumber type="number" groupingUsed="true"
+							required="true" style="align:right;" rendered="true">
+							<f:convertNumber type="number" groupingUsed="true"
 								minFractionDigits="2" pattern="#0.00" />
 							<p:ajax event="change" update="montosus,monto"
 								listener="#{cajaMovimientoController.actualizarNacional}" />
@@ -165,7 +179,7 @@
 					</p:panelGrid>
 				</div>
 			</div>
-			
+
 		</div>
 	</div>
 

@@ -61,6 +61,9 @@ public class CajaMovimiento implements Serializable {
 	
 	@Column(name = "descripcion", nullable = true)
 	private String descripcion;
+	
+	@Column(name = "ducumento", nullable = true)
+	private String ducumento;
 
 	@Column(name = "numero_tarjeta", nullable = true)
 	private String numeroTarjeta;
@@ -131,7 +134,8 @@ public class CajaMovimiento implements Serializable {
 //	@Column(name = "saldo_extranjero", nullable = false)
 //	private Double saldoExtranjero;
 //	
-	
+	@Transient
+	private Concepto concepto;
 	
 	@OneToMany(mappedBy = "cajaMovimiento", orphanRemoval=true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<CajaMovimientoDetalle> listaCajaMovimientoDetalles = new ArrayList<CajaMovimientoDetalle>();
@@ -144,6 +148,7 @@ public class CajaMovimiento implements Serializable {
 		this.montoExtranjero=new Double(0);
 		this.montoRecibido=new Double(0);
 		this.cambio=new Double(0);
+		this.concepto= new Concepto();
 //		this.saldoExtranjero=new Double(0);
 //		this.saldoNacional= new Double(0);
 		this.tipo="E";
@@ -370,6 +375,22 @@ public class CajaMovimiento implements Serializable {
 	public void setListaCajaMovimientoDetalles(
 			List<CajaMovimientoDetalle> listaCajaMovimientoDetalles) {
 		this.listaCajaMovimientoDetalles = listaCajaMovimientoDetalles;
+	}
+
+	public String getDucumento() {
+		return ducumento;
+	}
+
+	public void setDucumento(String ducumento) {
+		this.ducumento = ducumento;
+	}
+
+	public Concepto getConcepto() {
+		return concepto;
+	}
+
+	public void setConcepto(Concepto concepto) {
+		this.concepto = concepto;
 	}
 
 //	public Double getSaldoNacional() {

@@ -63,13 +63,21 @@
 						<p:column width="20%" headerText="Concepto" filterBy="#{var.tipo}">
 							<h:outputText style="font-size: 12px;" value="#{var.descripcion}" />
 						</p:column>
-						<p:column width="10%" headerText="Importe" filterBy="#{var.monto}"
-							style="text-align:right;">
-							<h:outputText style="font-size: 12px;" value="#{var.monto}">
-								<f:convertNumber type="number" groupingUsed="true"
-									minFractionDigits="2" pattern=",##0.00" />
-							</h:outputText>
+						<p:column width="10%" headerText="Documento" filterBy="#{var.ducumento}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.ducumento}" />
 						</p:column>
+						<p:column width="10%" headerText="Tipo Mov" filterBy="#{var.tipo}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.tipoMovimiento.label}" />
+						</p:column>
+<!-- 						<p:column width="10%" headerText="Importe" filterBy="#{var.monto}" -->
+<!-- 							style="text-align:right;"> -->
+<!-- 							<h:outputText style="font-size: 12px;" value="#{var.monto}"> -->
+<!-- 								<f:convertNumber type="number" groupingUsed="true" -->
+<!-- 									minFractionDigits="2" pattern=",##0.00" /> -->
+<!-- 							</h:outputText> -->
+<!-- 						</p:column> -->
 
 
 
@@ -79,17 +87,31 @@
 							<h:outputText style="font-size: 12px;"
 								rendered="#{var.tipo=='E'}" value="Egreso" />
 						</p:column>
-
-						<p:column width="10%" headerText="Tipo Mov" filterBy="#{var.tipo}">
-							<h:outputText style="font-size: 12px;"
-								value="#{var.tipoMovimiento.label}" />
-						</p:column>
-
-						<p:column width="10%" headerText="Tipo Pago"
+						<p:column width="10%" headerText="Ingreso"
 							filterBy="#{var.tipoPago}">
 							<h:outputText style="font-size: 12px;"
-								value="#{var.tipoPago.label}" />
+								rendered="#{var.tipo=='I'}" value="#{var.montoExtranjero}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
 						</p:column>
+
+						<p:column width="10%" headerText="Engreso"
+							filterBy="#{var.montoExtranjero}">
+							<h:outputText style="font-size: 12px;"
+								rendered="#{var.tipo=='E'}" value="#{var.montoExtranjero}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
+						</p:column>
+
+						
+
+						<!-- 						<p:column width="10%" headerText="Tipo Pago" -->
+						<!-- 							filterBy="#{var.tipoPago}"> -->
+						<!-- 							<h:outputText style="font-size: 12px;" -->
+						<!-- 								value="#{var.tipoPago.label}" /> -->
+						<!-- 						</p:column> -->
 
 						<p:column width="10%" headerText="Caja "
 							filterBy="#{var.cajaSesion.caja.nombre}">
