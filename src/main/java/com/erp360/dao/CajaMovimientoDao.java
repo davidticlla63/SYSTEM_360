@@ -28,6 +28,7 @@ public class CajaMovimientoDao extends DataAccessObjectGeneric<CajaMovimiento>
 	private @Inject ICajaDao cajaDao;
 	private @Inject ICajaSesionDao cajaOperacionDao;
 //	private @Inject IComprobanteDao comprobanteDao;
+	private @Inject ICajaSesionDao cajaSesionDao;
 
 	public CajaMovimientoDao() {
 		super(CajaMovimiento.class);
@@ -63,7 +64,23 @@ public class CajaMovimientoDao extends DataAccessObjectGeneric<CajaMovimiento>
 	public CajaMovimiento registrar(CajaMovimiento examen) {
 		try {
 			beginTransaction();
+			CajaSesion cajaSesion=cajaSesionDao.RetornarPorId(examen.getCajaSesion().getId());
+			if (examen.getTipo().equals("I")) {
+				cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+examen.getMonto());
+				cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+examen.getMontoExtranjero());
+			}else{//E
+				cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()-examen.getMonto());
+				cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()-examen.getMontoExtranjero());
+			}
+			
+			cajaSesionDao.update(cajaSesion);
+			examen.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
+			examen.setSaldoNacional(cajaSesion.getSaldoNacional());
+			
 			examen = super.create(examen);
+			
+			
+			
 			Caja c = examen.getCajaSesion().getCaja();
 			c.setOpcion("AB");
 			cajaDao.modificar(c);

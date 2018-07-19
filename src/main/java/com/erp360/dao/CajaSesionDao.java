@@ -231,6 +231,19 @@ implements ICajaSesionDao {
 		q.setParameter("idcaja", caja.getId());
 		return (CajaSesion)q.getSingleResult();
 	}
+	
+	@Override
+	public CajaSesion RetornarUltimaSesionPorCaja(Caja caja) {
+		String query = "SELECT p FROM CajaSesion p where p.procesada='true' and p.caja.id="+caja.getId()+" order by p.id desc";
+		System.out.println("RetornarUltimaSesionPorCaja : "+query);
+		Query q = getEntityManager().createQuery(query);
+		List<CajaSesion> cajaSesions=q.getResultList();
+		if (cajaSesions.size()==0) {
+			return null;
+		}else{
+			return cajaSesions.get(0);
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see com.teds.spaps.interfaces.dao.ICajaDao#RetornarOnCompletePorCompania(com.teds.spaps.model.Compania, java.lang.String)

@@ -10,7 +10,9 @@ import javax.inject.Inject;
 
 import com.erp360.caja.behaviors.CajaServicio;
 import com.erp360.interfaces.ICajaMovimientoDao;
+import com.erp360.interfaces.ICajaSesionDao;
 import com.erp360.model.CajaMovimiento;
+import com.erp360.model.CajaSesion;
 import com.erp360.model.Cliente;
 import com.erp360.model.Cobranza;
 import com.erp360.model.CuentaCobrar;
@@ -48,6 +50,7 @@ public class CobranzaDao extends DataAccessObjectJpa<Cobranza,PlanCobranza,NotaV
 	private @Inject NotaVentaDao notaVentaDao;
 	private @Inject ICajaMovimientoDao cajaMovimientoDao;
 	private @Inject CajaServicio cajaServicio;
+	private @Inject ICajaSesionDao cajaSesionDao;
 
 	public Cobranza registrar(Usuario usuario,Cobranza cobranza,List<PlanCobranza> planCobranzas,Cliente cliente,int numeroCuotasPendientePorCobrar){
 		try{
@@ -78,7 +81,16 @@ public class CobranzaDao extends DataAccessObjectJpa<Cobranza,PlanCobranza,NotaV
 			cobranza = create(cobranza);
 			
 			//caja movimiento
-			CajaMovimiento c=cajaMovimientoDao.create(cajaServicio.IngresoPorCobranza(cobranza));
+			
+			CajaMovimiento cajaMovimiento=cajaServicio.IngresoPorCobranza(cobranza);
+			CajaSesion cajaSesion=cajaSesionDao.RetornarPorId(cajaMovimiento.getCajaSesion().getId());
+			
+			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+cajaMovimiento.getMonto());
+			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+cajaMovimiento.getMontoExtranjero());
+			cajaSesionDao.update(cajaSesion);
+			cajaMovimiento.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
+			cajaMovimiento.setSaldoNacional(cajaSesion.getSaldoNacional());
+			CajaMovimiento c=cajaMovimientoDao.create(cajaMovimiento);
 			//modificacion plan cobranza
 			for(PlanCobranza pc: planCobranzas){
 				pc.setEstadoCobro("CO");

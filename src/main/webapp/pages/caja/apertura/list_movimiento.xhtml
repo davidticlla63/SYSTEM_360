@@ -118,7 +118,8 @@
 							<h:outputText style="font-size: 12px;"
 								value="#{var.cajaSesion.caja.nombre}" />
 						</p:column>
-						<p:column width="10%" headerText="Documento" filterBy="#{var.ducumento}">
+						<p:column width="10%" headerText="Documento"
+							filterBy="#{var.ducumento}">
 							<h:outputText style="font-size: 12px;" value="#{var.ducumento}" />
 						</p:column>
 
@@ -157,7 +158,14 @@
 							</h:outputText>
 						</p:column>
 
-
+						<p:column width="10%" headerText="Saldo"
+							filterBy="#{var.saldoExtranjero}">
+							<h:outputText style="font-size: 12px;"
+							 value="#{var.saldoExtranjero}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
+						</p:column>
 
 						<f:facet name="footer">
 							<h:outputText style="font-size: 12px;"

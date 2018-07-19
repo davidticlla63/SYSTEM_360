@@ -128,11 +128,11 @@ public class CajaMovimiento implements Serializable {
 	@Column(name = "monto_literal", nullable = true)
 	private String montoLiteral;
 	
-//	@Column(name = "saldo_nacional", nullable = false)
-//	private Double saldoNacional;
-//	
-//	@Column(name = "saldo_extranjero", nullable = false)
-//	private Double saldoExtranjero;
+	@Column(name = "saldo_nacional", nullable = false)
+	private Double saldoNacional;
+	
+	@Column(name = "saldo_extranjero", nullable = false)
+	private Double saldoExtranjero;
 //	
 	@Transient
 	private Concepto concepto;
@@ -393,20 +393,20 @@ public class CajaMovimiento implements Serializable {
 		this.concepto = concepto;
 	}
 
-//	public Double getSaldoNacional() {
-//		return saldoNacional;
-//	}
-//
-//	public void setSaldoNacional(Double saldoNacional) {
-//		this.saldoNacional = saldoNacional;
-//	}
-//
-//	public Double getSaldoExtranjero() {
-//		return saldoExtranjero;
-//	}
-//
-//	public void setSaldoExtranjero(Double saldoExtranjero) {
-//		this.saldoExtranjero = saldoExtranjero;
-//	}
-//
+	public Double getSaldoNacional() {
+		return saldoNacional;
+	}
+
+	public void setSaldoNacional(Double saldoNacional) {
+		this.saldoNacional = saldoNacional;
+	}
+
+	public Double getSaldoExtranjero() {
+		return saldoExtranjero;
+	}
+
+	public void setSaldoExtranjero(Double saldoExtranjero) {
+		this.saldoExtranjero = saldoExtranjero;
+	}
+
 	}
