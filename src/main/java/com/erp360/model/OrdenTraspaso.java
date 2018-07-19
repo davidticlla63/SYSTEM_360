@@ -59,17 +59,15 @@ public class OrdenTraspaso implements Serializable{
 	private Usuario usuarioAprobacion;	
 
 	@ManyToOne
-	@JoinColumn(name = "id_almacen_origen")
-	private Almacen almacenOrigen;
-
+	@JoinColumn(name = "id_orden_ingreso",nullable=true)
+	private OrdenIngreso ordenIngreso;
+	
 	@ManyToOne
-	@JoinColumn(name = "id_almacen_destino")
-	private Almacen almacenDestino;
+	@JoinColumn(name = "id_orden_salida",nullable=true)
+	private OrdenSalida ordenSalida;
 
 	public OrdenTraspaso() {
 		this.id = 0 ;
-		this.almacenOrigen = new Almacen();		
-		this.almacenDestino = new Almacen();
 		this.setGestion(new Gestion());
 		this.observacion = "Ninguna";
 	}
@@ -170,20 +168,20 @@ public class OrdenTraspaso implements Serializable{
 		this.gestion = gestion;
 	}
 
-	public Almacen getAlmacenOrigen() {
-		return almacenOrigen;
+	public OrdenIngreso getOrdenIngreso() {
+		return ordenIngreso;
 	}
 
-	public void setAlmacenOrigen(Almacen almacenOrigen) {
-		this.almacenOrigen = almacenOrigen;
+	public void setOrdenIngreso(OrdenIngreso ordenIngreso) {
+		this.ordenIngreso = ordenIngreso;
 	}
 
-	public Almacen getAlmacenDestino() {
-		return almacenDestino;
+	public OrdenSalida getOrdenSalida() {
+		return ordenSalida;
 	}
 
-	public void setAlmacenDestino(Almacen almacenDestino) {
-		this.almacenDestino = almacenDestino;
+	public void setOrdenSalida(OrdenSalida ordenSalida) {
+		this.ordenSalida = ordenSalida;
 	}
 
 }

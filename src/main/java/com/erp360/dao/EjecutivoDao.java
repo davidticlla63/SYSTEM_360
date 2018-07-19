@@ -5,7 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import com.erp360.model.Empresa;
-import com.erp360.model.EncargadoVenta;
+import com.erp360.model.Ejecutivo;
 import com.erp360.util.E;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.O;
@@ -23,13 +23,13 @@ import com.erp360.util.W;
  */
 
 @Stateless
-public class EncargadoVentaDao extends DataAccessObjectJpa<EncargadoVenta,E,R,S,O, P, Q, U, V, W> {
+public class EjecutivoDao extends DataAccessObjectJpa<Ejecutivo,E,R,S,O, P, Q, U, V, W> {
 
-	public EncargadoVentaDao(){
-		super(EncargadoVenta.class);
+	public EjecutivoDao(){
+		super(Ejecutivo.class);
 	}
 	
-	public EncargadoVenta registrar(EncargadoVenta encargadoVenta){
+	public Ejecutivo registrar(Ejecutivo encargadoVenta){
 		try{
 			beginTransaction();
 			encargadoVenta = create(encargadoVenta);
@@ -48,7 +48,7 @@ public class EncargadoVentaDao extends DataAccessObjectJpa<EncargadoVenta,E,R,S,
 		}
 	}
 	
-	public boolean modificar(EncargadoVenta encargadoVenta){
+	public boolean modificar(Ejecutivo encargadoVenta){
 		try{
 			beginTransaction();
 			update(encargadoVenta);
@@ -67,7 +67,7 @@ public class EncargadoVentaDao extends DataAccessObjectJpa<EncargadoVenta,E,R,S,
 		}
 	}
 	
-	public boolean eliminar(EncargadoVenta encargadoVenta){
+	public boolean eliminar(Ejecutivo encargadoVenta){
 		try{
 			beginTransaction();
 			encargadoVenta.setEstado("RM");
@@ -87,31 +87,31 @@ public class EncargadoVentaDao extends DataAccessObjectJpa<EncargadoVenta,E,R,S,
 		}
 	}	
 	
-	public List<EncargadoVenta> getAllSalesPersionOrderById() {
-		String query = "select ser from EncargadoVenta ser where (ser.estado='AC' or ser.estado='IN') and ser.salesPerson=TRUE order by ser.id desc";
+	public List<Ejecutivo> getAllSalesPersionOrderById() {
+		String query = "select ser from Ejecutivo ser where (ser.estado='AC' or ser.estado='IN') and ser.salesPerson=TRUE order by ser.id desc";
 		return executeQueryResulList(query);
 	}
 	
-	public List<EncargadoVenta> getAllPublisherPersionOrderById() {
-		String query = "select ser from EncargadoVenta ser where (ser.estado='AC' or ser.estado='IN') and ser.publisher=TRUE order by ser.id desc";
+	public List<Ejecutivo> getAllPublisherPersionOrderById() {
+		String query = "select ser from Ejecutivo ser where (ser.estado='AC' or ser.estado='IN') and ser.publisher=TRUE order by ser.id desc";
 		return executeQueryResulList(query);
 	}
 
-	public List<EncargadoVenta> obtenerTodosOrdenadosPorId() {
-		String query = "select ser from EncargadoVenta ser where ser.estado='AC' or ser.estado='IN' order by ser.id desc";
+	public List<Ejecutivo> obtenerTodosOrdenadosPorId() {
+		String query = "select ser from Ejecutivo ser where ser.estado='AC' or ser.estado='IN' order by ser.id desc";
 		return executeQueryResulList(query);
 	}
 	
-	public List<EncargadoVenta> obtenerTodosActivosOrdenadosPorId() {
-		String query = "select ser from EncargadoVenta ser where ser.estado='AC' order by ser.id desc";
+	public List<Ejecutivo> obtenerTodosActivosOrdenadosPorId() {
+		String query = "select ser from Ejecutivo ser where ser.estado='AC' order by ser.id desc";
 		return executeQueryResulList(query);
 	}
 
-	public List<EncargadoVenta> obtenerPorConsulta(String query){
+	public List<Ejecutivo> obtenerPorConsulta(String query){
 		return findAllActivosByQueryAndTwoParameter("estado","AC","nombre", query);
 	}
 	
-	public  List<EncargadoVenta> obtenerPorEmpresa(Empresa empresa){
+	public  List<Ejecutivo> obtenerPorEmpresa(Empresa empresa){
 		return findAllActiveParameter("empresa", empresa.getId()); 
 	}
 }

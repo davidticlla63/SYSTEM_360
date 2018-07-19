@@ -49,7 +49,7 @@ public class Cotizacion implements Serializable {
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_encargado_venta", nullable=true)
-	private EncargadoVenta encargadoVenta;
+	private Ejecutivo encargadoVenta;
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_empresa", nullable=false)
@@ -77,7 +77,7 @@ public class Cotizacion implements Serializable {
 		this.tipoCambio = 0;
 		this.estado = "PN";
 		this.moneda = "DOLAR";
-		this.encargadoVenta = new EncargadoVenta();
+		this.encargadoVenta = new Ejecutivo();
 		this.concepto = "Los precios estan sujetos a cambios sin previo aviso.";
 	}
 
@@ -188,11 +188,11 @@ public class Cotizacion implements Serializable {
 		this.concepto = concepto;
 	}
 
-	public EncargadoVenta getEncargadoVenta() {
+	public Ejecutivo getEncargadoVenta() {
 		return encargadoVenta;
 	}
 
-	public void setEncargadoVenta(EncargadoVenta encargadoVenta) {
+	public void setEncargadoVenta(Ejecutivo encargadoVenta) {
 		this.encargadoVenta = encargadoVenta;
 	}
 	

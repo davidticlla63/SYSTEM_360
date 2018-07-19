@@ -673,6 +673,7 @@ public abstract class DataAccessObjectJpa<T, E, R, S, O, P, Q, U, V, W> implemen
 	}
 
 	public List<T> executeQueryResulList(String query) {
+		//Query q = em.createQuery(query);
 		Query q = em.createQuery(query);
 		return q.getResultList();
 	}

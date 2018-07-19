@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import com.erp360.model.AlmacenProducto;
 import com.erp360.model.Gestion;
 import com.erp360.model.OrdenTraspaso;
 import com.erp360.util.E;
@@ -31,6 +32,19 @@ public class OrdenTraspasoDao extends DataAccessObjectJpa<OrdenTraspaso,E,R,S,O,
 	public OrdenTraspasoDao() {
 		super(OrdenTraspaso.class);
 	}
+	
+	public OrdenTraspaso registrar(OrdenTraspaso ordenTraspaso){
+		try{
+			beginTransaction();
+			ordenTraspaso = create(ordenTraspaso);
+			commitTransaction();
+			return ordenTraspaso;
+		}catch(Exception e){
+			rollbackTransaction();
+			return null;
+		}
+	}
+	
 	
 	public int obtenerNumeroOrdenTraspaso( Gestion gestion){
 		String query = "select count(em) from  orden_traspaso em where (em.estado='AC' or em.estado='IN' or em.estado='PR') and em.id_gestion="+gestion.getId();

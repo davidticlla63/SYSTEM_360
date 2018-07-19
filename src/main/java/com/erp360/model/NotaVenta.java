@@ -93,12 +93,9 @@ public class NotaVenta implements Serializable {
 	private Cliente cliente;
 
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id_encargado_venta", nullable=true, referencedColumnName ="id")
-	private EncargadoVenta encargadoVenta;
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id_publisher", nullable=true, referencedColumnName ="id")
-	private EncargadoVenta publisher;
+	@JoinColumn(name="id_ejecutivo", nullable=true, referencedColumnName ="id")
+	private Ejecutivo ejecutivo;
+
 
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_empresa", nullable=false, referencedColumnName ="id")
@@ -145,8 +142,7 @@ public class NotaVenta implements Serializable {
 		this.estado = "AC";
 		this.tipoVenta = "CREDITO";
 		this.moneda = "DOLAR";
-		this.encargadoVenta = new EncargadoVenta();
-		this.publisher = new EncargadoVenta();
+		this.ejecutivo = new Ejecutivo();
 		this.porcentajeCuotaInicial = 0;
 		this.concepto = "Nota de cargo por Venta de producto(s), Cuota Inicial.";
 		this.formaPago = "MENSUAL";
@@ -168,7 +164,7 @@ public class NotaVenta implements Serializable {
 				+ porcentajeCuotaInicial + ", cuotaInicial=" + cuotaInicial
 				+ ", concepto=" + concepto + ", tipoVenta=" + tipoVenta
 				+ ", estadoPago=" + estadoPago + ", cliente=" + cliente
-				+ ", encargadoVenta=" + encargadoVenta + ", empresa=" + empresa + ", gestion="
+				+ ", ejecutivo=" + ejecutivo + ", empresa=" + empresa + ", gestion="
 				+ gestion + ", estado=" + estado + ", fechaRegistro="
 				+ fechaRegistro + ", UsuarioRegistro=" + UsuarioRegistro + "]";
 	}
@@ -293,12 +289,12 @@ public class NotaVenta implements Serializable {
 		this.concepto = concepto;
 	}
 
-	public EncargadoVenta getEncargadoVenta() {
-		return encargadoVenta;
+	public Ejecutivo getEjecutivo() {
+		return ejecutivo;
 	}
 
-	public void setEncargadoVenta(EncargadoVenta encargadoVenta) {
-		this.encargadoVenta = encargadoVenta;
+	public void setEjecutivo(Ejecutivo ejecutivo) {
+		this.ejecutivo = ejecutivo;
 	}
 
 	public double getPorcentajeCuotaInicial() {
@@ -411,14 +407,6 @@ public class NotaVenta implements Serializable {
 
 	public void setListPlanCobranza(List<PlanCobranza> listPlanCobranza) {
 		this.listPlanCobranza = listPlanCobranza;
-	}
-
-	public EncargadoVenta getPublisher() {
-		return publisher;
-	}
-
-	public void setPublisher(EncargadoVenta publisher) {
-		this.publisher = publisher;
 	}
 
 	public List<DetalleNotaVenta> getDetailSalesNotes() {

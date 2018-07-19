@@ -13,8 +13,8 @@ import javax.validation.constraints.Size;
  *
  */
 @Entity
-@Table(name = "encargado_venta", schema = "public")
-public class EncargadoVenta  implements Serializable {
+@Table(name = "ejecutivo", schema = "public")
+public class Ejecutivo  implements Serializable {
 
 	private static final long serialVersionUID = 1419889919632323263L;
 
@@ -47,6 +47,9 @@ public class EncargadoVenta  implements Serializable {
 	
 	@Column(name="apellidos",nullable=true )
 	private String apellidos;
+	
+	@Column(name="porcentaje",nullable=true )
+	private Double porcentaje;
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_empresa", nullable=false)
@@ -76,10 +79,10 @@ public class EncargadoVenta  implements Serializable {
 	@Column(name="usuario_registro",nullable=false )
 	private String usuarioRegistro;
 	
-	@OneToMany(mappedBy="publisher")
+	@OneToMany(mappedBy="ejecutivo")
 	private List<NotaVenta>  notasVenta;
 
-	public EncargadoVenta() {
+	public Ejecutivo() {
 		super();
 		this.id= 0 ;
 		this.nombres= "";
@@ -92,6 +95,7 @@ public class EncargadoVenta  implements Serializable {
 		this.pesoFoto = 0;
 		this.salesPerson = true;
 		this.publisher = false;
+		this.porcentaje = 20d;
 	}
 
 	@Override
@@ -111,10 +115,10 @@ public class EncargadoVenta  implements Serializable {
 		if(obj==null){
 			return false;
 		}else{
-			if(!(obj instanceof EncargadoVenta)){
+			if(!(obj instanceof Ejecutivo)){
 				return false;
 			}else{
-				if(((EncargadoVenta)obj).id==this.id){
+				if(((Ejecutivo)obj).id==this.id){
 					return true;
 				}else{
 					return false;
@@ -265,6 +269,14 @@ public class EncargadoVenta  implements Serializable {
 
 	public void setPublisher(boolean publisher) {
 		this.publisher = publisher;
+	}
+
+	public Double getPorcentaje() {
+		return porcentaje;
+	}
+
+	public void setPorcentaje(Double porcentaje) {
+		this.porcentaje = porcentaje;
 	}
 
 }

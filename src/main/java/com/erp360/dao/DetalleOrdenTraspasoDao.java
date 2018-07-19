@@ -26,6 +26,18 @@ public class DetalleOrdenTraspasoDao extends DataAccessObjectJpa<DetalleOrdenTra
 	public DetalleOrdenTraspasoDao() {
 		super(DetalleOrdenTraspaso.class);
 	}
+	
+	public DetalleOrdenTraspaso registrar(DetalleOrdenTraspaso detalleOrdenTraspaso){
+		try{
+			beginTransaction();
+			detalleOrdenTraspaso = create(detalleOrdenTraspaso);
+			commitTransaction();
+			return detalleOrdenTraspaso;
+		}catch(Exception e){
+			rollbackTransaction();
+			return null;
+		}
+	}
 
 	public List<DetalleOrdenTraspaso> findAllOrderByDesc() {
 		String query = "select em from DetalleOrdenTraspaso em, OrdenTraspaso oc where em.estado='AC' and em.estado='IN'and oc.id=em.ordenTraspaso.id  order by em.id desc";

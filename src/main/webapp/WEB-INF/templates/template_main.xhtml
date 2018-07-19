@@ -238,7 +238,7 @@
 							</ul></li>
 					</ui:fragment>
 					<li
-						class="#{(view.viewId.equals('/pages/caja/list_movimiento.xhtml')) ? 'active':'inactive'}">
+						class="#{(view.viewId.equals('/pages/caja/list_movimiento.xhtml')) ? 'active':(view.viewId.equals('/pages/caja/comision/pagos/index.xhtml')) ? 'active':'inactive'}">
 						<a href="#"><i class="fa fa-dollar"></i><span
 							class="sidebar-text">Caja</span></a>
 						<ul class="nav nav-second-level">
@@ -246,6 +246,11 @@
 								class="#{(view.viewId.equals('/pages/caja/list_movimiento.xhtml')) ? 'active' :'inactive'}"><a
 								href="#{request.contextPath}/pages/caja/list_movimiento.xhtml">
 									<i class="icon-globe"></i><span class="sidebar-text">Movimientos</span>
+							</a></li>
+							<li
+								class="#{(view.viewId.equals('/pages/caja/comision/pagos/index.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/caja/comision/pagos/index.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">Pagos Comision</span>
 							</a></li>
 						</ul>
 					</li>
@@ -284,8 +289,17 @@
 							<li
 								class="#{(view.viewId.equals('/pages/venta/encargado_venta.xhtml')) ? 'active' :'inactive'}"><a
 								href="#{request.contextPath}/pages/venta/encargado_venta.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Vendedor
-										/ Publicador</span>
+									<i class="icon-globe"></i><span class="sidebar-text">Ejecutivo</span>
+							</a></li>
+							<li
+								class="#{(view.viewId.equals('/pages/ejecutivo/comision/index.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/ejecutivo/comision/index.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">Comisiones</span>
+							</a></li>
+							<li
+								class="#{(view.viewId.equals('/pages/ejecutivo/kardex/index.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/ejecutivo/kardex/index.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">kardex Ejecutivo</span>
 							</a></li>
 							<li
 								class="#{(view.viewId.equals('/pages/venta/param.xhtml')) ? 'active' :'inactive'}"><a
@@ -436,7 +450,7 @@
 												class="#{(view.viewId.equals('/pages/proceso/toma_inventario.xhtml')) ? 'active' :'inactive'}"><a
 												href="#{request.contextPath}/pages/proceso/toma_inventario.xhtml">
 													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Toma de Inventario</span>
+													class="sidebar-text">Ajuste de Inventario</span>
 											</a></li>
 										</ui:fragment>
 

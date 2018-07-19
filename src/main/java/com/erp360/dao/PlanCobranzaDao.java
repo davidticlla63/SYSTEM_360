@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 
 import com.erp360.model.NotaVenta;
 import com.erp360.model.PlanCobranza;
-import com.erp360.model.ReservaVenta;
 import com.erp360.util.E;
 import com.erp360.util.O;
 import com.erp360.util.P;
@@ -50,11 +49,4 @@ public class PlanCobranzaDao extends DataAccessObjectJpa<PlanCobranza,E,R,S,O, P
 		}
 	}
 	
-	public List<PlanCobranza> obtenerPorReservaVenta(ReservaVenta reservaVenta){
-		try{
-			return findAllActiveOtherTableAndParameter("ReservaVenta", "reservaVenta", "id", reservaVenta.getId());
-		}catch(Exception e){
-			return new ArrayList<>();
-		}
-	}
 }

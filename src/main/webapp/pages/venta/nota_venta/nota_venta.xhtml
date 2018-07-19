@@ -112,9 +112,6 @@
 														#{notaVentaController.notaVenta.estadoPago.equals('CO')?'Cotización':'Nota de Venta'}
 														<p:outputLabel rendered="#{notaVentaController.modoVista}"
 															value="- Nº #{notaVentaController.notaVenta.codigo}" />
-														<p:outputLabel
-															rendered="#{notaVentaController.selectedReservaVenta.id!=0}"
-															value="#{' por Reserva Nº '}#{notaVentaController.selectedReservaVenta.codigo}" />
 													</div>
 													
 												</div>
@@ -144,7 +141,7 @@
 
 																<p:ajax event="itemSelect"
 																	update="nombreCliente,tooltipId1"
-																	listener="#{notaVentaController.onRowSelectCliente2Click}" />
+																	listener="#{notaVentaController.onRowSelectClienteClick}" />
 
 																<p:column>
 																	<h:outputText value="#{_var.codigo}" />
@@ -560,31 +557,6 @@
 																	</ui:fragment>
 																</div>
 															</div>
-															<ui:fragment
-																rendered="#{notaVentaController.selectedReservaVenta.id!=0}">
-																<div class="form-group ">
-																	<div class="col-md-9">
-																		<p:outputLabel value="Reserva Bs."
-																			rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}" />
-																		<p:outputLabel value="Reserva $us."
-																			rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}" />
-																	</div>
-																	<div class="col-md-3">
-																		<h:outputText id="montoReservaSubTotalNacional"
-																			rendered="#{notaVentaController.notaVenta.moneda.equals('BOLIVIANOS')}"
-																			value="#{notaVentaController.selectedReservaVenta.montoReserva}">
-																			<f:convertNumber type="number" groupingUsed="true"
-																				minFractionDigits="2" pattern="#0.00" />
-																		</h:outputText>
-																		<h:outputText id="montoReservaSubTotalExtranjero"
-																			rendered="#{notaVentaController.notaVenta.moneda.equals('DOLAR')}"
-																			value="#{notaVentaController.selectedReservaVenta.montoReservaExtranjero}">
-																			<f:convertNumber type="number" groupingUsed="true"
-																				minFractionDigits="2" pattern="#0.00" />
-																		</h:outputText>
-																	</div>
-																</div>
-															</ui:fragment>
 															<ui:fragment
 																rendered="#{notaVentaController.notaVenta.tipoVenta.equals('CREDITO')}">
 																<div class="form-group ">

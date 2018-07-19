@@ -9,7 +9,7 @@
 	template="/WEB-INF/templates/template_main.xhtml">
 
 	<ui:define name="head">
-		<title>Vendedor/Publicador</title>
+		<title>Ejecutivo</title>
 
 	</ui:define>
 
@@ -34,7 +34,7 @@
 											actionListener="#{encargadoVentaController.actualizarFormReg()}">
 										</p:commandLink>
 										<p:commandLink id="buttonCrear1"
-											value="&#160; Nuevo Vendedor/Publicador"
+											value="&#160; Nuevo Ejecutivo"
 											styleClass="btn btn-success ion-plus-round"
 											style="height:31px;"
 											rendered="#{encargadoVentaController.crear}" update="form001"
@@ -70,7 +70,7 @@
 									<li><a
 										href="#{request.contextPath}/pages/venta/encardo_venta.xhtml"
 										style="color: #0090FF; font-size: 12px;">Ventas</a></li>
-									<li class="active" style="font-size: 12px;">Vendedor/Publicador</li>
+									<li class="active" style="font-size: 12px;">Ejecutivo</li>
 								</ol>
 							</div>
 						</section>
@@ -84,7 +84,7 @@
 							<div class="col-md-4">
 								<div class="panel panel-default">
 									<div class="panel-heading">
-										<h3 class="panel-title">Datos Vendedor/Publicador</h3>
+										<h3 class="panel-title">Datos Ejecutivo</h3>
 									</div>
 									<div class="panel-body">
 										<!-- start here register -->
@@ -103,21 +103,10 @@
 													</div>
 												</div>
 												<div class="form-group ">
-													<div class="col-md-4">Nombre(s)</div>
+													<div class="col-md-4">Nombre Completo</div>
 													<div class="col-md-8">
 														<h:inputText
 															value="#{encargadoVentaController.newEncargadoVenta.nombres}"
-															style=" color: #555555; background-image: none;"
-															styleClass="input-sm form-control">
-															<p:ajax event="change" />
-														</h:inputText>
-													</div>
-												</div>
-												<div class="form-group ">
-													<div class="col-md-4">Apellidos</div>
-													<div class="col-md-8">
-														<h:inputText
-															value="#{encargadoVentaController.newEncargadoVenta.apellidos}"
 															style=" color: #555555; background-image: none;"
 															styleClass="input-sm form-control">
 															<p:ajax event="change" />
@@ -169,49 +158,16 @@
 														</p:inputTextarea>
 													</div>
 												</div>
-												<div class="form-group ">
-													<div class="col-md-4">Vendedor</div>
-													<div class="col-md-8">
-														<div class="actions">
-															<label class="switch switch-success switch-sm">
-																<h:selectBooleanCheckbox
-																	value="#{encargadoVentaController.newEncargadoVenta.salesPerson}"
-																	styleClass="switch">
-																	<p:ajax immediate="true"  />
-																</h:selectBooleanCheckbox> <span class="switch"></span>
-															</label>
-														</div>
-													</div>
-												</div>
-												
-												<div class="form-group ">
-													<div class="col-md-4">Publicador</div>
-													<div class="col-md-8">
-														<div class="actions">
-															<label class="switch switch-success switch-sm">
-																<h:selectBooleanCheckbox
-																	value="#{encargadoVentaController.newEncargadoVenta.publisher}"
-																	styleClass="switch">
-																	<p:ajax immediate="true"  />
-																</h:selectBooleanCheckbox> <span class="switch"></span>
-															</label>
-														</div>
-													</div>
-												</div>
 
 												<div class="form-group ">
-													<div class="col-md-4">Estado</div>
+													<div class="col-md-4">Comision(%)</div>
 													<div class="col-md-8">
-														<h:selectOneMenu id="roles"
-															styleClass="input-sm form-control"
-															style=" color: #555555; height:25px; font-size:11px;"
-															disabled="#{encargadoVentaController.newEncargadoVenta.estado =='SUPER'}"
-															immediate="true"
-															value="#{encargadoVentaController.nombreEstado}">
-															<f:ajax />
-															<f:selectItems
-																value="#{encargadoVentaController.listEstado}" />
-														</h:selectOneMenu>
+														<h:inputText
+															value="#{encargadoVentaController.newEncargadoVenta.porcentaje}"
+															style=" color: #555555; background-image: none;"
+															styleClass="input-sm form-control">
+															<p:ajax event="change" />
+														</h:inputText>
 													</div>
 												</div>
 											</div>
@@ -220,7 +176,74 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-8"></div>
+							<div class="col-md-8">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Clientes Asociados</h3>
+										<div class="actions mtn">
+											<div class="btn-group btn-group-xs">
+												<p:commandLink id="buttonAddCliente"
+													value="&#160; Cliente"
+													styleClass="btn btn-success btn-outlined ion-plus"
+													style="height:27px; padding-top: 5px" immediate="true"
+													actionListener="#{encargadoVentaController.actionLoadDialogCliente()}"
+													update="form001" >
+												</p:commandLink>
+											</div>
+										</div>
+									</div>
+									<div class="box-content no-padding">
+										<div class="table-responsive">
+										<div class="row">
+											<div class="col-md-12 box-content form-horizontal">
+												<p:dataTable id="itemsTable1"
+												style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+												selectionMode="single" rowKey="#{_var.id}" var="_var"
+												value="#{encargadoVentaController.ejecutivoClientes}"
+												emptyMessage="No se encontraron Registros de ITEMS.">
+
+												<p:column  headerText="Código"
+													filterBy="#{_var.cliente.codigo}"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.cliente.codigo}" />
+												</p:column>
+
+												<p:column  headerText="Nombre Completo"
+													filterBy="#{_var.cliente.razonSocial}"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.cliente.razonSocial}" />
+												</p:column>
+
+												<p:column  headerText="Nit/Ci"
+													filterBy="#{_var.cliente.nit}"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.cliente.nit}" />
+												</p:column>
+
+
+												<p:column width="7%" headerText="Acción"
+													style="text-align:center;">
+													<div class="row">
+														<div class="btn-group-demo">
+															<div class="btn-group">
+																<p:commandLink id="buttonEliminarDetalle"
+																	style="padding-left: 5px; padding-right: 5px;"
+																	value="&#160;" styleClass="btn ion-trash-b"
+																	immediate="true" update="itemsTable1"
+																	actionListener="#{encargadoVentaController.borrarEjecutivoCliente(_var.id)}" />
+															</div>
+														</div>
+													</div>
+												</p:column>
+
+											</p:dataTable>
+											</div>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+							</div>
 						</ui:fragment>
 					</div>
 					<!-- BEGIN PANEL TABLE -->
@@ -229,7 +252,7 @@
 							<div class="col-md-12">
 								<div class="panel panel-default">
 									<div class="panel-heading">
-										<h3 class="panel-title">Lista Vendedores/Publicadores</h3>
+										<h3 class="panel-title">Lista Ejecutivos</h3>
 									</div>
 									<!-- start here datatable -->
 									<p:dataTable id="dataTableCliente" var="item"
@@ -248,10 +271,10 @@
 											style="text-align:center;" filterBy="#{item.id}">
 											<h:outputText value="#{item.id}" />
 										</p:column>
-										<p:column headerText="Nombres"
+										<p:column headerText="Nombre Completo"
 											filterStyle="width: 100%; height:25px;"
 											filterBy="#{item.nombres}">
-											<h:outputText value="#{item.nombres} #{item.apellidos}" />
+											<h:outputText value="#{item.nombres}" />
 										</p:column>
 										<p:column headerText="Ci"
 											filterStyle="width: 100%; height:25px;" filterBy="#{item.ci}">
@@ -302,5 +325,73 @@
 		</div>
 		<!--END CONTENT-->
 
+	<p:dialog widgetVar="dlgCliente" resizable="false" header="ASIGNAR NUEVO CLIENTE"
+			showHeader="true" modal="false" closeOnEscape="true" draggable="true"
+			position="center" style="padding: 0px 0px 0px 0px;" width="400" id="dlgCliente">
+			<h:form id="formDialogCliente">
+					<div class="row">
+						<div class="col-md-12">
+						<div class="form-group">
+							<div class="col-md-4">Cliente</div>
+							<div class="col-md-8">
+								<p:autoComplete id="nombreCliente" style="width: 100%"
+										converter="clienteConverter"
+										inputStyle="width: 100%; color: #555555; background-image: none; padding: 4px 10px;"
+										value="#{encargadoVentaController.selectedCliente}"
+										completeMethod="#{encargadoVentaController.completeCliente}"
+										minQueryLength="1" required="true"
+										requiredMessage="Nombre Cliente Requerido."
+										forceSelection="true" var="_var"
+										itemLabel="#{_var.razonSocial}"
+										itemValue="#{_var}"
+										placeholder="Escriba Código, Nit o Nombre"
+										maxResults="10">
+
+										<p:ajax event="itemSelect"
+											update="nombreCliente"
+											listener="#{encargadoVentaController.onRowSelectCliente2Click}" />
+
+										<p:column>
+											<h:outputText value="#{_var.codigo}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="#{_var.nit}" />
+										</p:column>
+										<p:column>
+											<h:outputText
+												value="#{_var.razonSocial}" />
+										</p:column>
+
+									</p:autoComplete>
+							</div>
+					   </div>
+					   
+					   <div class="form-group">
+					   		<div class="col-md-12">
+					   			<br />
+					   		</div>
+					   </div>
+					   
+					   <div class="form-group">
+							<div class="col-md-6">
+								<p:commandLink value="&#160; Cerrar"
+									styleClass="btn btn-warning ion-minus-circled btn-block"
+									action="#{encargadoVentaController.limpiarDatosCliente()}"
+									immediate="true">
+								</p:commandLink>
+							</div>
+							<div class="col-md-6">
+								<p:commandLink value="&#160; Agregar"
+									styleClass="btn btn-success ion-checkmark btn-block"  >
+									<p:ajax update="formDialogCliente" listener="#{encargadoVentaController.agregarDetalleCliente()}" />
+								</p:commandLink>
+							</div>
+						</div>
+						
+					</div>
+					</div>
+					
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>

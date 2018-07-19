@@ -10,7 +10,6 @@ import com.erp360.model.Cliente;
 import com.erp360.model.CuentaCobrar;
 import com.erp360.model.Empresa;
 import com.erp360.model.NotaVenta;
-import com.erp360.model.ReservaVenta;
 import com.erp360.util.E;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.O;
@@ -104,11 +103,6 @@ public class CuentaCobrarDao extends DataAccessObjectJpa<CuentaCobrar,E,R,S,O, P
 			rollbackTransaction();
 			return false;
 		}
-	}
-
-	public CuentaCobrar obtenerPorReservaVentaPendiente(ReservaVenta reservaVenta){
-		String query = "select em from cuenta_cobrar em where em.estado='PN' and em.reservaVenta.id="+reservaVenta.getId();
-		return executeQuerySingleResult(query);
 	}
 	
 	public CuentaCobrar obtenerPorNotaVenta(NotaVenta notaVenta){

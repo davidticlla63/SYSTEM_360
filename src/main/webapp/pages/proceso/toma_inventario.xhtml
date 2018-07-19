@@ -8,7 +8,7 @@
 	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
 	template="/WEB-INF/templates/template_main.xhtml">
 	<ui:define name="head">
-		<title>Toma de Inventario</title>
+		<title>Ajuste de Inventario</title>
 
 		<f:event listener="#{tomaInventarioController.initConversation}"
 			type="preRenderView"></f:event>
@@ -47,7 +47,7 @@
 										</p:commandLink>
 
 										<p:commandLink id="buttonCrear1"
-											value="&#160; Nueva Toma de Inventario"
+											value="&#160; Ajuste de Inventario"
 											styleClass="btn btn-success ion-plus-round"
 											rendered="#{tomaInventarioController.crear and  tomaInventarioController.selectedTomaInventario == null }"
 											update="form001"
@@ -62,7 +62,7 @@
 											action="#{tomaInventarioController.registrarTomaInventarioPrevio()}">
 										</p:commandLink>
 
-										<p:commandLink id="buttonProcesar" value="&#160; Procesar"
+										<p:commandLink id="buttonProcesar" value="&#160; Procesar 0"
 											styleClass="btn btn-info ion-ios7-loop-strong"
 											style="height:31px; padding:center"
 											rendered="#{tomaInventarioController.registrar and ! tomaInventarioController.newTomaInventario.tipo.equals('INICIAL') }"
@@ -77,7 +77,7 @@
 											action="#{tomaInventarioController.cargarSelectedTomaInventario()}">
 										</p:commandLink>
 
-										<p:commandLink id="buttonProcesar2" value="&#160; Procesar"
+										<p:commandLink id="buttonProcesar2" value="&#160; Procesar 1"
 											styleClass="btn btn-info ion-ios7-loop-strong"
 											style="height:31px; padding:center"
 											rendered="#{tomaInventarioController.buttonProcesarTomaInventarioIncial }"
@@ -166,7 +166,7 @@
 									<li><a
 										href="#{request.contextPath}/pages/proceso/toma_inventario.xhtml"
 										style="color: #0090FF; font-size: 12px;">Proceso</a></li>
-									<li class="active" style="font-size: 12px;">Toma de
+									<li class="active" style="font-size: 12px;">Ajuste de
 										Inventario</li>
 								</ol>
 							</div>
@@ -183,7 +183,7 @@
 							<div class="col-md-12">
 								<div class="panel panel-default">
 									<div class="panel-heading">
-										<h3 class="panel-title">Lista Toma de inventario</h3>
+										<h3 class="panel-title">Lista Ajustes de inventarios</h3>
 									</div>
 									<!-- start here datatable -->
 									<div class="box-content no-padding">
@@ -291,6 +291,7 @@
 										<!-- start here register -->
 										<div class="row">
 											<div class="col-md-12 box-content form-horizontal">
+											<ui:fragment rendered="false">
 												<div class="form-group ">
 													<div class="col-md-5">Tipo</div>
 													<div class="col-md-7">
@@ -307,6 +308,7 @@
 														</h:selectOneMenu>
 													</div>
 												</div>
+												</ui:fragment>
 
 												<div class="form-group ">
 													<div class="col-md-5">Almacén</div>
@@ -333,7 +335,7 @@
 												</div>
 
 												<div class="form-group ">
-													<div class="col-md-5">Nombre del Responsable Almacén</div>
+													<div class="col-md-5">Responsable Almacén</div>
 													<div class="col-md-7">
 														<p:inputText id="responsableAlmacenID"
 															style=" color: #555555; background-image: none;padding: 0px 10px;"
@@ -346,7 +348,7 @@
 												</div>
 
 												<div class="form-group ">
-													<div class="col-md-5">Nombre de Inventariador</div>
+													<div class="col-md-5">Inventariador</div>
 													<div class="col-md-7">
 														<p:inputText id="inventariadorID"
 															style=" color: #555555; background-image: none;padding: 0px 10px;"

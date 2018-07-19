@@ -21,6 +21,7 @@ import org.primefaces.event.SelectEvent;
 import org.richfaces.cdi.push.Push;
 
 import com.erp360.dao.AlmacenDao;
+import com.erp360.dao.AlmacenProductoDao;
 import com.erp360.dao.DetalleOrdenIngresoDao;
 import com.erp360.dao.DetalleTomaInventarioDao;
 import com.erp360.dao.DetalleTomaInventarioOrdenIngresoDao;
@@ -65,6 +66,7 @@ public class TomaInventarioController implements Serializable {
 
 	//DAO
 	private @Inject AlmacenDao almacenDao;
+	private @Inject AlmacenProductoDao almacenProductoDao;
 	private @Inject ProveedorDao proveedorDao;
 	private @Inject ProductoDao productoDao;
 	private @Inject TomaInventarioDao tomaInventarioDao;
@@ -809,7 +811,7 @@ public class TomaInventarioController implements Serializable {
 			//				return ;
 			//			}
 
-			//listAlmacenProducto = almacenProductoRepository.findByAlmacen(gestionSesion,selectedAlmacen);
+			List<AlmacenProducto> listAlmacenProducto = almacenProductoDao.findByAlmacen(gestionSesion,selectedAlmacen);
 			if(listAlmacenProducto.size()==0){//validacion de almacen
 				FacesUtil.infoMessage("INFORMACION", "No se encontraron existencias en el almacen "+selectedAlmacen.getNombre());
 				return ;

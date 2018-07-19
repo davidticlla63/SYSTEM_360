@@ -18,12 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.primefaces.event.CaptureEvent;
 import org.primefaces.event.SelectEvent;
 
-import com.erp360.caja.behaviors.CajaServicio;
 import com.erp360.dao.AlmacenProductoDao;
 import com.erp360.dao.ClienteAdicionalDao;
 import com.erp360.dao.ClienteDao;
 import com.erp360.dao.DetalleNotaVentaDao;
-import com.erp360.dao.EncargadoVentaDao;
+import com.erp360.dao.EjecutivoClienteDao;
 import com.erp360.dao.NotaVentaDao;
 import com.erp360.dao.ParametroCobranzaDao;
 import com.erp360.dao.ParametroCuotaDao;
@@ -36,8 +35,9 @@ import com.erp360.model.AlmacenProducto;
 import com.erp360.model.Cliente;
 import com.erp360.model.ClienteAdicional;
 import com.erp360.model.DetalleNotaVenta;
+import com.erp360.model.Ejecutivo;
+import com.erp360.model.EjecutivoCliente;
 import com.erp360.model.Empresa;
-import com.erp360.model.EncargadoVenta;
 import com.erp360.model.Gestion;
 import com.erp360.model.NotaVenta;
 import com.erp360.model.ParametroCobranza;
@@ -47,7 +47,6 @@ import com.erp360.model.ParametroInventario;
 import com.erp360.model.ParametroVenta;
 import com.erp360.model.PlanCobranza;
 import com.erp360.model.Producto;
-import com.erp360.model.ReservaVenta;
 import com.erp360.util.DateUtility;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.NumberUtil;
@@ -76,13 +75,12 @@ public class NotaVentaController implements Serializable {
 	private @Inject ParametroInventarioDao parametroInventarioDao;
 	private @Inject AlmacenProductoDao almacenProductoDao;
 	private @Inject ProductoDao productoDao;
-	private @Inject EncargadoVentaDao encargadoVentaDao;
+	private @Inject EjecutivoClienteDao ejecutivoClienteDao;
 	private @Inject DetalleNotaVentaDao detalleNotaVentaDao;
 	private @Inject ParametroEmpresaDao parametroEmpresaDao;
 	private @Inject ClienteAdicionalDao clienteAdicionalDao;
 
 	//OBJECT
-	private ReservaVenta selectedReservaVenta;
 	private NotaVenta notaVenta;
 	private Cliente selectedCliente;
 	private Cliente newCliente;
@@ -101,8 +99,7 @@ public class NotaVentaController implements Serializable {
 	private List<AlmacenProducto> listAlmacenProducto;
 	private List<DetalleNotaVenta> listDetalleNotaVenta;
 	private List<PlanCobranza> listPlanPago;
-	private List<EncargadoVenta> listVendedores;
-	private List<EncargadoVenta> publishers;
+	private List<Ejecutivo> ejecutivos;
 
 	//STATE
 	private boolean crear ;
@@ -142,7 +139,7 @@ public class NotaVentaController implements Serializable {
 	//SESSION
 	private @Inject SessionMain sessionMain; //variable del login
 	private Empresa empresaSession;
-	private EncargadoVenta  selectedVendedor;
+	private Ejecutivo  ejecutivo;
 	private Gestion gestionSesion;
 	
 	private String text;
@@ -151,16 +148,10 @@ public class NotaVentaController implements Serializable {
 	public void init() {
 		empresaSession = sessionMain.getEmpresaLogin();
 		gestionSesion = sessionMain.getGestionLogin();
-//		System.out.println("empresa "+sessionMain.getEmpresaLogin().getRazonSocial());
-//		System.out.println("usuario "+sessionMain.getUsuarioLogin().getLogin());
-//		CajaSesion cajaSesion= cajaSesionDao.obtenerPorUsuarioyEmpresa(sessionMain.getUsuarioLogin(), sessionMain.getEmpresaLogin());
-//		System.out.println("caja session "+cajaSesion.getObservacion());
 		loadTypeOrder();
-		//text = "";
 	}
 
 	public void loadDefault(){
-		
 		
 		pendingQuotation = false;
 		modoVista = false;
@@ -184,15 +175,12 @@ public class NotaVentaController implements Serializable {
 		cuotaInicialNacional = 0;
 		cuotaInicialExtranjera = 0;
 
-		selectedVendedor = new EncargadoVenta();
 
 		cuotaMesActual = false;
 		crear = true;
 		registrar = false;
 		modificar = false;
 		verReporte = false;
-		listVendedores = encargadoVentaDao.getAllSalesPersionOrderById();
-		publishers = encargadoVentaDao.getAllPublisherPersionOrderById();
 
 		newCliente = new Cliente();
 		newCliente.setCodigo(String.format("%08d",clienteDao.obtenerCorrelativo2()));
@@ -200,12 +188,11 @@ public class NotaVentaController implements Serializable {
 		notaVenta.setId(0);
 		notaVenta.setFechaPagoInicial(new Date());
 		notaVenta.setCodigo(String.format("%06d",notaVentaDao.correlativoNotaVenta(gestionSesion)));
-		System.out.println("codigo: "+notaVenta.getCodigo());
 		
 		notaVenta.setFechaVenta(new Date());
 		notaVenta.setFechaRegistro(new Date());
 		notaVenta.setTipoCambio(sessionMain.getTipoCambio().getUnidad());
-		notaVenta.setPublisher(publishers.get(0));
+		notaVenta.setEjecutivo(ejecutivo);
 		selectedDetalleNotaVenta= new DetalleNotaVenta();
 
 		selectedCliente = new Cliente();
@@ -223,10 +210,6 @@ public class NotaVentaController implements Serializable {
 		selectedParametroCobranza = parametroCobranzaDao.obtenerParametroCobanza();
 		selectedParametroEmpresa = parametroEmpresaDao.obtener();
 
-		selectedVendedor = listVendedores.size()>0? listVendedores.get(0):new EncargadoVenta();
-		selectedReservaVenta = new ReservaVenta();
-		selectedReservaVenta.setMontoReserva(0);
-		selectedReservaVenta.setMontoReservaExtranjero(0);
 		if(FacesUtil.getSessionAttribute("pIdNotaVentaAnulada")!=null){
 			//1.- estados de los botones, para desabilitar opciones
 			//2.- cambiar estado nota de venta "AN"
@@ -305,41 +288,6 @@ public class NotaVentaController implements Serializable {
 			}
 		}
 		loadPayPLan();
-	}
-
-	private void cargarPlanPago(){
-		if(notaVenta.getTipoVenta().equals("CONTADO") ){
-			notaVenta.setCoeficienteInteres(0);
-			notaVenta.setPorcentajeCuotaInicial(0);
-			notaVenta.setNumeroCuotas(0);
-			if(selectedProducto != null){ 
-				loadSelectProduct();
-			}
-		}else if (notaVenta.getTipoVenta().equals("CREDITO") ){
-			//coef. interes mensual
-			ParametroVenta pv = parametroVentaDao.obtener();
-			notaVenta.setCoeficienteInteres(pv.getCoeficienteInteresMensual());//por default MENSUAL
-			//-----------------------------------------------------
-			//obtener : % cuota inicial y numero Pagos
-			List<ParametroCuota> listParametroCuota = parametroCuotaDao.obtenerTodosActivos();
-			porcentajeCuotaInicial = 28;
-			numeroPagos = 2;
-			for(ParametroCuota pc: listParametroCuota){
-				if(pc.getMontoRangoInicial() <= notaVenta.getMontoTotalExtranjero() && notaVenta.getMontoTotalExtranjero()<= pc.getMontoRangoFinal()){
-					porcentajeCuotaInicial = pc.getPorcentajeCuotaInicial();
-					numeroPagos = pc.getNumeroCuotas();
-					break;
-				}
-			}
-			//-----------------------------------------------------
-			notaVenta.setPorcentajeCuotaInicial(porcentajeCuotaInicial);
-			notaVenta.setNumeroCuotas(numeroPagos);
-			notaVenta.setCuotaInicial(notaVenta.getMontoTotal() * (porcentajeCuotaInicial/100));
-			notaVenta.setCuotaInicialExtranjero(notaVenta.getMontoTotalExtranjero() * (porcentajeCuotaInicial/100));
-			cuotaInicialNacional = notaVenta.getCuotaInicial();
-			cuotaInicialExtranjera = notaVenta.getCuotaInicialExtranjero();
-		}
-		actionReloadPlanPago();
 	}
 
 	/**
@@ -575,9 +523,10 @@ public class NotaVentaController implements Serializable {
 	}
 
 	public void calcularCambio(){
+		double montoReserva = 0;
 		if(notaVenta.getTipoVenta().equals("CREDITO")){
-			cambioNacional = pagoNacional -  notaVenta.getCuotaInicial() + selectedReservaVenta.getMontoReserva();
-			cambioExtranjero = pagoExtranjero - notaVenta.getCuotaInicialExtranjero() + selectedReservaVenta.getMontoReservaExtranjero();
+			cambioNacional = pagoNacional -  notaVenta.getCuotaInicial() + montoReserva;
+			cambioExtranjero = pagoExtranjero - notaVenta.getCuotaInicialExtranjero() + montoReserva;
 		}else{
 			cambioNacional = pagoNacional -  notaVenta.getMontoTotal();
 			cambioExtranjero = pagoExtranjero - notaVenta.getMontoTotalExtranjero();
@@ -709,7 +658,7 @@ public class NotaVentaController implements Serializable {
 		notaVenta.setEmpresa(empresaSession);
 		notaVenta.setFechaRegistro(new Date());
 		notaVenta.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
-		notaVenta.setEncargadoVenta(selectedVendedor);
+		notaVenta.setEjecutivo(ejecutivo);
 		NotaVenta nv = notaVentaDao.registrar(observacion,sessionMain.getUsuarioLogin(),notaVenta,listDetalleNotaVenta,listPlanPago,gestionSesion,selectedParametroInventario,selectedParametroCobranza ,selectedParametroVenta);
 		if(nv != null){
 			//CajaMovimiento c=cajaMovimientoDao.registrar(cajaServicio.IngresoPorVenta(notaVenta));
@@ -824,7 +773,7 @@ public class NotaVentaController implements Serializable {
 		notaVenta.setEmpresa(empresaSession);
 		notaVenta.setFechaRegistro(new Date());
 		//notaVenta.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
-		notaVenta.setEncargadoVenta(selectedVendedor);
+		notaVenta.setEjecutivo(ejecutivo);
 		NotaVenta nv = notaVentaDao.update(observacion,sessionMain.getUsuarioLogin(),notaVenta,listDetalleNotaVenta,listPlanPago,gestionSesion,selectedParametroInventario,selectedParametroCobranza ,selectedParametroVenta);
 		if(nv != null){
 			cargarReporteAmortizacion();
@@ -1002,11 +951,18 @@ public class NotaVentaController implements Serializable {
 		return listCliente;
 	}
 
-	public void onRowSelectCliente2Click(SelectEvent event) {
+	public void onRowSelectClienteClick(SelectEvent event) {
 		Cliente customer = (Cliente) event.getObject();
 		int index = listCliente.indexOf(customer);
 		selectedCliente = listCliente.get(index);
 		selectedCliente.setNombres(selectedCliente.getNombres()+" ");
+		EjecutivoCliente ejecutivoCliente = ejecutivoClienteDao.getEjecutivoClienteByIdCliente(selectedCliente);
+		if(ejecutivoCliente==null){
+			selectedCliente = null;
+			FacesUtil.infoMessage("VALIDACION", "El cliente no está asociado a ningun Ejecutivo.");
+		}else{
+			ejecutivo = ejecutivoCliente.getEjecutivo();
+		}
 	}
 
 	// ONCOMPLETETEXT Cliente
@@ -1056,21 +1012,21 @@ public class NotaVentaController implements Serializable {
 	public void updateImporte(){
 		if(notaVenta.getTipoVenta().equals("CONTADO")){
 			if(notaVenta.getMoneda().equals("DOLAR")){
-				double descuento = selectedDetalleNotaVenta.getPrecioContadoNacional() * (selectedDetalleNotaVenta.getPorcentajeDescuento()/100);
+				//double descuento = selectedDetalleNotaVenta.getPrecioContadoNacional() * (selectedDetalleNotaVenta.getPorcentajeDescuento()/100);
 				importeParcialDetalleNotaVenta = selectedDetalleNotaVenta.getPrecioContadoNacional() * selectedDetalleNotaVenta.getCantidad();				
 				//importeParcialDetalleNotaVenta = importeParcialDetalleNotaVenta - descuento;
 			}else{
-				double descuento = selectedDetalleNotaVenta.getPrecioContadoExtranjero() * (selectedDetalleNotaVenta.getPorcentajeDescuento()/100);
+				//double descuento = selectedDetalleNotaVenta.getPrecioContadoExtranjero() * (selectedDetalleNotaVenta.getPorcentajeDescuento()/100);
 				importeParcialDetalleNotaVenta = selectedDetalleNotaVenta.getPrecioContadoExtranjero() * selectedDetalleNotaVenta.getCantidad();
 				//importeParcialDetalleNotaVenta = importeParcialDetalleNotaVenta - descuento;
 			}
 		}else{//credito
 			if(notaVenta.getMoneda().equals("DOLAR")){
-				double descuento = selectedDetalleNotaVenta.getPrecioExtranjero() * (selectedDetalleNotaVenta.getPorcentajeDescuento()/100);
+				//double descuento = selectedDetalleNotaVenta.getPrecioExtranjero() * (selectedDetalleNotaVenta.getPorcentajeDescuento()/100);
 				importeParcialDetalleNotaVenta = selectedDetalleNotaVenta.getPrecioExtranjero() * selectedDetalleNotaVenta.getCantidad();
 				//importeParcialDetalleNotaVenta = importeParcialDetalleNotaVenta - descuento;
 			}else{
-				double descuento = selectedDetalleNotaVenta.getPrecio() * (selectedDetalleNotaVenta.getPorcentajeDescuento()/100);
+				//double descuento = selectedDetalleNotaVenta.getPrecio() * (selectedDetalleNotaVenta.getPorcentajeDescuento()/100);
 				importeParcialDetalleNotaVenta = selectedDetalleNotaVenta.getPrecio() * selectedDetalleNotaVenta.getCantidad();
 				//importeParcialDetalleNotaVenta = importeParcialDetalleNotaVenta - descuento;
 			}
@@ -1300,14 +1256,6 @@ public class NotaVentaController implements Serializable {
 		this.selectedAlmacenProducto = selectedAlmacenProducto;
 	}
 
-	public EncargadoVenta getSelectedVendedor() {
-		return selectedVendedor;
-	}
-
-	public void setSelectedVendedor(EncargadoVenta selectedVendedor) {
-		this.selectedVendedor = selectedVendedor;
-	}
-
 	public NotaVenta getNotaVenta() {
 		return notaVenta;
 	}
@@ -1322,14 +1270,6 @@ public class NotaVentaController implements Serializable {
 
 	public void setListDetalleNotaVenta(List<DetalleNotaVenta> listDetalleNotaVenta) {
 		this.listDetalleNotaVenta = listDetalleNotaVenta;
-	}
-
-	public List<EncargadoVenta> getListVendedores() {
-		return listVendedores;
-	}
-
-	public void setListVendedores(List<EncargadoVenta> listVendedores) {
-		this.listVendedores = listVendedores;
 	}
 
 	public ParametroVenta getSelectedParametroVenta() {
@@ -1404,14 +1344,6 @@ public class NotaVentaController implements Serializable {
 		this.observacion = observacion;
 	}
 
-	public ReservaVenta getSelectedReservaVenta() {
-		return selectedReservaVenta;
-	}
-
-	public void setSelectedReservaVenta(ReservaVenta selectedReservaVenta) {
-		this.selectedReservaVenta = selectedReservaVenta;
-	}
-
 	public double getTotalPlanPagoNacional() {
 		return totalPlanPagoNacional;
 	}
@@ -1434,14 +1366,6 @@ public class NotaVentaController implements Serializable {
 
 	public void setModoVista(boolean modoVista) {
 		this.modoVista = modoVista;
-	}
-
-	public List<EncargadoVenta> getPublishers() {
-		return publishers;
-	}
-
-	public void setPublishers(List<EncargadoVenta> publishers) {
-		this.publishers = publishers;
 	}
 
 	public String getUrlProformaAlCredito() {
@@ -1522,6 +1446,22 @@ public class NotaVentaController implements Serializable {
 
 	public void setMontoInteresExtranjero(double montoInteresExtranjero) {
 		this.montoInteresExtranjero = montoInteresExtranjero;
+	}
+
+	public Ejecutivo getEjecutivo() {
+		return ejecutivo;
+	}
+
+	public void setEjecutivo(Ejecutivo ejecutivo) {
+		this.ejecutivo = ejecutivo;
+	}
+
+	public List<Ejecutivo> getEjecutivos() {
+		return ejecutivos;
+	}
+
+	public void setEjecutivos(List<Ejecutivo> ejecutivos) {
+		this.ejecutivos = ejecutivos;
 	}
 
 }

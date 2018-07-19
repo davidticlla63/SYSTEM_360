@@ -49,12 +49,6 @@
 											update="form001" disabled="true"
 											action="#{listOrdenTraspasoController.actionModificar()}">
 										</p:commandLink>
-
-										<p:commandLink id="buttonEliminar" value="&#160; Revertir" disabled="true"
-											styleClass="btn btn-danger ion-trash-b" style="height:31px;"
-											rendered="#{listOrdenTraspasoController.modificar }" update="form001"
-											action="#{listOrdenTraspasoController.eliminarFacturaCompra()}">
-										</p:commandLink>
 									</div>
 								</div>
 							</div>
@@ -64,7 +58,7 @@
 										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
 									<li><a href="#{request.contextPath}/pages/procesar/list-orden-traspaso.xhtml"
 										style="color: #0090FF; font-size: 12px;">Inventario</a></li>
-									<li class="active" style="font-size: 12px;">Lista Orden de Traspaso</li>
+									<li class="active" style="font-size: 12px;">Ordenes de Traspaso</li>
 								</ol>
 							</div>
 						</section>
@@ -82,7 +76,7 @@
 							<div class="col-md-12">
 								<div class="panel panel-default">
 									<div class="panel-heading">
-										<h3 class="panel-title">Lista Orden de Traspaso</h3>
+										<h3 class="panel-title">Ordenes de Traspaso</h3>
 									</div>
 									<div class="form-group">
 										<p:dataTable
@@ -104,10 +98,16 @@
 													<h:outputText value="#{_var.correlativo}" />
 												</p:column>
 
-												<p:column headerText="Almacén"
-													filterBy="#{_var.almacen.nombre}"
+												<p:column headerText="Orden Ingreso"
+													filterBy="#{_var.ordenIngreso.correlativo}"
 													filterStyle="width: 100%;" filterMatchMode="contains">
-													<h:outputText value="#{_var.almacen.nombre}" />
+													<h:outputText value="#{_var.ordenIngreso.correlativo}" />
+												</p:column>
+												
+												<p:column headerText="Orden Salida"
+													filterBy="#{_var.ordenSalida.correlativo}"
+													filterStyle="width: 100%;" filterMatchMode="contains">
+													<h:outputText value="#{_var.ordenSalida.correlativo}" />
 												</p:column>
 
 												<p:column headerText="Total Importe" width="15%"

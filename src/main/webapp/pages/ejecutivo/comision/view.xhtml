@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui">
+
+	<style type="text/css">
+		@page{
+			size: auto;
+			margin: 0mm;
+		}
+		.datalist-noborder .ui-widget-content{
+			border: none;
+		}
+		.ui-datalist-item{
+			height: 15px;
+		}
+	</style>
+	<div class="row form-body">
+		<p:commandButton id="printOrder" style="width:150px; height: 40px !important; background: rgb(230, 230, 230);padding-left: 20px; font-size: 20px; text-align: center; border-radius: 3px !important; border: solid 1px rgb(209, 209, 209); color: #555555 !important;font-family: Arial !important"
+		 value="Imprimir"  onclick="printDiv('PrintOrderId')">
+		 	<i class="fa fa-print" style="position: absolute; z-index: 1; font-size: 20px; padding-left: 1px; padding-top: 10px;"/>
+		 
+		</p:commandButton>
+		<br></br>
+		<div class="col-md-12">
+			<div id="PrintOrderId" style="padding-left: 30px; padding-right: 30px; padding-bottom: 30px; background: white;">
+				<h:outputText id="display" value="#{notaVentaController.text}" escape="false" />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-12"></div>
+		</div>
+	</div>
+	
+	<script>
+
+        function printDiv(divName){
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+        
+    </script>
+
+  
+</ui:composition>

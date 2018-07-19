@@ -58,8 +58,8 @@ public class OrdenTraspasoController implements Serializable {
 	@Inject
 	Conversation conversation;
 
-	//Repository
-	private @Inject AlmacenDao almacenRepository;
+	//DAO
+	private @Inject DetalleOrdenTraspasoDao detalleOrdenTraspasoDao;
 	private @Inject OrdenTraspasoDao ordenTraspasoRepository;
 	private @Inject ProductoDao productoRepository;
 	private @Inject DetalleOrdenTraspasoDao detalleOrdenTraspasoRepository;
@@ -192,7 +192,7 @@ public class OrdenTraspasoController implements Serializable {
 		registrar = false;
 		crear = false;
 		newOrdenTraspaso = selectedOrdenTraspaso;
-		selectedAlmacen = newOrdenTraspaso.getAlmacenDestino();
+		//selectedAlmacen = newOrdenTraspaso.getAlmacenDestino();
 		listaDetalleOrdenTraspaso = detalleOrdenTraspasoRepository.findAllByOrdenTraspaso(selectedOrdenTraspaso);
 	}
 
@@ -260,10 +260,10 @@ public class OrdenTraspasoController implements Serializable {
 	}
 
 	public void registrarOrdenTraspaso() {
-		if( selectedAlmacen.getId()==0  ){
-			FacesUtil.infoMessage("VALIDACION", "No puede haber campos vacios.");
-			return;
-		}
+//		if( selectedAlmacen.getId()==0  ){
+//			FacesUtil.infoMessage("VALIDACION", "No puede haber campos vacios.");
+//			return;
+//		}
 		if(listaDetalleOrdenTraspaso.size()==0 ){
 			FacesUtil.infoMessage("VALIDACION", "Debe Agregar items..");
 			return;
@@ -276,16 +276,16 @@ public class OrdenTraspasoController implements Serializable {
 			Date date = new Date();
 			calcularTotal();
 			System.out.println("paso a registrarOrdenTraspaso: ");
-			//newOrdenTraspaso.setFechaRegistro(date); (Se habilito la fecha de registro en el form)
-			newOrdenTraspaso.setAlmacenOrigen(selectedAlmacenOrigen);//selectedAlmacen; -> almacen destino
-			newOrdenTraspaso.setAlmacenDestino(selectedAlmacen);
-			//newOrdenTraspaso = ordenTraspasoRegistration.register(newOrdenTraspaso);
+			newOrdenTraspaso.setFechaRegistro(date); //(Se habilito la fecha de registro en el form)
+			//newOrdenTraspaso.setAlmacenOrigen(selectedAlmacenOrigen);//selectedAlmacen; -> almacen destino
+			//newOrdenTraspaso.setAlmacenDestino(selectedAlmacen);
+			newOrdenTraspaso = ordenTraspasoRepository.registrar(newOrdenTraspaso);
 			for(DetalleOrdenTraspaso d: listaDetalleOrdenTraspaso){
 				d.setCantidadEntregada(0);
 				d.setFechaRegistro(date);
 				d.setUsuarioRegistro(usuarioSession);
 				d.setOrdenTraspaso(newOrdenTraspaso);
-				//d = detalleOrdenTraspasoRegistration.register(d);
+				d = detalleOrdenTraspasoDao.registrar(d);
 			}
 			FacesUtil.infoMessage("Orden de Traspaso Registrada!", ""+newOrdenTraspaso.getCorrelativo());
 			// Verificar si el almacen destino es offline
@@ -320,7 +320,7 @@ public class OrdenTraspasoController implements Serializable {
 					//detalleOrdenTraspasoRegistration.updated(d);
 				}
 			}
-			newOrdenTraspaso.setAlmacenDestino(selectedAlmacen);
+			//newOrdenTraspaso.setAlmacenDestino(selectedAlmacen);
 			newOrdenTraspaso.setTotalImporte(total);
 			//ordenTraspasoRegistration.updated(newOrdenTraspaso);
 			FacesUtil.infoMessage("Orden de Traspaso Modificada!", ""+newOrdenTraspaso.getCorrelativo());
@@ -360,8 +360,8 @@ public class OrdenTraspasoController implements Serializable {
 			//actualizar stock de AlmacenProducto
 			listaDetalleOrdenTraspaso = detalleOrdenTraspasoRepository.findAllByOrdenTraspaso(selectedOrdenTraspaso);
 
-			Almacen almOrig = selectedOrdenTraspaso.getAlmacenOrigen();
-			Almacen almDest = selectedOrdenTraspaso.getAlmacenDestino();
+			Almacen almOrig = null;//selectedOrdenTraspaso.getAlmacenOrigen();
+			Almacen almDest = null;//selectedOrdenTraspaso.getAlmacenDestino();
 			for(DetalleOrdenTraspaso d: listaDetalleOrdenTraspaso){
 				Producto prod = d.getProducto();
 				//double cantidadSolicitada = d.getCantidadSolicitada();

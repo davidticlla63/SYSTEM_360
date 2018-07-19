@@ -64,7 +64,11 @@ public class OrdenSalida implements Serializable{
 	@JoinColumn(name = "id_nota_venta", nullable = true)
 	private NotaVenta notaVenta;
 	
-private String estado;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_orden_traspaso", nullable = true)
+	private OrdenTraspaso ordenTraspaso;
+	
+	private String estado;
 	
 	@Column(name = "fecha_registro")
 	private Date fechaRegistro;
@@ -208,6 +212,14 @@ private String estado;
 
 	public void setNotaVenta(NotaVenta notaVenta) {
 		this.notaVenta = notaVenta;
+	}
+
+	public OrdenTraspaso getOrdenTraspaso() {
+		return ordenTraspaso;
+	}
+
+	public void setOrdenTraspaso(OrdenTraspaso ordenTraspaso) {
+		this.ordenTraspaso = ordenTraspaso;
 	}
 
 }

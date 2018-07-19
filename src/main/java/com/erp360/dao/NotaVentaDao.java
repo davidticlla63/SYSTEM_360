@@ -18,6 +18,8 @@ import com.erp360.model.Cliente;
 import com.erp360.model.CuentaCobrar;
 import com.erp360.model.DetalleNotaVenta;
 import com.erp360.model.DetalleOrdenSalida;
+import com.erp360.model.Ejecutivo;
+import com.erp360.model.EjecutivoComisiones;
 import com.erp360.model.Gestion;
 import com.erp360.model.KardexCliente;
 import com.erp360.model.KardexProducto;
@@ -31,7 +33,6 @@ import com.erp360.model.PlanCobranza;
 import com.erp360.model.Producto;
 import com.erp360.model.Usuario;
 import com.erp360.util.FacesUtil;
-import com.erp360.util.U;
 import com.erp360.util.V;
 import com.erp360.util.W;
 /**
@@ -51,6 +52,7 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 	private @Inject KardexProductoDao kardexProductoDao;
 	private @Inject ICajaMovimientoDao cajaMovimientoDao;
 	private @Inject CajaServicio cajaServicio;
+	private @Inject EjecutivoComisionesDao ejecutivoComisionesDao;
 
 	public NotaVentaDao(){
 		super(NotaVenta.class,DetalleNotaVenta.class,PlanCobranza.class,OrdenSalida.class,DetalleOrdenSalida.class,AlmacenProducto.class,KardexProducto.class,CajaMovimiento.class);
@@ -362,6 +364,24 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 				movimientoCaja = movimientoCajaDao.registrarBasic(movimientoCaja);
 				notaVenta.setMovimientoCaja(movimientoCaja);
 				notaVenta = create(notaVenta);
+				//ejecutivo
+				//EjecutivoCliente ejecutivoCliente = ejecutivoClienteDao.getEjecutivoClienteByIdCliente(notaVenta.getCliente());
+				Ejecutivo ejecutivo = notaVenta.getEjecutivo();
+				if(ejecutivo != null){
+					//Ejecutivo ejecutivo = ejecutivoCliente.getEncargadoVenta();
+					double comision = ejecutivo.getPorcentaje();
+					double importe = notaVenta.getCuotaInicialExtranjero()*(comision/100);
+					EjecutivoComisiones ejecutivoComisiones = new EjecutivoComisiones();
+					ejecutivoComisiones.setNotaVenta(notaVenta);
+					ejecutivoComisiones.setEstado("AC");
+					ejecutivoComisiones.setFechaRegistro(notaVenta.getFechaRegistro());
+					ejecutivoComisiones.setPagado(Boolean.FALSE);
+					ejecutivoComisiones.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+					ejecutivoComisiones.setPorcentaje(comision);
+					ejecutivoComisiones.setImporte(importe);
+					ejecutivoComisiones.setEjecutivo(ejecutivo);
+					ejecutivoComisionesDao.registrar(ejecutivoComisiones);
+				}
 				//caja movimiento
 				CajaMovimiento c=cajaMovimientoDao.create(cajaServicio.IngresoPorVenta(notaVenta));
 				movimientoCaja.setNumeroDocumento(notaVenta.getCodigo());
