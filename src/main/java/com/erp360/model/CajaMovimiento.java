@@ -61,6 +61,9 @@ public class CajaMovimiento implements Serializable {
 	
 	@Column(name = "descripcion", nullable = true)
 	private String descripcion;
+	
+	@Column(name = "ducumento", nullable = true)
+	private String ducumento;
 
 	@Column(name = "numero_tarjeta", nullable = true)
 	private String numeroTarjeta;
@@ -125,13 +128,14 @@ public class CajaMovimiento implements Serializable {
 	@Column(name = "monto_literal", nullable = true)
 	private String montoLiteral;
 	
-//	@Column(name = "saldo_nacional", nullable = false)
-//	private Double saldoNacional;
-//	
-//	@Column(name = "saldo_extranjero", nullable = false)
-//	private Double saldoExtranjero;
-//	
+	@Column(name = "saldo_nacional", nullable = false)
+	private Double saldoNacional;
 	
+	@Column(name = "saldo_extranjero", nullable = false)
+	private Double saldoExtranjero;
+//	
+	@Transient
+	private Concepto concepto;
 	
 	@OneToMany(mappedBy = "cajaMovimiento", orphanRemoval=true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<CajaMovimientoDetalle> listaCajaMovimientoDetalles = new ArrayList<CajaMovimientoDetalle>();
@@ -144,6 +148,7 @@ public class CajaMovimiento implements Serializable {
 		this.montoExtranjero=new Double(0);
 		this.montoRecibido=new Double(0);
 		this.cambio=new Double(0);
+		this.concepto= new Concepto();
 //		this.saldoExtranjero=new Double(0);
 //		this.saldoNacional= new Double(0);
 		this.tipo="E";
@@ -372,20 +377,36 @@ public class CajaMovimiento implements Serializable {
 		this.listaCajaMovimientoDetalles = listaCajaMovimientoDetalles;
 	}
 
-//	public Double getSaldoNacional() {
-//		return saldoNacional;
-//	}
-//
-//	public void setSaldoNacional(Double saldoNacional) {
-//		this.saldoNacional = saldoNacional;
-//	}
-//
-//	public Double getSaldoExtranjero() {
-//		return saldoExtranjero;
-//	}
-//
-//	public void setSaldoExtranjero(Double saldoExtranjero) {
-//		this.saldoExtranjero = saldoExtranjero;
-//	}
-//
+	public String getDucumento() {
+		return ducumento;
+	}
+
+	public void setDucumento(String ducumento) {
+		this.ducumento = ducumento;
+	}
+
+	public Concepto getConcepto() {
+		return concepto;
+	}
+
+	public void setConcepto(Concepto concepto) {
+		this.concepto = concepto;
+	}
+
+	public Double getSaldoNacional() {
+		return saldoNacional;
+	}
+
+	public void setSaldoNacional(Double saldoNacional) {
+		this.saldoNacional = saldoNacional;
+	}
+
+	public Double getSaldoExtranjero() {
+		return saldoExtranjero;
+	}
+
+	public void setSaldoExtranjero(Double saldoExtranjero) {
+		this.saldoExtranjero = saldoExtranjero;
+	}
+
 	}

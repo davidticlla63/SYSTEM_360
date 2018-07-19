@@ -37,7 +37,7 @@ public class CajaServicio {
 		cajaMovimiento.setFechaRegistro(new Date());
 		cajaMovimiento.setSucursal(sessionMain.getSucursalLogin());
 		cajaMovimiento.setRazonSocial(notaVenta.getCliente().getNombres()+" "+notaVenta.getCliente().getApellidos());
-		
+		cajaMovimiento.setDucumento(notaVenta.getCodigo());
 		if(notaVenta.getTipoVenta().equals("CREDITO")){
 			cajaMovimiento.setMontoExtranjero(notaVenta.getCuotaInicialExtranjero());
 			cajaMovimiento.setMonto(notaVenta.getCuotaInicial());
@@ -98,7 +98,7 @@ public class CajaServicio {
 			cajaMovimiento.setMonto(cobranza.getMontoNacional());
 			cajaMovimiento.setDescripcion("INGRESO POR CUOTA INICIAL VENTA DE PRODUCTO(S) AL CREDITO :"+cobranza.getCodigo()+" "+sessionMain.getCajaSesion().getCaja().getNombre());
 			cajaMovimiento.setMontoLiteral(FacturacionUtil.obtenerMontoLiteral(cajaMovimiento.getMonto()));
-			
+			cajaMovimiento.setDucumento(cobranza.getCodigo());
 			
 			
 			

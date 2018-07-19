@@ -28,7 +28,6 @@ import com.erp360.model.Caja;
 import com.erp360.model.CajaMovimiento;
 import com.erp360.model.CajaSesion;
 import com.erp360.model.Empresa;
-import com.erp360.model.MovimientoCaja;
 import com.erp360.model.Usuario;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.FacturacionUtil;
@@ -359,6 +358,16 @@ public class CajaAperturaController {
 		cajaSesion.setUsuario(sessionDao.getUsuarioLogin());
 		cajaSesion.setFechaRegistro(new Date());
 		cajaSesion.setProcesada(false);
+		
+		CajaSesion ultimaCajaSesion=cajaSesionDao.RetornarUltimaSesionPorCaja(cajaSesion.getCaja());
+		if (ultimaCajaSesion!=null) {
+			cajaSesion.setSaldoNacional(cajaSesion.getMontoInicial()+ultimaCajaSesion.getSaldoNacional());
+			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoNacional()/sessionDao.getTipoCambio().getUnidad());
+		}else{
+			cajaSesion.setSaldoNacional(cajaSesion.getMontoInicial());
+			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoNacional()/sessionDao.getTipoCambio().getUnidad());
+		}
+		
 		CajaMovimiento movimientoCaja= new CajaMovimiento();
 		
 		
@@ -375,8 +384,10 @@ public class CajaAperturaController {
 		movimientoCaja.setSucursal(sessionDao.getSucursalLogin());
 		movimientoCaja.setMontoLiteral(FacturacionUtil.obtenerMontoLiteral(movimientoCaja.getMonto()));
 		movimientoCaja.setRazonSocial(sessionDao.getUsuarioLogin().getNombre());
-//		movimientoCaja.setSaldoExtranjero(movimientoCaja.getMontoExtranjero());
-//		movimientoCaja.setSaldoNacional(movimientoCaja.getMonto());
+		
+		movimientoCaja.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
+		movimientoCaja.setSaldoNacional(cajaSesion.getSaldoNacional());
+		
 		cajaSesion.getListaCajaMovimientos().add(movimientoCaja);
 		CajaSesion co = cajaSesionDao.registrar(cajaSesion);
 

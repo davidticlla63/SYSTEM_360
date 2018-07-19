@@ -132,6 +132,7 @@ public class CajaCierreController {
 				totalEgresos=totalEgresos+egresos.getSuma();
 			}
 //			totales=(cajaSesion.getMontoInicial()+totalIngresos)-totalEgresos;
+			System.out.println("Igresos : "+totalIngresos+" Egresos : "+totalEgresos);
 			totales=totalIngresos-totalEgresos;
 			cajaSesion.setMontoFinal(new Double(totales));
 			System.out.println("EL TOTAL ES "+totales);
@@ -149,6 +150,22 @@ public class CajaCierreController {
 		nuevo = false;
 		registrar = true;
 		listaFlujoCaja=new ArrayList<>();
+		
+		listaIngresos=cajaMovimientoDao.listarPorSesionEIngresosYModoDePago(cajaSesion);
+		listaEgresos=cajaMovimientoDao.listarPorSesionEgresosYModoDePago(cajaSesion);
+		totalIngresos=0.0;
+		for (CajaIngreso ingresos : listaIngresos) {
+			totalIngresos=totalIngresos+ingresos.getSuma();
+		}
+		totalEgresos=0.0;
+		for (CajaIngreso egresos: listaEgresos) {
+			totalEgresos=totalEgresos+egresos.getSuma();
+		}
+//		totales=(cajaSesion.getMontoInicial()+totalIngresos)-totalEgresos;
+		System.out.println("Igresos : "+totalIngresos+" Egresos : "+totalEgresos);
+		totales=totalIngresos-totalEgresos;
+		cajaSesion.setMontoFinal(new Double(totales));
+		
 //		for (VentaNotaVenta notaVenta : cajaSesion.getListaVentas()){
 //		EDFlujoCaja fc=new EDFlujoCaja();
 //		
@@ -185,6 +202,9 @@ public class CajaCierreController {
 		cajaSesion.setProcesada(true);
 		
 		
+			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()-cajaSesion.getMontoFinal());
+			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoNacional()/sessionDao.getTipoCambio().getUnidad());
+		
 		CajaMovimiento cajaMovimiento= new CajaMovimiento();
 		cajaMovimiento.setCajaSesion(cajaSesion);
 		cajaMovimiento.setMonto(cajaSesion.getMontoFinal());
@@ -199,8 +219,11 @@ public class CajaCierreController {
 		cajaMovimiento.setSucursal(sessionDao.getSucursalLogin());
 		cajaMovimiento.setMontoLiteral(FacturacionUtil.obtenerMontoLiteral(cajaMovimiento.getMonto()));
 		cajaMovimiento.setRazonSocial(sessionDao.getUsuarioLogin().getNombre());
-//		cajaMovimiento.setSaldoExtranjero(cajaMovimiento.getMontoExtranjero());
-//		cajaMovimiento.setSaldoNacional(cajaMovimiento.getMonto());
+
+
+		cajaMovimiento.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
+		cajaMovimiento.setSaldoNacional(cajaSesion.getSaldoNacional());
+		
 		cajaSesion.getListaCajaMovimientos().add(cajaMovimiento);
 		boolean co=false;
 		co= cajaSesionDao.modificar(cajaSesion);

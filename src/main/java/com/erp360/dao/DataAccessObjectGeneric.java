@@ -233,6 +233,15 @@ public abstract class DataAccessObjectGeneric<T> {
 				cb.equal(object.get("estado"), "AC")).orderBy(cb.desc(object.get("id")));
 		return this.em.createQuery(criteria).getResultList();
 	}
+	
+	public List<T> findAllActiveByParameterAsc(String parameter, Object valor) {
+		CriteriaBuilder cb = this.em.getCriteriaBuilder();
+		CriteriaQuery<T> criteria = cb.createQuery(this.typeT);
+		Root<T> object = criteria.from(this.typeT);
+		criteria.select(object).where(cb.equal(object.get(parameter), valor),
+				cb.equal(object.get("estado"), "AC")).orderBy(cb.asc(object.get("id")));
+		return this.em.createQuery(criteria).getResultList();
+	}
 
 	public List<T> findDescAllOrderedByParameter(String parameter) {
 		CriteriaBuilder cb = this.em.getCriteriaBuilder();
@@ -535,7 +544,7 @@ public abstract class DataAccessObjectGeneric<T> {
 				+ " upper(translate(em."
 				+ nameColumn
 				+ ", 'áéíóúÁÉÍÓÚäëïöüÄËÏÖÜñ', 'aeiouAEIOUaeiouAEIOUÑ')) like '%"
-				+ valueColumn + "%' " + "' and  em." + parameter + ".id=" + value;
+				+ valueColumn + "%'  and  em." + parameter + ".id=" + value;
 		System.out.println("Query " + query);
 		return em.createQuery(query).getResultList();
 	}

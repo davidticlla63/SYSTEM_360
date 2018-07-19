@@ -52,5 +52,6 @@ public interface ICajaSesionDao {
 	//List<CajaSesion> onComplete(String query);
 //	CajaSesion registrar(CajaSesion examen, Comprobante comprobante);
 //	boolean modificar(CajaSesion examen, Comprobante comprobante);
+	CajaSesion RetornarUltimaSesionPorCaja(Caja caja);
   
 }

@@ -85,6 +85,12 @@ public class CajaSesion implements Serializable {
 	@Column(name = "observacion", nullable = false)
 	private String observacion;
 	
+	@Column(name = "saldo_nacional", nullable = false)
+	private Double saldoNacional;
+	
+	@Column(name = "saldo_extranjero", nullable = false)
+	private Double saldoExtranjero;
+	
 	@OneToMany(mappedBy = "cajaSesion", orphanRemoval=true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<CajaMovimiento> listaCajaMovimientos = new ArrayList<>();
 
@@ -258,6 +264,34 @@ public class CajaSesion implements Serializable {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+
+
+
+	public Double getSaldoNacional() {
+		return saldoNacional;
+	}
+
+
+
+
+	public void setSaldoNacional(Double saldoNacional) {
+		this.saldoNacional = saldoNacional;
+	}
+
+
+
+
+	public Double getSaldoExtranjero() {
+		return saldoExtranjero;
+	}
+
+
+
+
+	public void setSaldoExtranjero(Double saldoExtranjero) {
+		this.saldoExtranjero = saldoExtranjero;
 	}
 
 

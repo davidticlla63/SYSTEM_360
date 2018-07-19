@@ -22,21 +22,21 @@
 							locale="es" styleClass="myWid100"
 							value="#{cajaOperacdionController.fechaInicio}"
 							pattern="dd-MM-yyyy" mask="true">
-							<p:ajax event="change"  />
+							<p:ajax event="change" />
 							<p:ajax event="dateSelect" />
 						</p:calendar>
 					</div>
 					<div class="col-md-4">
 						<p:outputLabel for="fechaFin" value="Fecha Fin" />
-						<p:calendar id="fechaFin"  readonly="true" required="true"
+						<p:calendar id="fechaFin" readonly="true" required="true"
 							requiredMessage="Ingrese la fecha de nacimiento del paciente por favor."
 							locale="es" styleClass="myWid100"
-							 value="#{cajaOperacdionController.fechaFin}"
-							pattern="dd-MM-yyyy" mask="true">
-							<p:ajax event="change"/>
+							value="#{cajaOperacdionController.fechaFin}" pattern="dd-MM-yyyy"
+							mask="true">
+							<p:ajax event="change" />
 							<p:ajax event="dateSelect" />
 						</p:calendar>
-						
+
 					</div>
 					<div class="col-md-4">
 						<p:splitButton value="Buscar" immediate="true" update="form001"
@@ -101,7 +101,14 @@
 						<p:column headerText="Nº" width="8%" style="text-align:center;">
 							<h:outputText value="#{index+1}" style="font-size: 12px;" />
 						</p:column>
-
+						<p:column width="10%" headerText="Fecha Registro"
+							filterStyle="width: 100%; height:25px;" style="text-align:left;"
+							filterBy="#{var.fechaRegistro}" filterMatchMode="contains">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.fechaRegistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
 						<p:column width="20%" headerText="Concepto" filterBy="#{var.tipo}">
 							<h:outputText style="font-size: 12px;" value="#{var.descripcion}" />
 						</p:column>
@@ -110,6 +117,10 @@
 							filterBy="#{var.cajaSesion.caja.nombre}">
 							<h:outputText style="font-size: 12px;"
 								value="#{var.cajaSesion.caja.nombre}" />
+						</p:column>
+						<p:column width="10%" headerText="Documento"
+							filterBy="#{var.ducumento}">
+							<h:outputText style="font-size: 12px;" value="#{var.ducumento}" />
 						</p:column>
 
 						<p:column width="10%" headerText="Tipo" filterBy="#{var.tipo}">
@@ -129,20 +140,30 @@
 							<h:outputText style="font-size: 12px;"
 								value="#{var.tipoPago.label}" />
 						</p:column>
-
-						<p:column width="10%" headerText="Importe"
-							style="text-align:right;" filterBy="#{var.monto}">
-							<h:outputText style="font-size: 12px;" value="#{var.monto}">
+						<p:column width="10%" headerText="Ingreso"
+							filterBy="#{var.tipoPago}">
+							<h:outputText style="font-size: 12px;"
+								rendered="#{var.tipo=='I'}" value="#{var.montoExtranjero}">
 								<f:convertNumber type="number" groupingUsed="true"
 									minFractionDigits="2" pattern=",##0.00" />
 							</h:outputText>
 						</p:column>
-						<p:column width="10%" headerText="Fecha Registro"
-							filterStyle="width: 100%; height:25px;" style="text-align:left;"
-							filterBy="#{var.fechaRegistro}" filterMatchMode="contains">
+
+						<p:column width="10%" headerText="Engreso"
+							filterBy="#{var.montoExtranjero}">
 							<h:outputText style="font-size: 12px;"
-								value="#{var.fechaRegistro}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
+								rendered="#{var.tipo=='E'}" value="#{var.montoExtranjero}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column width="10%" headerText="Saldo"
+							filterBy="#{var.saldoExtranjero}">
+							<h:outputText style="font-size: 12px;"
+							 value="#{var.saldoExtranjero}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
 							</h:outputText>
 						</p:column>
 

@@ -23,9 +23,12 @@ import org.primefaces.event.SelectEvent;
 import com.erp360.dao.ParametroVentaDao;
 import com.erp360.enums.TipoMovimiento;
 import com.erp360.interfaces.ICajaMovimientoDao;
+import com.erp360.interfaces.IConceptoDao;
 import com.erp360.model.CajaMovimiento;
 import com.erp360.model.CajaSesion;
+import com.erp360.model.Concepto;
 import com.erp360.model.ParametroVenta;
+import com.erp360.model.TipoConcepto;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.FacturacionUtil;
 import com.erp360.util.SessionMain;
@@ -44,6 +47,7 @@ public class CajaMovimientoController implements Serializable {
 	private @Inject SessionMain sessionDao;
 	private @Inject ICajaMovimientoDao cajaMovimientoDao;
 	private @Inject ParametroVentaDao parametroVentaDao;
+	private @Inject IConceptoDao conceptoDao;
 
 	// OBJECT
 	private CajaSesion cajaSesion;
@@ -55,6 +59,7 @@ public class CajaMovimientoController implements Serializable {
 
 	// LIST
 	private List<CajaMovimiento> cajaMovimientos;
+	public static List<Concepto> conceptos = new ArrayList<Concepto>();
 
 	// STATE
 	private boolean nuevo;
@@ -74,11 +79,11 @@ public class CajaMovimientoController implements Serializable {
 	public void loadDefault() {
 		 parametroVenta=parametroVentaDao.obtenerPorEmpresa(sessionDao.getEmpresaLogin());
 		System.out.println(parametroVenta);
+		nuevo = true;
+		seleccionado = false;
+		registrar = false;
+		setVer(false);
 		if (parametroVenta != null) {
-			nuevo = true;
-			seleccionado = false;
-			registrar = false;
-			setVer(false);
 			cajaSesion = sessionDao.getCajaSesion();
 			// selectedConceptoCaja= new ConceptoCaja();
 			// setConceptoCajas(new ArrayList<ConceptoCaja>());
@@ -97,6 +102,7 @@ public class CajaMovimientoController implements Serializable {
 		nuevo = true;
 		seleccionado = false;
 		registrar = false;
+		ver=false;
 		loadDefault();
 		currentPage = "/pages/caja/movimiento/list.xhtml";
 	}
@@ -273,6 +279,20 @@ public class CajaMovimientoController implements Serializable {
 	// cajaMovimiento.setPlanCuenta(selectedConceptoCaja.getPlanCuenta());
 	// return;
 	// }
+	public List<Concepto> onCompleteConcepto(String query) {
+		// ystem.out.println("Entro en Oncomplete Caja"+ query);
+		conceptos = conceptoDao.RetornarOnCompletePorEmpresa(
+				sessionDao.getEmpresaLogin(), query.toUpperCase());
+		return conceptos;
+	}
+
+	// ACTION
+
+	public void onSelectConcepto(SelectEvent event) {
+		cajaMovimiento.setConcepto((Concepto) event.getObject());
+		cajaMovimiento.setDescripcion(cajaMovimiento.getConcepto().getConcepto());
+	}
+	
 	/* SETTERS AND GETTERS */
 
 	public boolean isNuevo() {
@@ -369,6 +389,14 @@ public class CajaMovimientoController implements Serializable {
 
 	public void setVer(boolean ver) {
 		this.ver = ver;
+	}
+
+	public static List<Concepto> getConceptos() {
+		return conceptos;
+	}
+
+	public static void setConceptos(List<Concepto> conceptos) {
+		CajaMovimientoController.conceptos = conceptos;
 	}
 
 	// public List<ConceptoCaja> getConceptoCajas() {
