@@ -86,7 +86,7 @@ public class CajaServicio {
 			CajaMovimiento cajaMovimiento= new CajaMovimiento();
 			cajaMovimiento.setCajaSesion(sessionMain.getCajaSesion());		
 			cajaMovimiento.setTipo("I");
-			cajaMovimiento.setTipoMovimiento(TipoMovimiento.VEN);
+			cajaMovimiento.setTipoMovimiento(TipoMovimiento.COB);
 			cajaMovimiento.setTipoPago(TipoPago.EFE);
 			cajaMovimiento.setTipoCambio(sessionMain.getTipoCambio().getUnidad());
 			cajaMovimiento.setFechaModificacion(new Date());
