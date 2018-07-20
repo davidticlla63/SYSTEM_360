@@ -43,6 +43,15 @@ public class EjecutivoComisiones implements Serializable {
 	private Double porcentaje;
 	
 	private String estado;
+	
+	@Transient
+	private double saldo;
+	
+	@Transient
+	private String concepto;
+	
+	@Transient
+	private String tipoMovimiento;//VENTA,CUOTA,PAGO
 
 	@Column(name="fecha_registro")
 	private Date fechaRegistro;
@@ -176,6 +185,30 @@ public class EjecutivoComisiones implements Serializable {
 
 	public void setCobranza(Cobranza cobranza) {
 		this.cobranza = cobranza;
+	}
+
+	public double getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(double saldo) {
+		this.saldo = saldo;
+	}
+
+	public String getConcepto() {
+		return concepto;
+	}
+
+	public void setConcepto(String concepto) {
+		this.concepto = concepto;
+	}
+
+	public String getTipoMovimiento() {
+		return tipoMovimiento;
+	}
+
+	public void setTipoMovimiento(String tipoMovimiento) {
+		this.tipoMovimiento = tipoMovimiento;
 	}
 
 }

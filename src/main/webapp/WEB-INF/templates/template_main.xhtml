@@ -521,17 +521,14 @@
 
 
 					<ui:fragment
-						rendered="#{sessionMain.verificarPermiso('PARAMETROS CAJA') 
-						or sessionMain.verificarPermiso('APERTURA CAJA')
-						or sessionMain.verificarPermiso('CIERRE CAJA')
-						or sessionMain.verificarPermiso('MOVIMIENTO CAJA')}">
+						rendered="#{true}">
 						<li
 							class="#{(view.viewId.equals('/pages/caja/param/index.xhtml')) ? 'active' : (view.viewId.equals('/pages/caja/apertura/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/caja/cierre/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/caja/movimiento/index.xhtml')) ? 'active':'inactive'}">
 							<a href="#"><i class="icon-bar-chart"></i><span
 								class="sidebar-text">Caja</span></a>
 							<ul class="nav nav-second-level">
 								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('PARAMETROS CAJA')}">
+									rendered="#{true}">
 									<li
 										class="#{(view.viewId.equals('/pages/caja/param/index.xhtml')) ? 'active' :'inactive'}"><a
 										href="#{request.contextPath}/pages/caja/param/index.xhtml">
@@ -540,7 +537,7 @@
 									</a></li>
 								</ui:fragment>
 								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('APERTURA CAJA')}">
+									rendered="#{true}">
 									<li
 										class="#{(view.viewId.equals('/pages/caja/apertura/index.xhtml')) ? 'active' :'inactive'}"><a
 										href="#{request.contextPath}/pages/caja/apertura/index.xhtml">
@@ -549,7 +546,7 @@
 									</a></li>
 								</ui:fragment>
 								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('CIERRE CAJA')}">
+									rendered="#{true}">
 									<li
 										class="#{(view.viewId.equals('/pages/caja/cierre/index.xhtml')) ? 'active' :'inactive'}"><a
 										href="#{request.contextPath}/pages/caja/cierre/index.xhtml">
@@ -558,7 +555,7 @@
 									</a></li>
 								</ui:fragment>
 								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('MOVIMIENTO CAJA')}">
+									rendered="#{true}">
 									<li
 										class="#{(view.viewId.equals('/pages/caja/movimiento/index.xhtml')) ? 'active' :'inactive'}"><a
 										href="#{request.contextPath}/pages/caja/movimiento/index.xhtml">

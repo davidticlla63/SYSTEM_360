@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import com.erp360.model.Empresa;
+import com.erp360.model.Cliente;
 import com.erp360.model.Ejecutivo;
 import com.erp360.util.E;
 import com.erp360.util.FacesUtil;
@@ -113,5 +114,15 @@ public class EjecutivoDao extends DataAccessObjectJpa<Ejecutivo,E,R,S,O, P, Q, U
 	
 	public  List<Ejecutivo> obtenerPorEmpresa(Empresa empresa){
 		return findAllActiveParameter("empresa", empresa.getId()); 
+	}
+	
+	public List<Ejecutivo> obtenerTodosPorCi(String ci){
+		String query = "select em from Ejecutivo em where em.estado='AC' and (em.ci like '%"+ci+"%') order by em.id desc";
+		return executeQueryResulList(query);
+	}
+	
+	public List<Ejecutivo> obtenerTodosPorNombres(String nombApeRaz){
+		String query = "select em from Ejecutivo em where em.estado='AC' and  upper(translate(em.nombres, 'áéíóúÁÉÍÓÚäëïöüÄËÏÖÜñ', 'aeiouAEIOUaeiouAEIOUÑ')) like '%"+nombApeRaz+"%' ) order by em.id desc";
+		return executeQueryResulList(query);
 	}
 }

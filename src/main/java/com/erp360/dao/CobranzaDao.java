@@ -16,6 +16,8 @@ import com.erp360.model.CajaSesion;
 import com.erp360.model.Cliente;
 import com.erp360.model.Cobranza;
 import com.erp360.model.CuentaCobrar;
+import com.erp360.model.Ejecutivo;
+import com.erp360.model.EjecutivoComisiones;
 import com.erp360.model.Empresa;
 import com.erp360.model.Gestion;
 import com.erp360.model.KardexCliente;
@@ -51,6 +53,7 @@ public class CobranzaDao extends DataAccessObjectJpa<Cobranza,PlanCobranza,NotaV
 	private @Inject ICajaMovimientoDao cajaMovimientoDao;
 	private @Inject CajaServicio cajaServicio;
 	private @Inject ICajaSesionDao cajaSesionDao;
+	private @Inject EjecutivoComisionesDao ejecutivoComisionesDao;
 
 	public Cobranza registrar(Usuario usuario,Cobranza cobranza,List<PlanCobranza> planCobranzas,Cliente cliente,int numeroCuotasPendientePorCobrar){
 		try{
@@ -80,6 +83,25 @@ public class CobranzaDao extends DataAccessObjectJpa<Cobranza,PlanCobranza,NotaV
 			cobranza.setMovimientoCaja(movimientoCaja);
 			cobranza = create(cobranza);
 			
+			//ejecutivo
+			//EjecutivoCliente ejecutivoCliente = ejecutivoClienteDao.getEjecutivoClienteByIdCliente(notaVenta.getCliente());
+			Ejecutivo ejecutivo = cobranza.getCuentaCobrar().getNotaVenta().getEjecutivo();
+			if(ejecutivo != null){
+				//Ejecutivo ejecutivo = ejecutivoCliente.getEncargadoVenta();
+				double comision = ejecutivo.getPorcentaje();
+				double importe = cobranza.getMontoExtranjero()*(comision/100);
+				EjecutivoComisiones ejecutivoComisiones = new EjecutivoComisiones();
+				ejecutivoComisiones.setNotaVenta(null);
+				ejecutivoComisiones.setCobranza(cobranza);
+				ejecutivoComisiones.setEstado("AC");
+				ejecutivoComisiones.setFechaRegistro(cobranza.getFechaRegistro());
+				ejecutivoComisiones.setPagado(Boolean.FALSE);
+				ejecutivoComisiones.setUsuarioRegistro(cobranza.getUsuarioRegistro());
+				ejecutivoComisiones.setPorcentaje(comision);
+				ejecutivoComisiones.setImporte(importe);
+				ejecutivoComisiones.setEjecutivo(ejecutivo);
+				ejecutivoComisionesDao.registrar(ejecutivoComisiones);
+			}
 			//caja movimiento
 			
 			CajaMovimiento cajaMovimiento=cajaServicio.IngresoPorCobranza(cobranza);

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import com.erp360.model.Cliente;
+import com.erp360.model.Ejecutivo;
 import com.erp360.model.EjecutivoComisiones;
 import com.erp360.util.E;
 import com.erp360.util.FacesUtil;
@@ -47,8 +48,13 @@ public class EjecutivoComisionesDao extends DataAccessObjectJpa<EjecutivoComisio
 	}
 	
 	public List<EjecutivoComisiones> obtenerTodos(){
-		String query = "select em from EjecutivoComisiones em where em.estado='AC' order by em.id desc";
+		String query = "select em from EjecutivoComisiones em where em.estado='AC' order by em.fechaRegistro asc";
 		return executeQueryResulList(query);
 	}
 	
+	
+	public List<EjecutivoComisiones> obtenerTodosByEjecutivo(Ejecutivo ejecutivo){
+		String query = "select em from EjecutivoComisiones em where em.estado='AC' and em.ejecutivo.id="+ejecutivo.getId()+" order by em.fechaRegistro asc";
+		return executeQueryResulList(query);
+	}
 }

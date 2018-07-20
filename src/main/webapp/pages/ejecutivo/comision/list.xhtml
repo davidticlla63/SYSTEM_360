@@ -58,8 +58,8 @@
 
 						<p:column headerText="Documento" width="10%"
 							style="text-align:center;">
-							<h:outputText value="#{item.notaVenta.codigo}" rendered="#{item.notaVenta != null}"/>
-							<h:outputText value="#{item.cobranza.codigo}" rendered="#{item.cobranza != null}"/>
+							<h:outputText value="#{'VENTA '}#{item.notaVenta.codigo}" rendered="#{item.notaVenta != null}"/>
+							<h:outputText value="#{'CUOTA '}#{item.cobranza.codigo}" rendered="#{item.cobranza != null}"/>
 						</p:column>
 
 						<p:column headerText="Importe" width="10%" style="text-align:center;">

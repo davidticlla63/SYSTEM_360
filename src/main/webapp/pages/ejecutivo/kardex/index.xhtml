@@ -9,7 +9,7 @@
 	template="/WEB-INF/templates/template_main.xhtml">
 	
 	<ui:define name="head">
-		<title>Comisiones - Ejecutivo</title>
+		<title>Kardex de Ejecutivo</title>
 	</ui:define>
 
 	<ui:define name="content">
@@ -18,8 +18,7 @@
 			<section class="main-content"
 				style="background-color: #f5f6f6; padding-top: 0px;">
 				<h:form id="form001">
-					<!-- CONTENT /pages/venta/nota_venta/View.xhtml-->
-					<ui:include src="#{notasVentasController.currentPage}" />
+					<ui:include src="#{kardexEjecutivoController.currentPage}" />
 					
 					<p:growl id="msgs1" showDetail="true" />
 				</h:form>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- BEGIN BUTTONS -->
+	<div class="row" style="background-color: #f9fafa;">
+		<section class="content-header">
+			<div class="pull-left" style="padding-top: 8px; padding-left: 15px;">
+				<div class="btn-group-demo">
+					<div class="btn-group">
+						
+						
+					</div>
+				</div>
+			</div>
+			<div class="pull-right">
+				<ol class="breadcrumb">
+					<li><a href="#{request.contextPath}/index"
+						style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+					<li><a href="#{request.contextPath}/user"
+						style="color: #0090FF; font-size: 12px;">Ejecutivo</a></li>
+					<li class="active" style="font-size: 12px;">Kardex</li>
+				</ol>
+			</div>
+		</section>
+	</div>
+	<!-- END BUTTONS -->
+
+	<!-- BEGIN PANEL TABLE -->
+	<div class="row">
+
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Kardex por ejecutivo</h3>
+				</div>
+				<div class="panel-body">
+				<div class="row">
+										<div class="form-group">
+											<div class="col-md-1" style="padding-right: 0px;">
+												<p:outputLabel id="labelCliente" value="Ejecutivo" />
+											</div>
+											<div class="col-md-3" style="padding-right: 0px;">
+												<p:autoComplete id="nombreCliente" style="width: 100%"
+													converter="clienteConverter"
+													inputStyle="width: 100%; color: #555555; background-image: none; padding: 4px 10px;"
+													value="#{kardexEjecutivoController.ejecutivo}"
+													completeMethod="#{kardexEjecutivoController.completeEjecutivo}"
+													minQueryLength="1" required="true"
+													requiredMessage="Nombre Ejecutivo Requerido."
+													forceSelection="true" var="_var"
+													itemLabel="#{_var.nombres}"
+													itemValue="#{_var}"
+													placeholder="Escriba Nit o Nombre cliente " maxResults="10">
+
+													<p:ajax event="itemSelect" update="form001"
+														listener="#{kardexEjecutivoController.onRowSelectEjecutivoClick}" />
+
+													<p:column>
+														<h:outputText value="#{_var.nombres}" />
+													</p:column>s
+
+												</p:autoComplete>
+											</div>
+										</div>
+									</div>
+									<br/>
+									<div class="row">
+					<p:dataTable id="comisionEjecutivoTable" var="item" value="#{kardexEjecutivoController.ejecutivoComisiones}"
+						paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+						selectionMode="single"
+						selection="#{kardexEjecutivoController.ejecutivoComision}" 
+						rowKey="#{item.id}" paginatorPosition="top" lazy="true"
+						loadingmessage="Realizando operación espere.."
+						style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+						
+						<p:ajax event="rowSelect"
+							listener="#{kardexEjecutivoController.onRowSelect}" update="form001" />
+
+						<p:column width="8%" headerText="Fecha " style="text-align:center;">
+							<h:outputText value="#{item.fechaRegistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Documento" width="10%"
+							style="text-align:center;">
+							<h:outputText value="#{item.concepto}" />
+						</p:column>
+
+						<p:column headerText="Ingreso" width="10%" style="text-align:center;">
+							<h:outputText value="#{item.importe}" rendered="#{item.tipoMovimiento.equals('VENTA') or item.tipoMovimiento.equals('CUOTA')}" >
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern="#0.00" />
+							</h:outputText>
+							<h:outputText value="-" rendered="#{item.tipoMovimiento.equals('PAGO')}" >
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Egreso" width="10%" style="text-align:center;">
+							<h:outputText value="-" rendered="#{item.tipoMovimiento.equals('VENTA') or item.tipoMovimiento.equals('CUOTA')}" >
+								
+							</h:outputText>
+							<h:outputText value="#{item.importe}" rendered="#{item.tipoMovimiento.equals('PAGO')}" >
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern="#0.00" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Saldo" width="8%" style="text-align:center;">
+							<h:outputText value="#{'por pagar'}" rendered="#{! item.pagado}" />
+						</p:column>
+						
+					</p:dataTable>
+					</div>
+				</div>
+				<div class="panel-body"></div>
+			</div>
+		</div>
+
+	</div>
+	<!-- END PANEL TABLE -->
+	
+
+</ui:composition>
