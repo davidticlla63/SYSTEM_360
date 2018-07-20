@@ -1,6 +1,7 @@
 package com.erp360.util;
 
 
+
 public class NumerosToLetras {
 	
 	
@@ -16,7 +17,7 @@ public class NumerosToLetras {
 			throws NumberFormatException {
 		
 		String country = System.getProperty("user.country"); 
-		String lan = "es";// System.getProperty("user.language");
+		String lan =  System.getProperty("user.language"); //"es";
 		System.out.println("country: "+country);
 		System.out.println("lan: "+lan);
 		
@@ -26,12 +27,20 @@ public class NumerosToLetras {
 		//INGLES
 		if(lan.equals("en")){
 			System.out.println(">>>>>> Idioma Ingles....");
-			splitNumber = number.replace('.', '#').split("#"); //INGLES
+			if(number.contains(".")){
+				splitNumber = number.replace('.', '#').split("#"); //INGLES
+			} else if(number.contains(",")){
+				splitNumber = number.replace(',', '#').split("#"); //ESPANIOL
+			}
 		}
 		//ESPANOL
 		if(lan.equals("es")){
 			System.out.println(">>>>>> Idioma Espaniol....");
-			splitNumber = number.replace(',', '#').split("#"); //ESPANIOL
+			if(number.contains(".")){
+				splitNumber = number.replace('.', '#').split("#"); //INGLES
+			} else if(number.contains(",")){
+				splitNumber = number.replace(',', '#').split("#"); //ESPANIOL
+			}
 		}
 
 		// Descompone el trio de millones
@@ -77,77 +86,6 @@ public class NumerosToLetras {
 		return converted;
 	}
 	
-	
-	public static String convertNumberToLetterSM(String number)
-			throws NumberFormatException {
-		
-		String country = System.getProperty("user.country"); 
-		String lan = "es";// System.getProperty("user.language");
-		System.out.println("country: "+country);
-		System.out.println("lan: "+lan);
-		
-		String converted = new String();
-		
-		String splitNumber[] = null;
-		//INGLES
-		if(lan.equals("en")){
-			System.out.println(">>>>>> Idioma Ingles....");
-			splitNumber = number.replace('.', '#').split("#"); //INGLES
-		}
-		//ESPANOL
-		if(lan.equals("es")){
-			System.out.println(">>>>>> Idioma Espaniol....");
-			splitNumber = number.replace(',', '#').split("#"); //ESPANIOL
-		}
-
-		// Descompone el trio de millones
-		int millon = Integer.parseInt(String.valueOf(getDigitAt(splitNumber[0],
-				8))
-				+ String.valueOf(getDigitAt(splitNumber[0], 7))
-				+ String.valueOf(getDigitAt(splitNumber[0], 6)));
-		if (millon == 1)
-			converted = "UN MILLON ";
-		if (millon > 1)
-			converted = convertNumber(String.valueOf(millon)) + "MILLONES ";
-
-		// Descompone el trio de miles
-		int miles = Integer.parseInt(String.valueOf(getDigitAt(splitNumber[0],
-				5))
-				+ String.valueOf(getDigitAt(splitNumber[0], 4))
-				+ String.valueOf(getDigitAt(splitNumber[0], 3)));
-		if (miles == 1)
-			converted += "UN MIL ";
-		if (miles > 1)
-			converted += convertNumber(String.valueOf(miles)) + "MIL ";
-
-		// Descompone el ultimo trio de unidades
-		int cientos = Integer.parseInt(String.valueOf(getDigitAt(
-				splitNumber[0], 2))
-				+ String.valueOf(getDigitAt(splitNumber[0], 1))
-				+ String.valueOf(getDigitAt(splitNumber[0], 0)));
-		if (cientos == 1)
-			converted += "UN";
-
-		if (millon + miles + cientos == 0)
-			converted += "CERO";
-		if (cientos > 1)
-			converted += convertNumber(String.valueOf(cientos));
-
-		int centavos = Integer.parseInt(String.valueOf(getDigitAt(
-				splitNumber[1], 2))
-				+ String.valueOf(getDigitAt(splitNumber[1], 1))
-				+ String.valueOf(getDigitAt(splitNumber[1], 0)));
-		
-		if (centavos==0) {
-			converted +=" 00/100	";	
-		}else{
-			converted +=" "+ String.valueOf(centavos)+"/100	";			
-		}
-		
-
-		return converted;
-	}
-	
 	private static final String[] UNIDADES = { "", "UN ", "DOS ", "TRES ",
 			"CUATRO ", "CINCO ", "SEIS ", "SIETE ", "OCHO ", "NUEVE ", "DIEZ ",
 			"ONCE ", "DOCE ", "TRECE ", "CATORCE ", "QUINCE ", "DIECISEIS ",
@@ -164,16 +102,6 @@ public class NumerosToLetras {
 	public static String convertNumberToLetter(double number) {
 		try{
 			return convertNumberToLetter(doubleToString(number));
-		}catch(Exception e){
-			e.printStackTrace();
-			System.out.println("Error en convertNumberToLetter..."+e);
-			return null;
-		}
-	}
-	
-	public static String convertNumberToLetterSM(double number) {
-		try{
-			return convertNumberToLetterSM(doubleToString(number));
 		}catch(Exception e){
 			e.printStackTrace();
 			System.out.println("Error en convertNumberToLetter..."+e);

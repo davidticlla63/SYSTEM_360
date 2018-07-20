@@ -61,8 +61,24 @@
 							<h:outputText value="#{'VENTA '}#{item.notaVenta.codigo}" rendered="#{item.notaVenta != null}"/>
 							<h:outputText value="#{'CUOTA '}#{item.cobranza.codigo}" rendered="#{item.cobranza != null}"/>
 						</p:column>
-
+						
 						<p:column headerText="Importe" width="10%" style="text-align:center;">
+							<h:outputText value="#{item.notaVenta.cuotaInicialExtranjero}" rendered="#{item.notaVenta != null}" >
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern="#0.00" />
+							</h:outputText>
+							<h:outputText value="#{item.cobranza.montoExtranjero}" rendered="#{item.cobranza != null}" >
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern="#0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="%" width="7%" style="text-align:center;">
+							<h:outputText value="#{item.porcentaje}" >
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Comision" width="10%" style="text-align:center;">
 							<h:outputText value="#{item.importe}" >
 								<f:convertNumber type="number" groupingUsed="true"
 									minFractionDigits="2" pattern="#0.00" />

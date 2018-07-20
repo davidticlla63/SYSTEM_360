@@ -237,6 +237,7 @@
 								</a></li>
 							</ul></li>
 					</ui:fragment>
+					<ui:fragment rendered="false">
 					<li
 						class="#{(view.viewId.equals('/pages/caja/list_movimiento.xhtml')) ? 'active':(view.viewId.equals('/pages/caja/comision/pagos/index.xhtml')) ? 'active':'inactive'}">
 						<a href="#"><i class="fa fa-dollar"></i><span
@@ -254,6 +255,7 @@
 							</a></li>
 						</ul>
 					</li>
+					</ui:fragment>
 					<li
 						class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}">
 						<a href="#"><i class="fa fa-users"></i><span
@@ -524,7 +526,7 @@
 						rendered="#{true}">
 						<li
 							class="#{(view.viewId.equals('/pages/caja/param/index.xhtml')) ? 'active' : (view.viewId.equals('/pages/caja/apertura/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/caja/cierre/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/caja/movimiento/index.xhtml')) ? 'active':'inactive'}">
-							<a href="#"><i class="icon-bar-chart"></i><span
+							<a href="#"><i class="fa fa-dollar"></i><span
 								class="sidebar-text">Caja</span></a>
 							<ul class="nav nav-second-level">
 								<ui:fragment
@@ -563,6 +565,11 @@
 												Caja</span>
 									</a></li>
 								</ui:fragment>
+								<li
+								class="#{(view.viewId.equals('/pages/caja/comision/pagos/index.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/caja/comision/pagos/index.xhtml">
+									<i class="icon-globe"></i><span class="sidebar-text">Pagos Comision</span>
+							</a></li>
 							</ul>
 						</li>
 					</ui:fragment>
