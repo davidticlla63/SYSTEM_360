@@ -35,6 +35,7 @@ import com.erp360.model.PlanCobranza;
 import com.erp360.model.Producto;
 import com.erp360.model.Usuario;
 import com.erp360.util.FacesUtil;
+import com.erp360.util.SessionMain;
 import com.erp360.util.V;
 import com.erp360.util.W;
 /**
@@ -56,6 +57,7 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 	private @Inject CajaServicio cajaServicio;
 	private @Inject EjecutivoComisionesDao ejecutivoComisionesDao;
 	private @Inject ICajaSesionDao cajaSesionDao;
+	private @Inject SessionMain sessionMain;
 
 	public NotaVentaDao(){
 		super(NotaVenta.class,DetalleNotaVenta.class,PlanCobranza.class,OrdenSalida.class,DetalleOrdenSalida.class,AlmacenProducto.class,KardexProducto.class,CajaMovimiento.class);
@@ -391,7 +393,11 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 				
 				cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+cajaMovimiento.getMonto());
 				cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+cajaMovimiento.getMontoExtranjero());
-				cajaSesionDao.update(cajaSesion);
+								
+				
+				cajaSesion=cajaSesionDao.update(cajaSesion);
+				sessionMain.setCajaSesion(cajaSesion);
+				
 				cajaMovimiento.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
 				cajaMovimiento.setSaldoNacional(cajaSesion.getSaldoNacional());
 				

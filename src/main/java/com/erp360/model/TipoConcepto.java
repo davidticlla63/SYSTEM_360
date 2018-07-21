@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
  *
  */
 @Entity
-@Table(name = "tipo_concepto", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {"id_empresa"}))
+@Table(name = "tipo_concepto", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {"id"}))
 public class TipoConcepto implements Serializable {
 
 	private static final long serialVersionUID = 1017112418637684740L;

@@ -3,6 +3,7 @@
  */
 package com.erp360.controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,8 +46,12 @@ import com.erp360.util.SessionMain;
  */
 @ManagedBean(name="cajaCierreController")
 @ViewScoped
-public class CajaCierreController {
-	private static final long serialVersionUID = 1L;
+public class CajaCierreController implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2722507784939217700L;
+
 	private @Inject FacesContext facesContext;
 	//DAO
 
@@ -202,8 +207,12 @@ public class CajaCierreController {
 		cajaSesion.setProcesada(true);
 		
 		
-			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()-cajaSesion.getMontoFinal());
-			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoNacional()/sessionDao.getTipoCambio().getUnidad());
+//			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()-cajaSesion.getMontoFinal());
+//			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoNacional()/sessionDao.getTipoCambio().getUnidad());
+//		
+		CajaSesion ultimaCajaSesion= cajaSesionDao.RetornarPorId(cajaSesion.getId());
+		cajaSesion.setSaldoNacional(ultimaCajaSesion.getSaldoNacional());
+		cajaSesion.setSaldoExtranjero(ultimaCajaSesion.getSaldoNacional()/sessionDao.getTipoCambio().getUnidad());
 		
 		CajaMovimiento cajaMovimiento= new CajaMovimiento();
 		cajaMovimiento.setCajaSesion(cajaSesion);
@@ -230,10 +239,7 @@ public class CajaCierreController {
 		if (co) {
 			sessionDao.setCajaSesion(null);
 			reporteCierre();
-//		       FacesUtil.updateComponent("formReporte");
-//		        FacesUtil.showDialog("dlgReporte");
-//		        currentPage = "/pages/caja/cierre/list.xhtml";
-			loadDefault();				
+			//loadDefault();				
 		} else {
 			FacesUtil.infoMessage("Informacion", "El detalle no debe estar vacio");
 		}
@@ -254,38 +260,40 @@ public class CajaCierreController {
 	}
 	/*DETALLE NOTA DE VENTA*/
 	
-	
+	//reportCajaMovimientoCierre.jasper
 	public void reporteCierre(){
-		//cajaSesion=cajaSesionDao.RetornarPorCaja(sessionDao.getCaja());
-		
-		//if (cajaSesion.getListaVentas().size()>0) {
-			//seleccionado=true;
-			//registrar=false;
+		setVer(true);
+		registrar = true;
 			try {
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("listaVentas",cajaSesion.getListaCajaMovimientos());
-				
-				map.put("usuario", sessionDao.getUsuarioLogin().getLogin());
-				map.put("pRazonSocial", sessionDao.getEmpresaLogin().getRazonSocial());
-				map.put("pDireccion", sessionDao.getEmpresaLogin().getDireccion());
-				map.put("pTelefono", sessionDao.getEmpresaLogin().getTelefono());	
-				String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/report/caja/movimientos/cierre.jasper");
-				HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();       
-				
-				request.getSession().setAttribute("map", map);
-				request.getSession().setAttribute("ruta", reportPath);
-				//request.getSession().setAttribute("lista",cajaSesion.getListaVentas() );
-				
+				HttpServletRequest request = (HttpServletRequest) facesContext
+						.getCurrentInstance().getExternalContext().getRequest();
+				String urlPath = request.getRequestURL().toString();
+				urlPath = urlPath.substring(0, urlPath.length()
+						- request.getRequestURI().length())
+						+ request.getContextPath() + "/";
 
+				// String URL_SERVLET_LOGO = urlPath + "ServletImageLogo?id="
+				// + sessionMain.getEmpresaLogin().getId() + "&type=EMPRESA";
+
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("ID_CAJA_SESION", cajaSesion.getId());
+				map.put("USUARIO", sessionDao.getUsuarioLogin().getLogin());
+				// map.put("pais",
+				// notaVenta.getSucursal().getCiudad().getPais().getNombre());
+				// map.put("logo", URL_SERVLET_LOGO);
+				map.put("REPORT_LOCALE", new Locale("en", "US"));
+				System.out.println(map);
+				String reportPath = urlPath
+						+ "resources/report/caja/movimientos/reportCajaMovimientoCierre.jasper";
+				System.out.println("reportPath : "+reportPath);
+				request.getSession().setAttribute("parameter", map);
+				request.getSession().setAttribute("path", reportPath);
+				setUrlReport(urlPath + "ReportPdfServlet");				
+				currentPage = "/pages/caja/cierre/report.xhtml";
 			} catch (Exception e) {
 				System.out.println("Fallo en "+e.toString());
 			}
-			//resetearValores();
-			currentPage = "/pages/caja/cierre/report.xhtml";
-	//	}else{
-
-		//	FacesUtil.showDialog("dlg2"); 
-		//}
+			
 	}
 
 
@@ -318,13 +326,15 @@ public class CajaCierreController {
 //			map.put("logo", URL_SERVLET_LOGO);
 			map.put("REPORT_LOCALE", new Locale("en", "US"));
 			
+			System.out.println(map);
 			String reportPath = urlPath +
 							"resources/report/caja/movimientos/reportReciboCaja.jasper";		
 			
+			System.out.println("reportPath : "+reportPath);
 			request.getSession().setAttribute("parameter", map);
 			request.getSession().setAttribute("path", reportPath);
 			setUrlReport(urlPath + "ReportPdfServlet");
-			currentPage = "/pages/caja/apertura/report.xhtml";
+			currentPage = "/pages/caja/cierre/report.xhtml";
 //			FacesUtil.updateComponent("formReporte");
 //			FacesUtil.showDialog("dlgrReporte");
 		} catch (Exception e) {

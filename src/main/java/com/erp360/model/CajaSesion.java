@@ -97,7 +97,8 @@ public class CajaSesion implements Serializable {
 	public CajaSesion() {
 
 		this.id = 0;
-
+		this.saldoExtranjero=new Double(0.0);
+		this.saldoNacional=new Double(0.0);
 		this.estado = "AC";
 
 		this.observacion="Ninguna";
