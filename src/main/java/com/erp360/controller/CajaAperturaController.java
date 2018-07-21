@@ -3,6 +3,7 @@ banco * @author WILSON
  */
 package com.erp360.controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,8 +41,12 @@ import com.erp360.util.Time;
  */
 @ManagedBean(name = "cajaOperacdionController")
 @ViewScoped
-public class CajaAperturaController {
-	private static final long serialVersionUID = 1L;
+public class CajaAperturaController implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2364765101032891265L;
+
 	private @Inject FacesContext facesContext;
 
 	// DAO
@@ -300,8 +305,10 @@ public class CajaAperturaController {
 			// map.put("logo", URL_SERVLET_LOGO);
 			map.put("REPORT_LOCALE", new Locale("en", "US"));
 
+			System.out.println(map);
 			String reportPath = urlPath
 					+ "resources/report/caja/movimientos/reportReciboCaja.jasper";
+			System.out.println("reportPath : "+reportPath);
 
 			request.getSession().setAttribute("parameter", map);
 			request.getSession().setAttribute("path", reportPath);
@@ -361,19 +368,21 @@ public class CajaAperturaController {
 		
 		CajaSesion ultimaCajaSesion=cajaSesionDao.RetornarUltimaSesionPorCaja(cajaSesion.getCaja());
 		if (ultimaCajaSesion!=null) {
-			cajaSesion.setSaldoNacional(cajaSesion.getMontoInicial()+ultimaCajaSesion.getSaldoNacional());
+			cajaSesion.setSaldoNacional(cajaSesion.getMontoInicial()+ultimaCajaSesion.getMontoFinal());
 			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoNacional()/sessionDao.getTipoCambio().getUnidad());
 		}else{
 			cajaSesion.setSaldoNacional(cajaSesion.getMontoInicial());
 			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoNacional()/sessionDao.getTipoCambio().getUnidad());
 		}
 		
-		CajaMovimiento movimientoCaja= new CajaMovimiento();
-		
+		CajaMovimiento movimientoCaja= new CajaMovimiento();	
 		
 		movimientoCaja.setCajaSesion(cajaSesion);
-		movimientoCaja.setMonto(cajaSesion.getMontoInicial());
-		movimientoCaja.setMontoExtranjero(cajaSesion.getMontoInicial()/sessionDao.getTipoCambio().getUnidad());
+//		movimientoCaja.setMonto(cajaSesion.getMontoInicial());
+//		movimientoCaja.setMontoExtranjero(cajaSesion.getMontoInicial()/sessionDao.getTipoCambio().getUnidad());
+		movimientoCaja.setMonto(cajaSesion.getSaldoNacional());
+		movimientoCaja.setMontoExtranjero(cajaSesion.getSaldoExtranjero());
+		
 		movimientoCaja.setDescripcion("Apertura Caja :"+cajaSesion.getCaja().getNombre());
 		movimientoCaja.setTipo("I");
 		movimientoCaja.setTipoMovimiento(TipoMovimiento.APE);
@@ -544,9 +553,7 @@ public class CajaAperturaController {
 		this.listaCaja = listaCaja;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+	
 
 	public Date getFechaInicio() {
 		return fechaInicio;

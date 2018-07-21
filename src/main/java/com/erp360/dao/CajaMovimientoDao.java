@@ -19,6 +19,7 @@ import com.erp360.model.CajaSesion;
 import com.erp360.model.Sucursal;
 import com.erp360.util.CajaIngreso;
 import com.erp360.util.FacesUtil;
+import com.erp360.util.SessionMain;
 import com.erp360.util.Time;
 
 @Stateless
@@ -29,7 +30,8 @@ public class CajaMovimientoDao extends DataAccessObjectGeneric<CajaMovimiento>
 	private @Inject ICajaSesionDao cajaOperacionDao;
 //	private @Inject IComprobanteDao comprobanteDao;
 	private @Inject ICajaSesionDao cajaSesionDao;
-
+    private @Inject SessionMain sessionMain; 
+	
 	public CajaMovimientoDao() {
 		super(CajaMovimiento.class);
 	}
@@ -72,8 +74,13 @@ public class CajaMovimientoDao extends DataAccessObjectGeneric<CajaMovimiento>
 				cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()-examen.getMonto());
 				cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()-examen.getMontoExtranjero());
 			}
+			if (cajaSesion.getSaldoNacional()<0) {
+				FacesUtil.infoMessage("No hay saldo Suficiente", "CajaMovimiento");
+			 throw new Exception("No hay saldo Suficiente : "+cajaSesion.getSaldoExtranjero());
+			}
+			cajaSesion=cajaSesionDao.update(cajaSesion);
+			sessionMain.setCajaSesion(cajaSesion);
 			
-			cajaSesionDao.update(cajaSesion);
 			examen.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
 			examen.setSaldoNacional(cajaSesion.getSaldoNacional());
 			

@@ -50,6 +50,13 @@
 							</p:outputLabel>
 							<p:message for="monto" display="tooltip" />
 
+							<p:outputLabel for="montoFinal" value="Monto Final " />
+							<p:outputLabel id="montoFinal"
+								value="Bs. #{cajaCierreController.cajaSesion.montoFinal}"
+								readonly="true">
+							</p:outputLabel>
+							<p:message for="montoFinal" display="tooltip" />
+
 						</p:panelGrid>
 					</p:panel>
 				</div>
@@ -61,58 +68,188 @@
 	</div>
 
 	<!-- EMPIEZA LA PARTE DE DETALLE -->
-	<div class="Container100 ui-fluid">
-		<div class="Card">
+
+	<div class="row">
+		<div class="col-md-4">
+			<p:panel id="panelIngresos" header="INGRESOS">
+
+				<p:panelGrid id="gridTotalIngresos" columns="3"
+					columnClasses="column1,column2,column3"
+					style="border:0px none; background-color:transparent; width: 100%;"
+					layout="grid" styleClass="ui-panelgrid-blank">
+
+					<p:outputLabel for="totalIngresos" value="Total Ingresos" />
+					<p:inputText id="totalIngresos" readonly="true" symbol="Bs. "
+						value="#{cajaCierreController.totalIngresos}">
+					</p:inputText>
+					<p:message for="totalIngresos" display="tooltip" />
+				</p:panelGrid>
+				<div class="EmptyBox10"></div>
+				<p:dataTable var="var" id="tablaDetalleIngresos"
+					value="#{cajaCierreController.listaIngresos}" reflow="true"
+					editable="true" emptyMessage="No se encontraron registros.">
+
+					<p:column width="30%" headerText="Tipo de Pago ">
+						<h:outputText value="#{var.tipoPago.label}" />
+					</p:column>
+
+					<p:column width="20%" headerText="Monto M/N">
+						<h:outputText value="#{var.suma}" />
+					</p:column>
 
 
-			<div class="EmptyBox10"></div>
+				</p:dataTable>
+			</p:panel>
+		</div>
+		
+		<div class="col-md-4">
+			<p:panel id="panelEgresos" header="EGRESOS">
 
-			<div class="Container100 NoIndent">
+				<p:panelGrid id="gridTotalEgresos" columns="3"
+					columnClasses="column1,column2,column3"
+					style="border:0px none; background-color:transparent; width: 100%;"
+					layout="grid" styleClass="ui-panelgrid-blank">
 
-				<div class="Container50 Responsive100 NoIndent">
-					<p:panel id="panelIngresos" header="Movimientos">
+					<p:outputLabel for="totalEgresos" value="Total Egresos" />
+					<p:inputText id="totalEgresos" readonly="true"
+						value="#{cajaCierreController.totalEgresos}">
+					</p:inputText>
+					<p:message for="totalEgresos" display="tooltip" />
+				</p:panelGrid>
+				<div class="EmptyBox10"></div>
 
-						<div class="EmptyBox10" />
+				<p:dataTable var="var" id="tablaDetalleEgresos"
+					value="#{cajaCierreController.listaEgresos}" reflow="true"
+					emptyMessage="No se encontraron registros.">
 
-						<p:dataTable var="var" id="tablaFlujo"
-							value="#{cajaCierreController.listaFlujoCaja}" reflow="true"
-							emptyMessage="No se encontraron registros.">
+					<p:column width="30%" headerText="Tipo de Pago">
+						<h:outputText value="#{var.tipoPago.label}" />
+					</p:column>
 
+					<p:column width="20%" headerText="Monto M/N">
+						<h:outputText value="#{var.suma}" />
+					</p:column>
 
-
-							<p:column width="18%" headerText="Documento">
-								<h:outputText value="#{var.numeroDocumento}" />
-							</p:column>
-
-							<p:column width="20%" headerText="Concepto ">
-								<h:outputText value="#{var.concepto}" />
-							</p:column>
-
-							<p:column width="30%" headerText="Tipo Movimiento ">
-								<h:outputText value="#{var.tipoMovimiento}" />
-							</p:column>
-
-							<p:column width="20%" headerText="Tipo Pago">
-								<h:outputText value="#{var.tipoPago}" />
-							</p:column>
-
-							<p:column width="20%" headerText="Monto">
-								<h:outputText value="Bs. #{var.monto}" />
-							</p:column>
-
-							<f:facet name="footer">
-								<h:outputText
-									value="#{cajaCierreController.listaFlujoCaja.size()} Registros en Total" />
-							</f:facet>
-						</p:dataTable>
-					</p:panel>
-				</div>
-
-
-			</div>
-
-			<!-- DATATABLE -->
+				</p:dataTable>
+			</p:panel>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading"
+					style="padding-top: 0px; padding-bottom: 1px; height: 25px;">
+					<h3 class="panel-title">LISTADO DE MOVIMIENTOS</h3>
 
+					<h:commandLink>
+						<p:graphicImage library="img" name="excel.png" />
+						<p:dataExporter type="xls" target="singleDT1"
+							fileName="listaCajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage library="img" name="pdf.png" height="20px" />
+						<p:dataExporter type="pdf" target="singleDT1"
+							fileName="listaCajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage library="img" name="csv.png" />
+						<p:dataExporter type="csv" target="singleDT1"
+							fileName="listaCajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage library="img" name="xml.png" />
+						<p:dataExporter type="xml" target="singleDT1"
+							fileName="listaCajaMovimientos" pageOnly="true" />
+					</h:commandLink>
+				</div>
+				<div class="form-group">
+					<p:dataTable id="singleDT1" var="var"
+						value="#{cajaCierreController.cajaSesion.listaCajaMovimientos}"
+						rowIndexVar="index" rowKey="#{var.id}" paginator="true"
+						style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+						emptyMessage="No se encontraron registros." reflow="true">
+
+						<p:ajax update="form001" event="rowSelect" />
+
+						<p:column headerText="Nº" width="8%" style="text-align:center;">
+							<h:outputText value="#{index+1}" style="font-size: 12px;" />
+						</p:column>
+						<p:column width="10%" headerText="Fecha Registro"
+							filterStyle="width: 100%; height:25px;" style="text-align:left;"
+							filterBy="#{var.fechaRegistro}" filterMatchMode="contains">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.fechaRegistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column width="20%" headerText="Concepto" filterBy="#{var.tipo}">
+							<h:outputText style="font-size: 12px;" value="#{var.descripcion}" />
+						</p:column>
+
+						<p:column width="10%" headerText="Caja "
+							filterBy="#{var.cajaSesion.caja.nombre}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.cajaSesion.caja.nombre}" />
+						</p:column>
+						<p:column width="10%" headerText="Documento"
+							filterBy="#{var.ducumento}">
+							<h:outputText style="font-size: 12px;" value="#{var.ducumento}" />
+						</p:column>
+
+						<p:column width="10%" headerText="Tipo" filterBy="#{var.tipo}">
+							<h:outputText style="font-size: 12px;"
+								rendered="#{var.tipo=='I'}" value="Ingreso" />
+							<h:outputText style="font-size: 12px;"
+								rendered="#{var.tipo=='E'}" value="Egreso" />
+						</p:column>
+
+						<p:column width="10%" headerText="Tipo Mov" filterBy="#{var.tipo}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.tipoMovimiento.label}" />
+						</p:column>
+
+						<p:column width="10%" headerText="Tipo Pago"
+							filterBy="#{var.tipoPago}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.tipoPago.label}" />
+						</p:column>
+						<p:column width="10%" headerText="Ingreso"
+							filterBy="#{var.tipoPago}">
+							<h:outputText style="font-size: 12px;"
+								rendered="#{var.tipo=='I'}" value="#{var.montoExtranjero}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column width="10%" headerText="Engreso"
+							filterBy="#{var.montoExtranjero}">
+							<h:outputText style="font-size: 12px;"
+								rendered="#{var.tipo=='E'}" value="#{var.montoExtranjero}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column width="10%" headerText="Saldo"
+							filterBy="#{var.saldoExtranjero}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.saldoExtranjero}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<f:facet name="footer">
+							<h:outputText style="font-size: 12px;"
+								value="#{cajaCierreController.cajaSesion.listaCajaMovimientos.size()} Registros en Total" />
+						</f:facet>
+					</p:dataTable>
+				</div>
+			</div>
+		</div>
+	</div>
 </ui:composition>
