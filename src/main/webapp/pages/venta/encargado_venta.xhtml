@@ -170,6 +170,34 @@
 														</h:inputText>
 													</div>
 												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Patrocinador</div>
+													<div class="col-md-8">
+														<p:autoComplete id="patrocinador" 
+															value="#{encargadoVentaController.newEncargadoVenta.patrocinador}"
+															var="theme" converter="patrocinadorConverter"
+															itemLabel="#{theme.nombres}" itemValue="#{theme}"
+															completeMethod="#{encargadoVentaController.onCompletePatrocinador}"
+															forceSelection="true" dropdown="true"
+															placeholder="Patrocinador">
+															<p:ajax event="itemSelect"
+																listener="#{encargadoVentaController.onSelectPatrocinador}"
+																update="patrocinador" />
+														</p:autoComplete>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Comision Patrocinador(%)</div>
+													<div class="col-md-8">
+														<h:inputText
+															value="#{encargadoVentaController.newEncargadoVenta.porcentajePatrocinador}"
+															style=" color: #555555; background-image: none;"
+															styleClass="input-sm form-control">
+															<p:ajax event="change" />
+														</h:inputText>
+													</div>
+												</div>
 											</div>
 										</div>
 										<!-- end here register -->

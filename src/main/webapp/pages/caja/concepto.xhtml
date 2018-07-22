@@ -152,7 +152,7 @@
 											style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
 											selection="#{conceptoController.selectedConcepto}"
 											selectionMode="single" rowKey="#{var.id}"
-											id="FuncionarioTable" var="var" value="#{listaConcepto}"
+											id="FuncionarioTable" var="var" value="#{conceptoController.listaConcepto}"
 											emptyMessage="No se encontraron Registros.">
 
 											<p:ajax event="rowSelect" update="form001"
@@ -188,7 +188,7 @@
 											</p:column>
 											<f:facet name="footer">
 												<h:outputText
-													value="#{listaConcepto.size()} Registros en Total" />
+													value="#{conceptoController.listaConcepto.size()} Registros en Total" />
 											</f:facet>
 
 										</p:dataTable>

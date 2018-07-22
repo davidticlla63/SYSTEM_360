@@ -257,7 +257,7 @@
 					</li>
 					</ui:fragment>
 					<li
-						class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}">
+						class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' : (view.viewId.equals('/pages/cliente/tipo_cliente.xhtml')) ? 'active' : (view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}">
 						<a href="#"><i class="fa fa-users"></i><span
 							class="sidebar-text">Cliente</span></a>
 						<ul class="nav nav-second-level">
@@ -265,6 +265,12 @@
 								class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' :'inactive'}"><a
 								href="#{request.contextPath}/pages/cliente/index.xhtml"> <i
 									class="icon-globe"></i><span class="sidebar-text">Gestionar</span>
+							</a></li>
+							
+							<li
+								class="#{(view.viewId.equals('/pages/cliente/tipo_cliente.xhtml')) ? 'active' :'inactive'}"><a
+								href="#{request.contextPath}/pages/cliente/tipo_cliente.xhtml"> <i
+									class="icon-globe"></i><span class="sidebar-text">Tipo Cliente</span>
 							</a></li>
 
 							<li

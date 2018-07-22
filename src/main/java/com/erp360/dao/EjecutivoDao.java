@@ -109,7 +109,7 @@ public class EjecutivoDao extends DataAccessObjectJpa<Ejecutivo,E,R,S,O, P, Q, U
 	}
 
 	public List<Ejecutivo> obtenerPorConsulta(String query){
-		return findAllActivosByQueryAndTwoParameter("estado","AC","nombre", query);
+		return findAllActivosByQueryAndTwoParameter("estado","AC","nombres", query);
 	}
 	
 	public  List<Ejecutivo> obtenerPorEmpresa(Empresa empresa){

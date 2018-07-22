@@ -11,8 +11,8 @@
 	<ui:define name="head">
 		<title>Cliente</title>
 		<h:outputScript name="js/validator.js" library="mbr" />
-		
-		
+
+
 	</ui:define>
 
 	<ui:define name="content">
@@ -101,53 +101,70 @@
 														</h:inputText>
 													</div>
 												</div>
-													<div class="form-group ">
-														<div class="col-md-4">CI/Nit</div>
-														<div class="col-md-8">
-															<h:inputText value="#{clienteController.newCliente.nit}"
-																style=" color: #555555; background-image: none;"
-																onkeypress="return validateOnlyNumber(event)"
-																styleClass="input-sm form-control ">
-																<p:ajax event="change" />
-															</h:inputText>
-														</div>
+												<div class="form-group ">
+													<div class="col-md-4">CI/Nit</div>
+													<div class="col-md-8">
+														<h:inputText value="#{clienteController.newCliente.nit}"
+															style=" color: #555555; background-image: none;"
+															onkeypress="return validateOnlyNumber(event)"
+															styleClass="input-sm form-control ">
+															<p:ajax event="change" />
+														</h:inputText>
 													</div>
-													<div class="form-group ">
-														<div class="col-md-4">Nombre / Razon Social</div>
-														<div class="col-md-8">
-															<h:inputText
-																value="#{clienteController.newCliente.razonSocial}"
-																style=" color: #555555; background-image: none;"
-																styleClass="input-sm form-control ">
-																<p:ajax event="change" />
-															</h:inputText>
-														</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Nombre / Razon Social</div>
+													<div class="col-md-8">
+														<h:inputText
+															value="#{clienteController.newCliente.razonSocial}"
+															style=" color: #555555; background-image: none;"
+															styleClass="input-sm form-control ">
+															<p:ajax event="change" />
+														</h:inputText>
 													</div>
-												
-													<div class="form-group ">
-														<div class="col-md-4">Celular 1</div>
-														<div class="col-md-8">
-															<h:inputText
-																value="#{clienteController.newCliente.celular1}"
-																style=" color: #555555; background-image: none;"
-																onkeypress="return validateOnlyNumber(event)"
-																styleClass="input-sm form-control">
-																<p:ajax event="change" />
-															</h:inputText>
-														</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Tipo Cliente</div>
+													<div class="col-md-8">
+														<p:autoComplete id="concepto" required="true"
+															value="#{clienteController.newCliente.tipoCliente}"
+															var="theme" converter="tipoClienteConverter"
+															itemLabel="#{theme.nombre}" itemValue="#{theme}"
+															completeMethod="#{clienteController.onCompleteTipoCliente}"
+															forceSelection="true" dropdown="true"
+															placeholder="Concepto">
+															<p:ajax event="itemSelect"
+																listener="#{clienteController.onSelectTipoCliente}"
+																update="concepto" />
+														</p:autoComplete>
 													</div>
-													<div class="form-group ">
-														<div class="col-md-4">Celular 2</div>
-														<div class="col-md-8">
-															<h:inputText
-																value="#{clienteController.newCliente.celular2}"
-																style=" color: #555555; background-image: none;"
-																onkeypress="return validateOnlyNumber(event)"
-																styleClass="input-sm form-control">
-																<p:ajax event="change" />
-															</h:inputText>
-														</div>
+												</div>
+
+												<div class="form-group ">
+													<div class="col-md-4">Celular 1</div>
+													<div class="col-md-8">
+														<h:inputText
+															value="#{clienteController.newCliente.celular1}"
+															style=" color: #555555; background-image: none;"
+															onkeypress="return validateOnlyNumber(event)"
+															styleClass="input-sm form-control">
+															<p:ajax event="change" />
+														</h:inputText>
 													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Celular 2</div>
+													<div class="col-md-8">
+														<h:inputText
+															value="#{clienteController.newCliente.celular2}"
+															style=" color: #555555; background-image: none;"
+															onkeypress="return validateOnlyNumber(event)"
+															styleClass="input-sm form-control">
+															<p:ajax event="change" />
+														</h:inputText>
+													</div>
+												</div>
 												<div class="form-group ">
 													<div class="col-md-4">Telefono</div>
 													<div class="col-md-8">
@@ -273,7 +290,7 @@
 																<div class="form-group ">
 																	<div class="col-md-2">Dirección</div>
 																	<div class="col-md-6">
-																		<h:inputTextarea 
+																		<h:inputTextarea
 																			value="#{clienteController.newClienteAdicional.direccionGarante}"
 																			style=" color: #555555; background-image: none;"
 																			styleClass="input-sm form-control">
@@ -854,7 +871,7 @@
 												</div>
 											</p:tab>
 
-											
+
 										</p:tabView>
 									</div>
 								</div>
@@ -889,11 +906,12 @@
 										<p:column headerText="Nombre / Razón Social"
 											filterStyle="width: 100%; height:25px;"
 											filterBy="#{item.razonSocial}">
-											<h:outputText value="#{item.razonSocial}"  />
+											<h:outputText value="#{item.razonSocial}" />
 										</p:column>
 										<p:column headerText="Ci / Nit"
-											filterStyle="width: 100%; height:25px;" filterBy="#{item.nit}">
-											<h:outputText value="#{item.nit}"  />
+											filterStyle="width: 100%; height:25px;"
+											filterBy="#{item.nit}">
+											<h:outputText value="#{item.nit}" />
 										</p:column>
 										<p:column headerText="Telefono" width="10%"
 											filterStyle="width: 100%; height:25px;"

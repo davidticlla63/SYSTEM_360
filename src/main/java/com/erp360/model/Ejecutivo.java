@@ -55,6 +55,13 @@ public class Ejecutivo  implements Serializable {
 	@JoinColumn(name="id_empresa", nullable=false)
 	private Empresa empresa;
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_patrocinador", nullable=true)
+	private Ejecutivo patrocinador;
+	
+	@Column(name="porcentaje_patrocinador",nullable=true )
+	private Double porcentajePatrocinador;
+	
 	@Column(name = "foto", nullable = true)
 	private byte[] foto;
 	
@@ -96,6 +103,7 @@ public class Ejecutivo  implements Serializable {
 		this.salesPerson = true;
 		this.publisher = false;
 		this.porcentaje = 20d;
+		this.porcentajePatrocinador=5d;
 	}
 
 	@Override
@@ -277,6 +285,22 @@ public class Ejecutivo  implements Serializable {
 
 	public void setPorcentaje(Double porcentaje) {
 		this.porcentaje = porcentaje;
+	}
+
+	public Ejecutivo getPatrocinador() {
+		return patrocinador;
+	}
+
+	public void setPatrocinador(Ejecutivo patrocinador) {
+		this.patrocinador = patrocinador;
+	}
+
+	public Double getPorcentajePatrocinador() {
+		return porcentajePatrocinador;
+	}
+
+	public void setPorcentajePatrocinador(Double porcentajePatrocinador) {
+		this.porcentajePatrocinador = porcentajePatrocinador;
 	}
 
 }

@@ -18,6 +18,7 @@ import com.erp360.dao.EjecutivoDao;
 import com.erp360.model.Cliente;
 import com.erp360.model.EjecutivoCliente;
 import com.erp360.model.Ejecutivo;
+import com.erp360.model.TipoCliente;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.NumberUtil;
 import com.erp360.util.SessionMain;
@@ -58,6 +59,7 @@ public class EjecutivoController implements Serializable {
 	
 	//LISTAS
 	private List<Ejecutivo> listEncargadoVenta = new ArrayList<Ejecutivo>();
+	public static List<Ejecutivo> listPatrocinador = new ArrayList<Ejecutivo>();
 	private String[] listEstado = {"ACTIVO","INACTIVO"};
 
 	@PostConstruct
@@ -225,6 +227,22 @@ public class EjecutivoController implements Serializable {
 		ejecutivoClientes.remove(removed);
 		
 	}
+	
+	
+
+	//tipo cliente
+	public List<Ejecutivo> onCompletePatrocinador(String query) {
+		// ystem.out.println("Entro en Oncomplete Caja"+ query);
+		listPatrocinador = encargadoVentaDao.obtenerPorConsulta(query.toUpperCase());
+		return listPatrocinador;
+	}
+
+	// ACTION
+
+	public void onSelectPatrocinador(SelectEvent event) {
+		newEncargadoVenta.setPatrocinador((Ejecutivo) event.getObject());
+	}
+
 	// --------------   get and set  ---------------
 
 	public boolean isModificar() {
@@ -329,6 +347,14 @@ public class EjecutivoController implements Serializable {
 
 	public void setEjecutivoClientesRemoved(List<EjecutivoCliente> ejecutivoClientesRemoved) {
 		this.ejecutivoClientesRemoved = ejecutivoClientesRemoved;
+	}
+
+	public List<Ejecutivo> getListPatrocinador() {
+		return listPatrocinador;
+	}
+
+	public void setListPatrocinador(List<Ejecutivo> listPatrocinador) {
+		this.listPatrocinador = listPatrocinador;
 	}
 }
 

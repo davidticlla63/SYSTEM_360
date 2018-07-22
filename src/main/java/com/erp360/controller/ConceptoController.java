@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Produces;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
@@ -59,8 +58,7 @@ public class ConceptoController implements Serializable {
 	private @Inject ITipoConceptoDao tipoConceptoDao;
 	private String usuarioSession;
 
-	@Produces
-	@Named
+	
 	public List<Concepto> getListaConcepto() {
 		return listaConcepto;
 	}
