@@ -7,9 +7,9 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
 	template="/WEB-INF/templates/template_main.xhtml">
-	
+
 	<ui:define name="head">
-		<title>Tipo Concepto</title>
+		<title>Tipo Cliente</title>
 	</ui:define>
 
 	<ui:define name="content">
@@ -30,41 +30,42 @@
 
 										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
 											styleClass="btn btn-warning ion-minus-circled"
-											rendered="#{tipoConceptoController.modificar or tipoConceptoController.registrar}"
-											style="height:31px; padding:center"
-											immediate="true">
-											<p:ajax update="form001" listener="#{tipoConceptoController.loadDefault()}"/>
+											rendered="#{tipoClienteController.modificar or tipoClienteController.registrar}"
+											style="height:31px; padding:center" immediate="true">
+											<p:ajax update="form001"
+												listener="#{tipoClienteController.loadDefault()}" />
 										</p:commandLink>
 
 										<p:commandLink id="buttonCrear1"
-											value="&#160; Nuevo Tipo Concepto"
+											value="&#160; Nuevo Tipo Cliente"
 											styleClass="btn btn-success ion-plus-round"
-											rendered="#{tipoConceptoController.crear }"
-											update="form001"
-											action="#{tipoConceptoController.actionButtonNuevo()}"
+											rendered="#{tipoClienteController.crear }" update="form001"
+											action="#{tipoClienteController.actionButtonNuevo()}"
 											style="height:31px;">
 										</p:commandLink>
 
 										<p:commandLink id="buttonRegistrar" value="&#160; Registrar"
 											styleClass="btn btn-success ion-checkmark"
-											rendered="#{tipoConceptoController.registrar}"
-											style="height:31px; padding:center" >
-											<p:ajax update="form001" listener="#{tipoConceptoController.registrarTipoConcepto()}"/>
+											rendered="#{tipoClienteController.registrar}"
+											style="height:31px; padding:center">
+											<p:ajax update="form001"
+												listener="#{tipoClienteController.registrarTipoCliente()}" />
 										</p:commandLink>
 
 										<p:commandLink id="buttonModificar" value="&#160; Modificar"
 											styleClass="btn btn-primary ion-edit"
-											rendered="#{tipoConceptoController.modificar}"
+											rendered="#{tipoClienteController.modificar}"
 											style="height:31px; padding:center" immediate="true">
-											<p:ajax update="form001" listener="#{tipoConceptoController.modificarTipoConcepto()}"/>
+											<p:ajax update="form001"
+												listener="#{tipoClienteController.modificarTipoCliente()}" />
 										</p:commandLink>
 
 										<p:commandLink id="buttonEliminar" value="&#160; Eliminar"
 											styleClass="btn btn-danger ion-close"
-											rendered="#{tipoConceptoController.modificar}"
-											immediate="true"
-											style="height:31px; padding:center">
-											<p:ajax update="form001" listener="#{tipoConceptoController.eliminarTipoConcepto()}"/>
+											rendered="#{tipoClienteController.modificar}"
+											immediate="true" style="height:31px; padding:center">
+											<p:ajax update="form001"
+												listener="#{tipoClienteController.eliminarTipoCliente()}" />
 										</p:commandLink>
 									</div>
 								</div>
@@ -84,7 +85,7 @@
 					<!-- BEGIN PANEL REGISTER -->
 					<div class="row" style="padding-top: 10px;">
 						<ui:fragment
-							rendered="#{tipoConceptoController.modificar or tipoConceptoController.registrar}">
+							rendered="#{tipoClienteController.modificar or tipoClienteController.registrar}">
 							<div class="col-md-4">
 								<div class="panel panel-default">
 									<div class="panel-heading">
@@ -101,14 +102,41 @@
 														<p:inputText id="nombreID"
 															style=" color: #555555; background-image: none;padding: 0 10px;"
 															styleClass="input-sm form-control" size="40"
-															value="#{tipoConceptoController.newTipoConcepto.nombre}"
+															value="#{tipoClienteController.newTipoCliente.nombre}"
 															required="true" requiredMessage="Requerido.">
 															<p:ajax event="change" />
 														</p:inputText>
 													</div>
 												</div>
+												<div class="form-group ">
+													<div class="col-md-4">Porcentaje</div>
+													<div class="col-md-8">
+														<p:inputText id="porcentajeID"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{tipoClienteController.newTipoCliente.porcentaje}"
+															required="true" requiredMessage="Requerido.">
+															<f:convertNumber type="percentage" groupingUsed="true"
+																minFractionDigits="2" pattern="#0.00" />
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												<div class="form-group ">
+													<div class="col-md-4"></div>
+													<div class="col-md-8">
+														<p:selectOneRadio id="tipo" style="align:left;"
+															value="#{tipoClienteController.newTipoCliente.tipoDescuento}">
+															<p:ajax event="change" />
+															<f:selectItem itemLabel="Incremento(Ingreso)"
+																itemValue="ASC" />
+															<f:selectItem itemLabel="Descuento(Egreso)"
+																itemValue="DESC" />
+														</p:selectOneRadio>
+														<p:message for="tipo" display="tooltip" />
 
-												
+													</div>
+												</div>
 
 											</div>
 										</div>
@@ -118,7 +146,7 @@
 						</ui:fragment>
 
 
-						<ui:fragment rendered="#{tipoConceptoController.crear}">
+						<ui:fragment rendered="#{tipoClienteController.crear}">
 
 							<div class="col-md-12" align="left">
 
@@ -131,27 +159,30 @@
 
 										<p:dataTable
 											style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
-											selection="#{tipoConceptoController.selectedTipoConcepto}"
+											selection="#{tipoClienteController.selectedTipoCliente}"
 											selectionMode="single" rowKey="#{var.id}"
-											id="FuncionarioTable" var="var"
-											value="#{tipoConceptoController.listaTipoConcepto}"
+											id="FuncionarioTable" var="var" value="#{tipoClienteController.listaTipoCliente}"
 											emptyMessage="No se encontraron Registros.">
 
-											<p:ajax event="rowSelect"
-												update="form001"
-												listener="#{tipoConceptoController.onRowSelectTipoConceptoClick}" />
+											<p:ajax event="rowSelect" update="form001"
+												listener="#{tipoClienteController.onRowSelectTipoClienteClick}" />
 
 
 											<p:column width="30%" headerText="Nombre "
-												filterBy="#{var.nombre}"
-												filterStyle="width: 100%;" filterMatchMode="contains">
+												filterBy="#{var.nombre}" filterStyle="width: 100%;"
+												filterMatchMode="contains">
 												<h:outputText value="#{var.nombre}" />
 											</p:column>
 											
+											<p:column width="10%" headerText="% "
+												filterBy="#{var.porcentaje}" filterStyle="width: 100%;"
+												filterMatchMode="contains">
+												<h:outputText value="#{var.porcentaje}" />
+											</p:column>
+
 
 											<p:column width="10%" headerText="Estado"
-												style="text-align:center;"
-												filterBy="#{var.estado}"
+												style="text-align:center;" filterBy="#{var.estado}"
 												filterStyle="width: 100%;" filterMatchMode="contains">
 												<span class="label label-success"><h:outputText
 														rendered="#{var.estado=='AC'}" value="Activo" /></span>
@@ -160,22 +191,20 @@
 											</p:column>
 
 											<p:column width="10%" headerText="Fecha"
-												style="text-align:center;"
-												filterBy="#{var.fechaRegistro}"
+												style="text-align:center;" filterBy="#{var.fechaRegistro}"
 												filterStyle="width: 100%;" filterMatchMode="contains">
 												<h:outputText value="#{var.fechaRegistro}">
 													<f:convertDateTime pattern="dd/MM/yyyy" />
 												</h:outputText>
 											</p:column>
 											<p:column width="10%" headerText="Registro"
-												style="text-align:center;"
-												filterBy="#{var.usuarioRegistro}"
+												style="text-align:center;" filterBy="#{var.usuarioRegistro}"
 												filterStyle="width: 100%;" filterMatchMode="contains">
 												<h:outputText value="#{var.usuarioRegistro}" />
 											</p:column>
 											<f:facet name="footer">
 												<h:outputText
-													value="#{tipoConceptoController.listaTipoConcepto.size()} Registros en Total" />
+													value="#{tipoClienteController.listaTipoCliente.size()} Registros en Total" />
 											</f:facet>
 
 										</p:dataTable>

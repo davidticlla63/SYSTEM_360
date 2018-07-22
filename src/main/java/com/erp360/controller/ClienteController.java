@@ -29,9 +29,13 @@ import org.primefaces.model.map.Marker;
 
 import com.erp360.dao.ClienteAdicionalDao;
 import com.erp360.dao.ClienteDao;
+import com.erp360.interfaces.ITipoClienteDao;
 import com.erp360.model.Adjunto;
 import com.erp360.model.Cliente;
 import com.erp360.model.ClienteAdicional;
+import com.erp360.model.Concepto;
+import com.erp360.model.TipoCliente;
+import com.erp360.model.TipoConcepto;
 import com.erp360.util.EDAdjunto;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.FtpUtil;
@@ -52,6 +56,7 @@ public class ClienteController implements Serializable {
 	private @Inject SessionMain sessionMain; //variable del login
 	private @Inject ClienteDao clienteDao;
 	private @Inject ClienteAdicionalDao clienteAdicionalDao;
+	private @Inject ITipoClienteDao tipoClienteDao;
 
 	//estados
 	private boolean crear ;
@@ -74,7 +79,7 @@ public class ClienteController implements Serializable {
 	private List<String> listAdjuntoImagenes;
 	private List<Adjunto> listAdjunto;
 	private List<EDAdjunto> listUploadedFile;
-
+	public static List<TipoCliente> tipoClientes = new ArrayList<TipoCliente>();
 	//MAP
 	private MapModel emptyModel;
 	private Marker marker;
@@ -324,6 +329,21 @@ public class ClienteController implements Serializable {
 		FacesUtil.setSessionAttribute("imagenCliente", data);
 		FacesUtil.hideDialog("dlgphotoCam");
 	}
+	
+	
+	//tipo cliente
+	public List<TipoCliente> onCompleteTipoCliente(String query) {
+		// ystem.out.println("Entro en Oncomplete Caja"+ query);
+		tipoClientes = tipoClienteDao.RetornarOnCompletePorEmpresa(
+				sessionMain.getEmpresaLogin(), query.toUpperCase());
+		return tipoClientes;
+	}
+
+	// ACTION
+
+	public void onSelectTipoCliente(SelectEvent event) {
+		newCliente.setTipoCliente((TipoCliente) event.getObject());
+	}
 
 	// --------------   get and set  ---------------
 
@@ -453,6 +473,14 @@ public class ClienteController implements Serializable {
 
 	public void setMapAddress(String mapAddress) {
 		this.mapAddress = mapAddress;
+	}
+
+	public static List<TipoCliente> getTipoClientes() {
+		return tipoClientes;
+	}
+
+	public static void setTipoClientes(List<TipoCliente> tipoClientes) {
+		ClienteController.tipoClientes = tipoClientes;
 	}
 }
 

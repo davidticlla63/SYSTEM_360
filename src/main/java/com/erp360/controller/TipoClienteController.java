@@ -11,8 +11,8 @@ import javax.inject.Inject;
 
 import org.primefaces.event.SelectEvent;
 
-import com.erp360.interfaces.ITipoConceptoDao;
-import com.erp360.model.TipoConcepto;
+import com.erp360.interfaces.ITipoClienteDao;
+import com.erp360.model.TipoCliente;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.SessionMain;
 
@@ -21,9 +21,9 @@ import com.erp360.util.SessionMain;
  * @author david
  *
  */
-@ManagedBean(name = "tipoConceptoController")
+@ManagedBean(name = "tipoClienteController")
 @ViewScoped
-public class TipoConceptoController implements Serializable {
+public class TipoClienteController implements Serializable {
 
 
 	/**
@@ -32,7 +32,7 @@ public class TipoConceptoController implements Serializable {
 	private static final long serialVersionUID = 7176528419934680867L;
 
 	// DAO
-	private @Inject ITipoConceptoDao tipoTipoConceptoDao;
+	private @Inject ITipoClienteDao tipoTipoClienteDao;
 
 	// STATE
 	private boolean modificar = false;
@@ -42,19 +42,19 @@ public class TipoConceptoController implements Serializable {
 	// VAR
 
 	// OBJECT
-	private TipoConcepto selectedTipoConcepto;
-	private TipoConcepto newTipoConcepto;
+	private TipoCliente selectedTipoCliente;
+	private TipoCliente newTipoCliente;
 
 	// LIST
-	private List<TipoConcepto> listaTipoConcepto;
+	private List<TipoCliente> listaTipoCliente;
 
 	// SESSION
 	private @Inject SessionMain sessionMain; // variable del login
 	private String usuarioSession;
 
 	
-	public List<TipoConcepto> getListaTipoConcepto() {
-		return listaTipoConcepto;
+	public List<TipoCliente> getListaTipoCliente() {
+		return listaTipoCliente;
 	}
 
 	@PostConstruct
@@ -65,11 +65,11 @@ public class TipoConceptoController implements Serializable {
 	}
 
 	public void loadDefault() {
-		newTipoConcepto = new TipoConcepto();
-		selectedTipoConcepto = new TipoConcepto();
+		newTipoCliente = new TipoCliente();
+		selectedTipoCliente = new TipoCliente();
 
-		// traer todos las TipoConcepto ordenados por ID Desc
-		listaTipoConcepto = tipoTipoConceptoDao.obtenerPorEmpresa(sessionMain
+		// traer todos las TipoCliente ordenados por ID Desc
+		listaTipoCliente = tipoTipoClienteDao.obtenerPorEmpresa(sessionMain
 				.getEmpresaLogin());
 
 		modificar = false;
@@ -84,52 +84,52 @@ public class TipoConceptoController implements Serializable {
 	}
 
 	// SELECT PRESENTACION CLICK
-	public void onRowSelectTipoConceptoClick(SelectEvent event) {
-		newTipoConcepto = selectedTipoConcepto;
+	public void onRowSelectTipoClienteClick(SelectEvent event) {
+		newTipoCliente = selectedTipoCliente;
 		crear = false;
 		registrar = false;
 		modificar = true;
 	}
 
-	public void registrarTipoConcepto() {
-		System.out.println("Ingreso a registrarTipoConcepto: ");
-		if (newTipoConcepto.getNombre().isEmpty()) {
+	public void registrarTipoCliente() {
+		System.out.println("Ingreso a registrarTipoCliente: ");
+		if (newTipoCliente.getNombre().isEmpty()) {
 			FacesUtil.infoMessage("VALIDACION", "No puede haber campos vacios");
 			return;
 		}
-		newTipoConcepto.setEstado("AC");
-		newTipoConcepto.setFechaRegistro(new Date());
-		newTipoConcepto.setUsuarioRegistro(usuarioSession);
-		newTipoConcepto.setEmpresa(sessionMain
+		newTipoCliente.setEstado("AC");
+		newTipoCliente.setFechaRegistro(new Date());
+		newTipoCliente.setUsuarioRegistro(usuarioSession);
+		newTipoCliente.setEmpresa(sessionMain
 				.getEmpresaLogin());
-		TipoConcepto data = tipoTipoConceptoDao.registrar(newTipoConcepto);
+		TipoCliente data = tipoTipoClienteDao.registrar(newTipoCliente);
 		if (data != null) {
 			loadDefault();
 		}
 
 	}
 
-	public void modificarTipoConcepto() {
-		System.out.println("Ingreso a modificarTipoConcepto: ");
-		if (newTipoConcepto.getNombre().isEmpty()) {
+	public void modificarTipoCliente() {
+		System.out.println("Ingreso a modificarTipoCliente: ");
+		if (newTipoCliente.getNombre().isEmpty()) {
 			FacesUtil.infoMessage("VALIDACION", "No puede haber campos vacios");
 			return;
 		}
-		newTipoConcepto.setEmpresa(sessionMain
+		newTipoCliente.setEmpresa(sessionMain
 				.getEmpresaLogin());
-		boolean data = tipoTipoConceptoDao.modificar(newTipoConcepto);
+		boolean data = tipoTipoClienteDao.modificar(newTipoCliente);
 		if (data == true) {
 			loadDefault();
 		}
 	}
 
-	public void eliminarTipoConcepto() {
-		System.out.println("Ingreso a modificarTipoConcepto: ");
-		if (newTipoConcepto.getNombre().isEmpty()) {
+	public void eliminarTipoCliente() {
+		System.out.println("Ingreso a modificarTipoCliente: ");
+		if (newTipoCliente.getNombre().isEmpty()) {
 			FacesUtil.infoMessage("VALIDACION", "No puede haber campos vacios");
 			return;
 		}
-		boolean data = tipoTipoConceptoDao.eliminar(newTipoConcepto);
+		boolean data = tipoTipoClienteDao.eliminar(newTipoCliente);
 		if (data == true) {
 			loadDefault();
 		}
@@ -160,20 +160,20 @@ public class TipoConceptoController implements Serializable {
 		this.registrar = registrar;
 	}
 
-	public TipoConcepto getNewTipoConcepto() {
-		return newTipoConcepto;
+	public TipoCliente getNewTipoCliente() {
+		return newTipoCliente;
 	}
 
-	public void setNewTipoConcepto(TipoConcepto newTipoConcepto) {
-		this.newTipoConcepto = newTipoConcepto;
+	public void setNewTipoCliente(TipoCliente newTipoCliente) {
+		this.newTipoCliente = newTipoCliente;
 	}
 
-	public TipoConcepto getSelectedTipoConcepto() {
-		return selectedTipoConcepto;
+	public TipoCliente getSelectedTipoCliente() {
+		return selectedTipoCliente;
 	}
 
-	public void setSelectedTipoConcepto(TipoConcepto selectedTipoConcepto) {
-		this.selectedTipoConcepto = selectedTipoConcepto;
+	public void setSelectedTipoCliente(TipoCliente selectedTipoCliente) {
+		this.selectedTipoCliente = selectedTipoCliente;
 	}
 
 }

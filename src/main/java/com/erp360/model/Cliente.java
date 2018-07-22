@@ -65,6 +65,10 @@ public class Cliente  implements Serializable {
 	@JoinColumn(name="id_empresa", nullable=false)
 	private Empresa empresa;
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_tipo_cliente", nullable=true)
+	private TipoCliente tipoCliente;
+	
 	@Column(name = "foto", nullable = true)
 	private byte[] foto;
 	
@@ -286,6 +290,14 @@ public class Cliente  implements Serializable {
 
 	public void setPesoFoto(int pesoFoto) {
 		this.pesoFoto = pesoFoto;
+	}
+
+	public TipoCliente getTipoCliente() {
+		return tipoCliente;
+	}
+
+	public void setTipoCliente(TipoCliente tipoCliente) {
+		this.tipoCliente = tipoCliente;
 	}
 
 }
