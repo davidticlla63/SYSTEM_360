@@ -105,7 +105,7 @@
 							</h:outputText>
 						</p:column>
 
-						<p:column width="10%" headerText="Saldo"
+						<p:column width="10%" headerText="Saldo($us)"
 							filterBy="#{var.saldoExtranjero}">
 							<h:outputText style="font-size: 12px;"
 								value="#{var.saldoExtranjero}">
@@ -114,6 +114,14 @@
 							</h:outputText>
 						</p:column>
 
+						<p:column width="10%" headerText="Saldo(Bs.)"
+							filterBy="#{var.saldoNacional}">
+							<h:outputText style="font-size: 12px;"
+								value="#{var.saldoNacional}">
+								<f:convertNumber type="number" groupingUsed="true"
+									minFractionDigits="2" pattern=",##0.00" />
+							</h:outputText>
+						</p:column>
 
 
 						<!-- 						<p:column width="10%" headerText="Tipo Pago" -->
@@ -127,7 +135,7 @@
 							<h:outputText style="font-size: 12px;"
 								value="#{var.cajaSesion.caja.nombre}" />
 						</p:column>
-						<p:column width="5%" headerText="Action" exportable="false">
+						<p:column width="5%" headerText="" exportable="false">
 							<p:commandLink id="editLink" title="Imprimir"
 								styleClass="ui-icon ui-icon-print">
 								<p:ajax update="form001"

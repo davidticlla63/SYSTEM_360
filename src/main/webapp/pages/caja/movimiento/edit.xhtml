@@ -140,10 +140,18 @@
 							completeMethod="#{cajaMovimientoController.onCompleteConcepto}"
 							forceSelection="true" dropdown="true" placeholder="Concepto">
 							<p:ajax event="itemSelect"
-								listener="#{cajaMovimientoController.onSelectConcepto}" 
-								update="concepto"/>
+								listener="#{cajaMovimientoController.onSelectConcepto}"
+								update="concepto" />
 						</p:autoComplete>
 						<p:message for="concepto" display="tooltip" />
+
+
+						<p:outputLabel for="operacion" value="Nro Operacion : " />
+						<p:inputText id="operacion"
+							value="#{cajaMovimientoController.cajaMovimiento.ducumento}">
+							<p:ajax update="entregue" />
+						</p:inputText>
+						<p:message for="operacion" display="tooltip" />
 					</p:panelGrid>
 				</div>
 				<div class="col-md-6">
@@ -152,6 +160,18 @@
 						columnClasses="column1,column2,column3"
 						style="border:0px none; background-color:transparent; width: 100%;"
 						layout="grid" styleClass="ui-panelgrid-blank">
+						
+						<p:outputLabel for="montosus" value="Monto $us" />
+						<p:inputText id="montosus"
+							value="#{cajaMovimientoController.cajaMovimiento.montoExtranjero}"
+							required="true" style="align:right;" rendered="true">
+							<f:convertNumber type="number" groupingUsed="true"
+								minFractionDigits="2" pattern="#0.00" />
+							<p:ajax event="change" update="montosus,monto"
+								listener="#{cajaMovimientoController.actualizarNacional}" />
+						</p:inputText>
+						<p:message for="montosus" display="tooltip" />
+
 
 						<p:outputLabel for="monto" value="Monto " />
 						<p:inputText id="monto"
@@ -164,16 +184,7 @@
 						</p:inputText>
 						<p:message for="monto" display="tooltip" />
 
-						<p:outputLabel for="montosus" value="Monto $us" />
-						<p:inputText id="montosus"
-							value="#{cajaMovimientoController.cajaMovimiento.montoExtranjero}"
-							required="true" style="align:right;" rendered="true">
-							<f:convertNumber type="number" groupingUsed="true"
-								minFractionDigits="2" pattern="#0.00" />
-							<p:ajax event="change" update="montosus,monto"
-								listener="#{cajaMovimientoController.actualizarNacional}" />
-						</p:inputText>
-						<p:message for="montosus" display="tooltip" />
+
 
 
 					</p:panelGrid>
