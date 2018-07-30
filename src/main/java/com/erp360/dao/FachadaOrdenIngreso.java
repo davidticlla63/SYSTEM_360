@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import com.erp360.model.Almacen;
 import com.erp360.model.AlmacenProducto;
-import com.erp360.model.DetalleProducto;
 import com.erp360.model.Gestion;
 import com.erp360.model.Producto;
 import com.erp360.model.Proveedor;
@@ -23,7 +22,7 @@ public class FachadaOrdenIngreso implements Serializable{
 	private static final long serialVersionUID = 4222532906084076924L;
 
 	private @Inject AlmacenProductoDao almacenProductoDao;
-	private @Inject DetalleProductoDao detalleProductoDao;
+	//private @Inject DetalleProductoDao detalleProductoDao;
 
 	public void actualizarStockExistente(Gestion gestionSesion,Almacen almacen,Producto prod ,double newStock)  {
 		try{
@@ -88,6 +87,7 @@ public class FachadaOrdenIngreso implements Serializable{
 	 */
 	public void cargarDetalleProducto(Gestion gestion,Date fechaActual,Almacen almacen,Producto producto,double cantidad, double precio, Date fecha, String correlativoTransaccion,String usuarioSession ) {
 		try{
+			/*
 			DetalleProducto detalleProducto = new DetalleProducto();
 			detalleProducto.setCodigo("OI"+correlativoTransaccion+fecha.toString());
 			detalleProducto.setAlmacen(almacen);
@@ -102,6 +102,7 @@ public class FachadaOrdenIngreso implements Serializable{
 			detalleProducto.setUsuarioRegistro(usuarioSession);
 			detalleProducto.setGestion(gestion);
 			detalleProductoDao.registrar(detalleProducto);
+			*/
 		}catch(Exception e){
 			System.out.println("ERROR cargarDetalleProducto() "+e.getMessage());
 		}

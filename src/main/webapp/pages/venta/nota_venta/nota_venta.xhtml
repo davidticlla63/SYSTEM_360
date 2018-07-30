@@ -284,6 +284,10 @@
 																		itemLabel="BOLIVIANOS" />
 																</h:selectOneMenu>
 															</div>
+															<div class="col-md-2" style="padding-left: 30px;">Ejecutivo</div>
+															<div class="col-md-4">
+																#{notaVentaController.nombreEjecutivo}
+															</div>
 														</div>
 													</div>
 												</div>
@@ -504,18 +508,22 @@
 
 																		</span>
 																	</p:column>
+																	
+																	<p:column width="10%" headerText="%" style="text-align:center;">
+																		<h:outputText value="#{var.porcentajeDescuento}" /> 
+																	</p:column>
 
 																	<p:column width="10%" headerText="Sub Total"
 																		style="text-align:center;">
 																		<h:outputText
 																			rendered="#{notaVentaController.notaVenta.tipoVenta.equals('CONTADO')}"
-																			value="#{var.precioContadoExtranjero * var.cantidad}">
+																			value="#{(var.precioContadoExtranjero + ((var.precioContadoExtranjero*var.porcentajeDescuento)/100)) * var.cantidad}">
 																			<f:convertNumber type="number" groupingUsed="true"
 																				minFractionDigits="2" pattern="#0.00" />
 																		</h:outputText>
 																		<h:outputText
 																			rendered="#{notaVentaController.notaVenta.tipoVenta.equals('CREDITO')}"
-																			value="#{var.precioExtranjero * var.cantidad}">
+																			value="#{(var.precioExtranjero + ((var.precioExtranjero*var.porcentajeDescuento)/100)) * var.cantidad}">
 																			<f:convertNumber type="number" groupingUsed="true"
 																				minFractionDigits="2" pattern="#0.00" />
 																		</h:outputText>
@@ -662,7 +670,7 @@
 									<div class="panel-body">
 										<p:tabView>
 											<p:tab title="Recibo de Pago"
-												rendered="#{notaVentaController.urlReciboAmortizacion.length()!=0}">
+												rendered="false">
 												<div class="row">
 													<div class="col-md-12">
 														<p:media player="pdf" rendered="true"
@@ -678,22 +686,6 @@
 														<p:media player="pdf" rendered="true"
 															value="#{notaVentaController.urlProformaAlCredito}"
 															width="800px" height="800px" />
-													</div>
-												</div>
-											</p:tab>
-											<p:tab title="Contrato" rendered="#{notaVentaController.urlProformaAlCredito.length()!=0}">
-												<div class="col-md-12" style="padding-left: 30px;">
-													<p:commandButton id="printOrder" style="width:150px; height: 40px !important; background: rgb(230, 230, 230);padding-left: 20px; font-size: 20px; text-align: center; border-radius: 3px !important; border: solid 1px rgb(209, 209, 209); color: #555555 !important;font-family: Arial !important"
-														 value="Imprimir"  onclick="printDiv('PrintOrderId')" immediate="true">
-													 	<i class="fa fa-print" style="position: absolute; z-index: 1; font-size: 20px; padding-left: 1px; padding-top: 10px;"/>
-													</p:commandButton>
-													
-												</div>
-												<div class="col-md-12">
-													<div id="PrintOrderId" >
-														<div style="padding-left: 90px; padding-right: 90px; padding-bottom: 60px; padding-top:60px; background: white;">
-														<h:outputText id="display" value="#{notaVentaController.text}" escape="false" />
-														</div>
 													</div>
 												</div>
 											</p:tab>
@@ -1668,22 +1660,6 @@
 														<p:media player="pdf" rendered="true"
 															value="#{notaVentaController.urlProformaAlCredito}"
 															width="800px" height="800px" />
-													</div>
-												</div>
-											</p:tab>
-											<p:tab title="Contrato" rendered="#{notaVentaController.urlProformaAlCredito.length()!=0}">
-												<div class="col-md-12" style="padding-left: 30px;">
-													<p:commandButton id="printOrder" style="width:150px; height: 40px !important; background: rgb(230, 230, 230);padding-left: 20px; font-size: 20px; text-align: center; border-radius: 3px !important; border: solid 1px rgb(209, 209, 209); color: #555555 !important;font-family: Arial !important"
-														 value="Imprimir"  onclick="printDiv('PrintOrderId2')" immediate="true">
-													 	<i class="fa fa-print" style="position: absolute; z-index: 1; font-size: 20px; padding-left: 1px; padding-top: 10px;"/>
-													</p:commandButton>
-													
-												</div>
-												<div class="col-md-12">
-													<div id="PrintOrderId2" >
-														<div style="padding-left: 30px; padding-right: 30px; padding-bottom: 30px; background: white;">
-														<h:outputText id="display" value="#{notaVentaController.text}" escape="false" />
-														</div>
 													</div>
 												</div>
 											</p:tab>

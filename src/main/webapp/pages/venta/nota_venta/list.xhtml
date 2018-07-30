@@ -130,6 +130,13 @@
 							filterMatchMode="contains">
 							<h:outputText value="#{item.formaPago}" />
 						</p:column>
+						
+						<p:column headerText="Pagó Cuota I." width="8%"
+							style="text-align:center;"
+							filterStyle="width: 100%; height:25px;"
+							filterMatchMode="contains">
+							<h:outputText value="#{item.cuotaIncialPagada?'Si':'No'}" />
+						</p:column>
 
 						<p:column headerText="Tipo" width="8%" style="text-align:center;"
 							filterStyle="width: 100%; height:25px;"

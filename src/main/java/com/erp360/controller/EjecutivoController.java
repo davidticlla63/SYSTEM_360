@@ -93,6 +93,7 @@ public class EjecutivoController implements Serializable {
 		newEncargadoVenta.setEmpresa(sessionMain.getEmpresaLogin());
 		Ejecutivo c = encargadoVentaDao.registrar(newEncargadoVenta);
 		for(EjecutivoCliente ejecutivoCliente : ejecutivoClientes){
+			ejecutivoCliente.setId(0);
 			ejecutivoCliente.setEjecutivo(c);
 			ejecutivoCliente.setFechaRegistro(c.getFechaRegistro());
 			ejecutivoClienteDao.registrar(ejecutivoCliente);
@@ -205,6 +206,7 @@ public class EjecutivoController implements Serializable {
 		if(selectedCliente == null){
 			//msg
 		}
+		ejecutivoCliente.setId((ejecutivoClientes.size()+1)*-1);
 		ejecutivoCliente.setCliente(selectedCliente);
 		ejecutivoCliente.setEjecutivo(newEncargadoVenta);
 		ejecutivoCliente.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());

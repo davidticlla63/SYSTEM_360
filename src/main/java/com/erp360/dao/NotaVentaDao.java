@@ -325,6 +325,150 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 	 * @param param2
 	 * @return
 	 */
+	public NotaVenta registrarSinCuotaInicial(String observacion,Usuario usuario,NotaVenta notaVenta,List<DetalleNotaVenta> listDetalleNotaVenta,List<PlanCobranza> listPlanCobranza,Gestion gestionSesion,ParametroInventario param,ParametroCobranza param2,ParametroVenta param3){
+		double totalPlanPagoNacional = notaVenta.getMontoTotal() - notaVenta.getCuotaInicial();
+		double totalPlanPagoExtranjero = notaVenta.getMontoTotalExtranjero() - notaVenta.getCuotaInicialExtranjero();
+		try{
+			beginTransaction();
+			notaVenta = create(notaVenta);
+			
+			double cant = 0;
+			for(DetalleNotaVenta dnv:listDetalleNotaVenta){
+				dnv.setId(0);
+				dnv.setEstado("AC");
+				dnv.setFechaRegistro(notaVenta.getFechaRegistro());
+				dnv.setNotaVenta(notaVenta);
+				dnv.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+				createE(dnv);
+				cant = cant + dnv.getCantidad();
+			}
+			//verificar si se va a registrar el plan de cobranzas(cuando es una reserva o una cotizacion, pero con un estado inactivo)
+			for(PlanCobranza pc: listPlanCobranza){
+				pc.setId(0);
+				pc.setEstado("AC");
+				//if(notaVenta.getEstadoPago().equals("CO") ){
+				//	pc.setEstado("PN");
+				//}
+				pc.setFechaRegistro(notaVenta.getFechaRegistro());
+				pc.setNotaVenta(notaVenta);
+				pc.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+				createR(pc);
+			}
+			//solo deberia registrar si la venta es diferente a RE=RESERVA
+			if(!notaVenta.getEstadoPago().equals("CO")){
+				//-----Verificar el Tipo Disminucion de stock
+				if(param2.getTipoDisminucionStock().equals("VOS") ){
+					//GENERA VARIAS ORDEN DE SALIDA
+					List<OrdenSalida> lsitOrdenSalida = new ArrayList<>();
+					List<DetalleOrdenSalida> listDetalleOrdenSalida = new ArrayList<>();
+					for(DetalleNotaVenta detalleNotaVenta : listDetalleNotaVenta){
+						AlmacenProducto almacenProducto = productoTieneStock(detalleNotaVenta.getProducto(),param,param3.getAlmacenVenta());
+						if(almacenProducto==null){
+							FacesUtil.infoMessage("Validación de Stock", "El producto "+detalleNotaVenta.getProducto().getNombre()+" NO tiene existencia, y no se puede proceder a hacer la venta.");
+							rollbackTransaction();
+							return null;
+						}else if(almacenProducto.getStock()<detalleNotaVenta.getCantidad()){
+							FacesUtil.infoMessage("Validación de Stock", "El producto "+detalleNotaVenta.getProducto().getNombre()+" SOLO tiene "+detalleNotaVenta.getCantidad()+" existencia(s).");
+							rollbackTransaction();
+							return null;
+						}
+						OrdenSalida ordenSalida = obtenerOrdenSalidadPorAlmacen(lsitOrdenSalida,almacenProducto.getAlmacen());
+						ordenSalida.setAlmacen(almacenProducto.getAlmacen());
+						ordenSalida.setEstado("AC");
+						ordenSalida.setGestion(gestionSesion);
+						ordenSalida.setObservacion("ninguna");
+						ordenSalida.setMotivoSalida("Salida por Venta Nº "+notaVenta.getCodigo());
+						ordenSalida.setTotalImporte(ordenSalida.getTotalImporte()+(detalleNotaVenta.getCantidad()*detalleNotaVenta.getPrecio()));
+						ordenSalida.setTotalImporteExtranjero(ordenSalida.getTotalImporteExtranjero()+(detalleNotaVenta.getCantidad()*detalleNotaVenta.getPrecioExtranjero()));
+						ordenSalida.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+						ordenSalida.setFechaRegistro(notaVenta.getFechaRegistro());
+						ordenSalida.setFechaPedido(notaVenta.getFechaRegistro());
+						ordenSalida.setFechaAprobacion(notaVenta.getFechaRegistro());
+						ordenSalida.setNotaVenta(notaVenta);
+						if(! agregarOrdenSalidaALista(lsitOrdenSalida,ordenSalida)){
+							int numeroCorrelativo = ordenSalidaDao.obtenerNumeroOrdenSalida(gestionSesion);
+							ordenSalida.setCorrelativo(String.format("%06d", numeroCorrelativo));;
+							ordenSalida = createS(ordenSalida);
+							lsitOrdenSalida.add(ordenSalida);
+						}else{
+							updateS(ordenSalida);
+						}
+					}
+					for(DetalleNotaVenta detalleNotaVenta : listDetalleNotaVenta){
+						//verificar y agrupar productos por almacen -> metodo que recupera la orden de servicio de acuerdo al almacen
+						//luego se debe saber a cual orden de salida debe ser asigndaa el detalle de la orden de salida
+						AlmacenProducto almacenProducto = productoTieneStock(detalleNotaVenta.getProducto(),param,param3.getAlmacenVenta());
+						OrdenSalida ordenSalida = obtenerOrdenSalidadPorAlmacen(lsitOrdenSalida,almacenProducto.getAlmacen());
+						DetalleOrdenSalida detalleOrdenSalida = new DetalleOrdenSalida();
+						detalleOrdenSalida.setCantidadEntregada(detalleNotaVenta.getCantidad());
+						detalleOrdenSalida.setCantidadSolicitada(detalleNotaVenta.getCantidad());
+						detalleOrdenSalida.setEstado("AC");
+						detalleOrdenSalida.setObservacion("Ninguna");
+						detalleOrdenSalida.setOrdenSalida(ordenSalida);
+						detalleOrdenSalida.setPrecioUnitario(detalleNotaVenta.getPrecio());
+						detalleOrdenSalida.setProducto(detalleNotaVenta.getProducto());
+						detalleOrdenSalida.setTotal(detalleNotaVenta.getPrecio()*detalleNotaVenta.getCantidad());
+						detalleOrdenSalida.setFechaRegistro(notaVenta.getFechaRegistro());
+						detalleOrdenSalida.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+						createE(detalleNotaVenta);
+						listDetalleOrdenSalida.add(detalleOrdenSalida);
+						//actualizar stock AlmacenProducto
+						almacenProducto.setStock(almacenProducto.getStock()-detalleNotaVenta.getCantidad());
+						updateP(almacenProducto);
+						//kardex
+						KardexProducto kardex = new KardexProducto();
+						kardex.setEstado("AC");
+						kardex.setFechaRegistro(notaVenta.getFechaRegistro());
+						kardex.setOrdenSalida(ordenSalida);
+						kardex.setStockSaliente(detalleNotaVenta.getCantidad());
+						kardex.setTipoMovimiento("OS");//orden de ingreso
+						kardex.setTipoTransaccion("SALIDA X VENTA- Nº NOTA VENTA "+notaVenta.getCodigo());
+						kardex.setPrecioSalida(detalleNotaVenta.getPrecio());
+						kardex.setStockSaliente(detalleNotaVenta.getCantidad());
+						kardex.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+						kardex.setAlmacen(almacenProducto.getAlmacen());
+						kardex.setProducto(almacenProducto.getProducto());
+						createQ(kardex);
+					}
+				}else if(param2.getTipoDisminucionStock().equals("OT")){
+					//GENERAR ORDEN DE TRASPASO A UN SOLO ALMACEN 
+					//LUEGO GENERAR UNA SOLA ORDEN DE SALIDA 4321`qwer1
+					//				for(DetalleNotaVenta detalleNotaVenta : listDetalleNotaVenta){
+					//
+					//				}
+				}
+			}
+			//----
+			commitTransaction();
+			if(!notaVenta.getEstadoPago().equals("CO")){
+				FacesUtil.infoMessage("Registro Correcto", "NotaVenta "+notaVenta.getCodigo());
+			}else{
+				FacesUtil.infoMessage("Registro Correcto", "Cotización "+notaVenta.getCodigo());	
+			}
+			return notaVenta;
+		}catch(Exception e){
+			String cause=e.getMessage();
+			System.out.println("error: "+cause);
+			if (cause.contains("org.hibernate.exception.ConstraintViolationException: could not execute statement")) {
+				FacesUtil.errorMessage("Ya existe un registro igual.");
+			}else{
+				FacesUtil.errorMessage("Error al modificar");
+			}
+			rollbackTransaction();
+			return null;
+		}
+	}
+	
+	/**
+	 * Registrar Nota Venta, implica la disminucion de stock de los productos a traves de orden de salida
+	 * @param notaVenta
+	 * @param listDetalleNotaVenta
+	 * @param listPlanCobranza
+	 * @param gestionSesion
+	 * @param param
+	 * @param param2
+	 * @return
+	 */
 	public NotaVenta registrar(String observacion,Usuario usuario,NotaVenta notaVenta,List<DetalleNotaVenta> listDetalleNotaVenta,List<PlanCobranza> listPlanCobranza,Gestion gestionSesion,ParametroInventario param,ParametroCobranza param2,ParametroVenta param3){
 		double totalPlanPagoNacional = notaVenta.getMontoTotal() - notaVenta.getCuotaInicial();
 		double totalPlanPagoExtranjero = notaVenta.getMontoTotalExtranjero() - notaVenta.getCuotaInicialExtranjero();

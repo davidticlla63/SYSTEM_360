@@ -23,7 +23,6 @@ import org.richfaces.cdi.push.Push;
 import com.erp360.dao.AlmacenDao;
 import com.erp360.dao.AlmacenProductoDao;
 import com.erp360.dao.DetalleOrdenIngresoDao;
-import com.erp360.dao.DetalleProductoDao;
 import com.erp360.dao.OrdenIngresoDao;
 import com.erp360.dao.ProductoDao;
 import com.erp360.dao.ProveedorDao;
@@ -32,7 +31,6 @@ import com.erp360.dao.UsuarioDao;
 import com.erp360.model.Almacen;
 import com.erp360.model.AlmacenProducto;
 import com.erp360.model.DetalleOrdenIngreso;
-import com.erp360.model.DetalleProducto;
 import com.erp360.model.Empresa;
 import com.erp360.model.Gestion;
 import com.erp360.model.OrdenIngreso;
@@ -74,7 +72,7 @@ public class OrdenIngresoController implements Serializable {
 	private @Inject DetalleOrdenIngresoDao detalleOrdenIngresoDao;
 	private @Inject UnidadMedidaDao unidadMedidaDao;
 	private @Inject AlmacenProductoDao almacenProductoDao;
-	private @Inject DetalleProductoDao detalleProductoDao;
+	//private @Inject DetalleProductoDao detalleProductoDao;
 
 	//STATE
 	private boolean crear ;
@@ -303,11 +301,11 @@ public class OrdenIngresoController implements Serializable {
 			}
 
 			//actualizar detalle_producto
-			List<DetalleProducto> listDetProd = detalleProductoDao.findByAlmacenProductoAndFecha(ges, alm, prod, fech);
-			for(DetalleProducto detProd: listDetProd){
-				detProd.setEstado("RM");
+			//List<DetalleProducto> listDetProd = detalleProductoDao.findByAlmacenProductoAndFecha(ges, alm, prod, fech);
+			//for(DetalleProducto detProd: listDetProd){
+			//	detProd.setEstado("RM");
 				//detalleProductoRegistration.updated(detProd);
-			}
+			//}
 		}catch(Exception e){
 			System.out.println("actualizarAlmacenProductoAndDetalleProducto Error: "+e.getMessage());
 		}

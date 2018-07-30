@@ -87,6 +87,9 @@ public class NotaVenta implements Serializable {
 	
 	@Column(name="fecha_pago_inicial", nullable=true )
 	private Date fechaPagoInicial;
+	
+	@Column(name="cuota_incial_pagada", nullable=true )
+	private boolean cuotaIncialPagada;;
 
 	@ManyToOne(fetch=FetchType.LAZY, optional=false)
 	@JoinColumn(name="id_cliente", nullable=false, referencedColumnName ="id")
@@ -455,6 +458,14 @@ public class NotaVenta implements Serializable {
 
 	public void setFechaVenta(Date fechaVenta) {
 		this.fechaVenta = fechaVenta;
+	}
+
+	public boolean isCuotaIncialPagada() {
+		return cuotaIncialPagada;
+	}
+
+	public void setCuotaIncialPagada(boolean cuotaIncialPagada) {
+		this.cuotaIncialPagada = cuotaIncialPagada;
 	}
 
 }

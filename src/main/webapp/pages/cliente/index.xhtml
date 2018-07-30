@@ -127,16 +127,16 @@
 												<div class="form-group ">
 													<div class="col-md-4">Tipo Cliente</div>
 													<div class="col-md-8">
-														<p:autoComplete id="concepto" required="true"
+														<p:autoComplete id="TipoCliente" required="true"
 															value="#{clienteController.newCliente.tipoCliente}"
 															var="theme" converter="tipoClienteConverter"
 															itemLabel="#{theme.nombre}" itemValue="#{theme}"
 															completeMethod="#{clienteController.onCompleteTipoCliente}"
 															forceSelection="true" dropdown="true"
-															placeholder="Concepto">
+															placeholder="TipoCliente">
 															<p:ajax event="itemSelect"
 																listener="#{clienteController.onSelectTipoCliente}"
-																update="concepto" />
+																update="TipoCliente" />
 														</p:autoComplete>
 													</div>
 												</div>
@@ -246,6 +246,7 @@
 								</div>
 							</div>
 							<div class="col-md-8">
+							<ui:fragment rendered="false">
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<h3 class="panel-title">Detalle Cliente</h3>
@@ -875,6 +876,7 @@
 										</p:tabView>
 									</div>
 								</div>
+								</ui:fragment>
 							</div>
 						</ui:fragment>
 					</div>

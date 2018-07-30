@@ -33,7 +33,6 @@ import com.erp360.dao.PlanCobranzaDao;
 import com.erp360.dao.ProductoDao;
 import com.erp360.model.AlmacenProducto;
 import com.erp360.model.Cliente;
-import com.erp360.model.ClienteAdicional;
 import com.erp360.model.DetalleNotaVenta;
 import com.erp360.model.Ejecutivo;
 import com.erp360.model.EjecutivoCliente;
@@ -51,7 +50,6 @@ import com.erp360.util.DateUtility;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.NumberUtil;
 import com.erp360.util.SessionMain;
-import com.erp360.util.Time;
 
 /**
  * 
@@ -142,7 +140,7 @@ public class NotaVentaController implements Serializable {
 	private Ejecutivo  ejecutivo;
 	private Gestion gestionSesion;
 	
-	private String text;
+	//private String text;
 
 	@PostConstruct
 	public void init() {
@@ -231,12 +229,12 @@ public class NotaVentaController implements Serializable {
 				totalPlanPagoNacional = notaVenta.getMontoTotal() - notaVenta.getCuotaInicial();
 			}
 			reloadPlanPago();
-			cargarReporteContrato();
+			//cargarReporteContrato();
 			if(notaVenta.getEstadoPago().equals("CO")){
 				pendingQuotation = true;
 			}
 		}
-		text = selectedParametroVenta.getContrato();
+		//text = selectedParametroVenta.getContrato();
 	}
 
 	private boolean enableButtonPlanPago;
@@ -423,7 +421,8 @@ public class NotaVentaController implements Serializable {
 	private double loadBackTotalAmountCashNational() {
 		double backTotalAmount = 0;
 		for(DetalleNotaVenta dnv : listDetalleNotaVenta){
-			backTotalAmount = backTotalAmount + (dnv.getCantidad() * dnv.getPrecioContadoNacional());
+			double subTotal = (dnv.getPrecioContadoNacional() + ((dnv.getPrecioContadoNacional()*dnv.getPorcentajeDescuento())/100));
+			backTotalAmount = backTotalAmount + (dnv.getCantidad() * subTotal);
 		}
 		return backTotalAmount;
 	}
@@ -431,7 +430,8 @@ public class NotaVentaController implements Serializable {
 	private double loadBackTotalAmountCreditForeign() {
 		double backTotalAmount = 0;
 		for(DetalleNotaVenta dnv : listDetalleNotaVenta){
-			backTotalAmount = backTotalAmount + (dnv.getCantidad() * dnv.getPrecioExtranjero());
+			double subTotal = (dnv.getPrecioExtranjero() + ((dnv.getPrecioExtranjero()*dnv.getPorcentajeDescuento())/100));
+			backTotalAmount = backTotalAmount + (dnv.getCantidad() * subTotal);
 		}
 		return backTotalAmount;
 	}
@@ -562,7 +562,8 @@ public class NotaVentaController implements Serializable {
 		if(notaVenta.getEstadoPago().equals("CO")){
 			registrarNotaVenta();
 		}else{
-			loadModalPago();
+			//loadModalPago();
+			registrarNotaVenta();
 		}
 	}
 
@@ -656,20 +657,22 @@ public class NotaVentaController implements Serializable {
 		notaVenta.setGestion(gestionSesion);
 		notaVenta.setCliente(selectedCliente);
 		notaVenta.setEmpresa(empresaSession);
+		notaVenta.setCuotaIncialPagada(Boolean.FALSE);
 		notaVenta.setFechaRegistro(new Date());
 		notaVenta.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
 		notaVenta.setEjecutivo(ejecutivo);
-		NotaVenta nv = notaVentaDao.registrar(observacion,sessionMain.getUsuarioLogin(),notaVenta,listDetalleNotaVenta,listPlanPago,gestionSesion,selectedParametroInventario,selectedParametroCobranza ,selectedParametroVenta);
+		NotaVenta nv = notaVentaDao.registrarSinCuotaInicial(observacion,sessionMain.getUsuarioLogin(),notaVenta,listDetalleNotaVenta,listPlanPago,gestionSesion,selectedParametroInventario,selectedParametroCobranza ,selectedParametroVenta);
 		if(nv != null){
 			//CajaMovimiento c=cajaMovimientoDao.registrar(cajaServicio.IngresoPorVenta(notaVenta));
 			cargarReporteAmortizacion();
-			cargarReporteContrato();
+			//cargarReporteContrato();
 			closeModalPlanPago();
 			closeModalPago();
 			FacesUtil.updateComponent("form001");
 		}
 	}
 	
+	/*
 	private void cargarReporteContrato() {
 		if(notaVenta.getTipoVenta().equals("CREDITO")){
 			if(! notaVenta.getEstadoPago().equals("CO")){
@@ -752,6 +755,7 @@ public class NotaVentaController implements Serializable {
 		}
 		text = text.replace("{CUOTAS}", data);//CODIGO_PROD
 	}
+	*/
 
 	public void updateNotaVenta(){
 		if(notaVenta.getTipoVenta().equals("CONTADO")){
@@ -828,6 +832,10 @@ public class NotaVentaController implements Serializable {
 				FacesUtil.infoMessage("VALIDACION", "Revisar el precio.");
 				return;
 			}
+			if (selectedCliente == null ) {
+				FacesUtil.infoMessage("VALIDACION", "Seleccione un Cliente");
+				return;
+			}
 			// verifica si tiene stock
 			if(! notaVenta.getEstadoPago().equals("CO")){
 				AlmacenProducto almProd = almacenProductoDao.findByProductoConStockPromedio(sessionMain.getGestionLogin(), selectedProducto,selectedParametroVenta.getAlmacenVenta());//selectedProducto.getAlmacenProductos().get(0);
@@ -840,6 +848,8 @@ public class NotaVentaController implements Serializable {
 				}
 			}
 			DetalleNotaVenta detalle = obtenerDetalleNotaVentaSiExisteProducto();
+			double porcentajeDescuento = selectedCliente.getTipoCliente().getPorcentaje();
+			porcentajeDescuento = selectedCliente.getTipoCliente().getTipoDescuento().equals("DESC")?(porcentajeDescuento*(-1)):porcentajeDescuento;
 			if(detalle != null){
 				if(notaVenta.getTipoVenta().equals("CREDITO")){
 					detalle.setCantidad(detalle.getCantidad()+1);
@@ -853,6 +863,7 @@ public class NotaVentaController implements Serializable {
 			}else{
 				selectedDetalleNotaVenta.setId(listDetalleNotaVenta.size() * (-1));//asignacion de id's temp
 				selectedDetalleNotaVenta.setProducto(selectedProducto);
+				selectedDetalleNotaVenta.setPorcentajeDescuento(porcentajeDescuento);
 				listDetalleNotaVenta.add(selectedDetalleNotaVenta);
 			}
 			loadPayPLan();
@@ -963,6 +974,10 @@ public class NotaVentaController implements Serializable {
 		}else{
 			ejecutivo = ejecutivoCliente.getEjecutivo();
 		}
+	}
+	
+	public String getNombreEjecutivo(){
+		return ejecutivo == null? "":ejecutivo.getNombres();
 	}
 
 	// ONCOMPLETETEXT Cliente
@@ -1424,13 +1439,13 @@ public class NotaVentaController implements Serializable {
 		this.pendingQuotation = pendingQuotation;
 	}
 
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
+//	public String getText() {
+//		return text;
+//	}
+//
+//	public void setText(String text) {
+//		this.text = text;
+//	}
 
 	public double getMontoInteresNacional() {
 		return montoInteresNacional;

@@ -257,7 +257,7 @@
 					</li>
 					</ui:fragment>
 					<li
-						class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' : (view.viewId.equals('/pages/cliente/tipo_cliente.xhtml')) ? 'active' : (view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}">
+						class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' : (view.viewId.equals('/pages/cliente/tipo_cliente.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}">
 						<a href="#"><i class="fa fa-users"></i><span
 							class="sidebar-text">Cliente</span></a>
 						<ul class="nav nav-second-level">
@@ -340,14 +340,6 @@
 										<i class="icon-globe"></i><span class="sidebar-text">Cuentas
 											Por Cobrar</span>
 								</a></li>
-								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('PARAMETRIZACION COBRANZA')}">
-									<li
-										class="#{(view.viewId.equals('/pages/cobranza/parametros.xhtml')) ? 'active' :'inactive'}"><a
-										href="#{request.contextPath}/pages/cobranza/parametros.xhtml">
-											<i class="icon-globe"></i><span class="sidebar-text">Parámetros</span>
-									</a></li>
-								</ui:fragment>
 							</ul>
 						</li>
 					</ui:fragment>
@@ -511,15 +503,6 @@
 												href="#{request.contextPath}/pages/inventario/unidad_medida.xhtml">
 													<i class="icon-social-dropbox"></i><span
 													class="sidebar-text">Unidad Medida</span>
-											</a></li>
-										</ui:fragment>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('PARAMETROS INVENTARIO')}">
-											<li
-												class="#{(view.viewId.equals('/pages/inventario/parametros.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/inventario/parametros.xhtml">
-													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Parámetros</span>
 											</a></li>
 										</ui:fragment>
 									</ul></li>

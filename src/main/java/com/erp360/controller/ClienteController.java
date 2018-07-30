@@ -55,7 +55,7 @@ public class ClienteController implements Serializable {
 	//DAO
 	private @Inject SessionMain sessionMain; //variable del login
 	private @Inject ClienteDao clienteDao;
-	private @Inject ClienteAdicionalDao clienteAdicionalDao;
+	//private @Inject ClienteAdicionalDao clienteAdicionalDao;
 	private @Inject ITipoClienteDao tipoClienteDao;
 
 	//estados
@@ -70,7 +70,7 @@ public class ClienteController implements Serializable {
 	//OBJECT
 	private Cliente newCliente;
 	private Cliente selectedCliente;
-	private ClienteAdicional newClienteAdicional;
+	//private ClienteAdicional newClienteAdicional;
 	private UploadedFile uploadedFile;
 
 	//LISTAS
@@ -97,7 +97,7 @@ public class ClienteController implements Serializable {
 		listAdjunto = new ArrayList<>();
 		listAdjuntoImagenes = new ArrayList<>();
 		listAdjuntoImagenes.add("casa.jpg");
-		newClienteAdicional = new ClienteAdicional();
+		//newClienteAdicional = new ClienteAdicional();
 		emptyModel = new DefaultMapModel();
 
 		crear = true;
@@ -122,17 +122,17 @@ public class ClienteController implements Serializable {
 	}
 
 	public void registrar(){
-		byte[] image = (byte[]) FacesUtil.getSessionAttribute("imagen");
+		//byte[] image = (byte[]) FacesUtil.getSessionAttribute("imagen");
 		byte[] imageCliente = (byte[]) FacesUtil.getSessionAttribute("imagenCliente");
-		if(image!=null){
-			newClienteAdicional.setFoto(image);
-			newClienteAdicional.setPesoFoto(image.length);
-		}
+		//if(image!=null){
+		//	newClienteAdicional.setFoto(image);
+		//	newClienteAdicional.setPesoFoto(image.length);
+		//}
 		String estado = nombreEstado.equals("ACTIVO")?"AC":"IN";
 		Date fechaActual = new  Date();
-		newClienteAdicional.setEstado("AC");
-		newClienteAdicional.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
-		newClienteAdicional.setFechaRegistro(fechaActual);
+		//newClienteAdicional.setEstado("AC");
+		//newClienteAdicional.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
+		//newClienteAdicional.setFechaRegistro(fechaActual);
 		if(imageCliente!=null){
 			newCliente.setFoto(imageCliente);
 			newCliente.setPesoFoto(imageCliente.length);
@@ -141,7 +141,7 @@ public class ClienteController implements Serializable {
 		newCliente.setFechaRegistro(fechaActual);
 		newCliente.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
 		newCliente.setEmpresa(sessionMain.getEmpresaLogin());
-		Cliente c = clienteDao.registrar(newCliente,newClienteAdicional);
+		Cliente c = clienteDao.registrar(newCliente,null);
 		if(c!=null){
 			loadDefault();
 		}
@@ -154,32 +154,32 @@ public class ClienteController implements Serializable {
 	///------
 
 	public void modificar(){
-		byte[] image = (byte[]) FacesUtil.getSessionAttribute("imagen");
+		//byte[] image = (byte[]) FacesUtil.getSessionAttribute("imagen");
 		byte[] imageCliente = (byte[]) FacesUtil.getSessionAttribute("imagenCliente");
-		if(image!=null){
-			newClienteAdicional.setFoto(image);
-			newClienteAdicional.setPesoFoto(image.length);
-		}
+		//if(image!=null){
+		//	newClienteAdicional.setFoto(image);
+		//	newClienteAdicional.setPesoFoto(image.length);
+		//}
 		String estado = nombreEstado.equals("ACTIVO")?"AC":"IN";
 		Date fechaActual = new  Date();
 		if(imageCliente!=null){
 			newCliente.setFoto(imageCliente);
 			newCliente.setPesoFoto(imageCliente.length);
 		}
-		newClienteAdicional.setEstado("AC");
-		newClienteAdicional.setFechaModificacion(fechaActual);
+		//newClienteAdicional.setEstado("AC");
+		//newClienteAdicional.setFechaModificacion(fechaActual);
 		
 		newCliente.setEstado(estado);
 		newCliente.setFechaRegistro(fechaActual);
 		newCliente.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
-		boolean sw = clienteDao.modificar(newCliente,newClienteAdicional);
+		boolean sw = clienteDao.modificar(newCliente,null);
 		if(sw){
 			loadDefault();
 		}
 	}
 
 	public void eliminar(){
-		boolean sw = clienteDao.eliminar(newCliente,newClienteAdicional);
+		boolean sw = clienteDao.eliminar(newCliente,null);
 		if(sw){
 			loadDefault();
 		}
@@ -205,14 +205,14 @@ public class ClienteController implements Serializable {
 		if(newCliente.getPesoFoto()>0){
 			FacesUtil.setSessionAttribute("imagenCliente", newCliente.getFoto());
 		}
-		newClienteAdicional = clienteAdicionalDao.obtenerPorCLiente(newCliente);
-		if(newClienteAdicional!=null){
-			LatLng coord1 = new LatLng(newClienteAdicional.getUbicacionLatitud(), newClienteAdicional.getUbicacionLongitud());
-			emptyModel.addOverlay(new Marker(coord1, newClienteAdicional.getUbicacionTitulo()));
-			if(newClienteAdicional.getPesoFoto()>0){
-				FacesUtil.setSessionAttribute("imagen", newClienteAdicional.getFoto());
-			}
-		}
+		//newClienteAdicional = clienteAdicionalDao.obtenerPorCLiente(newCliente);
+		//if(newClienteAdicional!=null){
+		//	LatLng coord1 = new LatLng(newClienteAdicional.getUbicacionLatitud(), newClienteAdicional.getUbicacionLongitud());
+		//	emptyModel.addOverlay(new Marker(coord1, newClienteAdicional.getUbicacionTitulo()));
+		//	if(newClienteAdicional.getPesoFoto()>0){
+		//		FacesUtil.setSessionAttribute("imagen", newClienteAdicional.getFoto());
+		//	}
+		//}
 		nombreEstado = newCliente.getEstado().equals("AC")?"ACTIVO":"INACTIVO";
 		crear = false;
 		registrar = false;
@@ -222,10 +222,10 @@ public class ClienteController implements Serializable {
 	//MAP MARKER
 
 	public void addMarker() {
-		emptyModel = new DefaultMapModel();
-		marker = new Marker(new LatLng(newClienteAdicional.getUbicacionLatitud(), newClienteAdicional.getUbicacionLongitud()), newClienteAdicional.getUbicacionTitulo());
-		emptyModel.addOverlay(marker);
-		FacesUtil.infoMessage("Ubicacion Agregada Correctamente", newClienteAdicional.getUbicacionTitulo());
+		//emptyModel = new DefaultMapModel();
+		//marker = new Marker(new LatLng(newClienteAdicional.getUbicacionLatitud(), newClienteAdicional.getUbicacionLongitud()), newClienteAdicional.getUbicacionTitulo());
+		//emptyModel.addOverlay(marker);
+		//FacesUtil.infoMessage("Ubicacion Agregada Correctamente", newClienteAdicional.getUbicacionTitulo());
 	}
 
 	public void onMarkerSelect(OverlaySelectEvent event) {
@@ -403,13 +403,13 @@ public class ClienteController implements Serializable {
 		this.selectedCliente = selectedCliente;
 	}
 
-	public ClienteAdicional getNewClienteAdicional() {
-		return newClienteAdicional;
-	}
-
-	public void setNewClienteAdicional(ClienteAdicional newClienteAdicional) {
-		this.newClienteAdicional = newClienteAdicional;
-	}
+//	public ClienteAdicional getNewClienteAdicional() {
+//		return newClienteAdicional;
+//	}
+//
+//	public void setNewClienteAdicional(ClienteAdicional newClienteAdicional) {
+//		this.newClienteAdicional = newClienteAdicional;
+//	}
 
 	public MapModel getEmptyModel() {
 		return emptyModel;

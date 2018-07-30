@@ -58,27 +58,24 @@ public class AlmacenProducto implements Serializable {
 	@Column(name = "numero_lote",nullable=true)
 	private String numeroLote;
 
-	//bi-directional many-to-one association to Almacen
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_almacen", nullable=false, referencedColumnName="id")
-	@ManyToOne(fetch=FetchType.EAGER, optional=false)
 	private Almacen almacen;
 
-	//bi-directional many-to-one association to Producto
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_producto", nullable=false, referencedColumnName="id")
-	@ManyToOne(fetch=FetchType.EAGER, optional=false)
 	private Producto producto;
 
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_proveedor", nullable=true)
-	@ManyToOne(fetch=FetchType.EAGER, optional=false)
 	private Proveedor proveedor;
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_gestion", nullable=true)
 	private Gestion gestion;
 
-	// bi-directional many-to-one association to PedidoMov
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "id_orden_ingreso", nullable=false)
+	@JoinColumn(name = "id_orden_ingreso", nullable=true)
 	private OrdenIngreso ordenIngreso;
 	
 	private String estado;
