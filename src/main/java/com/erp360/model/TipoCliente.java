@@ -31,6 +31,10 @@ public class TipoCliente implements Serializable {
 	@Column(name="porcentaje")
 	private Double porcentaje;
 	
+	@Size(max = 1)
+	@Column(name="precio")
+	private String precio;
+	
 	@Size(max = 5) //DESC , ASC
 	@Column(name="tipo_descuento")
 	private String tipoDescuento;
@@ -164,6 +168,14 @@ public class TipoCliente implements Serializable {
 
 	public String getTipoDescuento() {
 		return tipoDescuento;
+	}
+
+	public String getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio(String precio) {
+		this.precio = precio;
 	}
 
 	

@@ -322,6 +322,51 @@ public class CajaAperturaController implements Serializable{
 
 	}
 
+	public void visualizarReporteMovimientos(CajaSesion cajaSesion) {
+		this.cajaSesion = cajaSesion;
+		verReporteMovimientos();
+
+	}
+	
+	public void verReporteMovimientos() {
+		try {
+			setVer(true);
+			registrar = true;
+			System.out.println("Ingreso a verReporteMovimientos");
+			HttpServletRequest request = (HttpServletRequest) facesContext
+					.getCurrentInstance().getExternalContext().getRequest();
+			String urlPath = request.getRequestURL().toString();
+			urlPath = urlPath.substring(0, urlPath.length()
+					- request.getRequestURI().length())
+					+ request.getContextPath() + "/";
+
+			// String URL_SERVLET_LOGO = urlPath + "ServletImageLogo?id="
+			// + sessionMain.getEmpresaLogin().getId() + "&type=EMPRESA";
+
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("ID_CAJA_SESION", cajaSesion.getId());
+			map.put("USUARIO", sessionDao.getUsuarioLogin().getLogin());
+			// map.put("pais",
+			// notaVenta.getSucursal().getCiudad().getPais().getNombre());
+			// map.put("logo", URL_SERVLET_LOGO);
+			map.put("REPORT_LOCALE", new Locale("en", "US"));
+
+			System.out.println(map);
+			String reportPath = urlPath
+					+ "resources/report/caja/movimientos/reportCajaMovimientoCierre.jasper";
+			System.out.println("reportPath : "+reportPath);
+
+			request.getSession().setAttribute("parameter", map);
+			request.getSession().setAttribute("path", reportPath);
+			setUrlReport(urlPath + "ReportPdfServlet");
+			currentPage = "/pages/caja/apertura/report.xhtml";
+			// FacesUtil.updateComponent("formReporte");
+			// FacesUtil.showDialog("dlgrReporte");
+		} catch (Exception e) {
+			System.out.println("Fallo en " + e.toString());
+		}
+
+	}
 	// ACTION
 
 	public void actionCancelar() {
