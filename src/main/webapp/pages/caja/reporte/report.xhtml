@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/templates/template_main.xhtml">
+
+	<ui:define name="head">
+		<title>Reportes Generales</title>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<!--BEGIN CONTENT-->
+		<div class="content">
+			<section class="main-content"
+				style="background-color: #f5f6f6; padding-top: 0px;">
+				<h:form id="form001">
+
+					<!-- BEGIN PANEL BUTTONS -->
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 10px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonCancelar" value="&#160; Atras"
+											styleClass="btn btn-warning ion-minus-circled"
+											rendered="#{ reportGeneralesCajaController.verReporte}"
+											immediate="true" style="height:31px; padding:center">
+											<p:ajax update="form001"
+												listener="#{reportGeneralesCajaController.clearUrl()}" />
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/index"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a href="#{request.contextPath}/pages/report"
+										style="color: #0090FF; font-size: 12px;">Reportes</a></li>
+									<li class="active" style="font-size: 12px;">Reporte
+										Generales</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- END PANEL BUTTONS -->
+
+					<!-- BEGIN PANEL REGISTER -->
+					<ui:fragment
+						rendered="#{!reportGeneralesCajaController.verReporte}">
+						<div class="row" style="padding-top: 10px;">
+							<div class="panel-body box-content no-padding">
+								<div class="col-md-4">
+									<p:outputLabel for="fechaInicio" value="Fecha Inicio" />
+									<p:calendar id="fechaInicio" required="true"
+										requiredMessage="Ingrese la fecha Inicio." locale="es"
+										styleClass="myWid100"
+										value="#{reportGeneralesCajaController.fechaInicio}"
+										pattern="dd-MM-yyyy" mask="true">
+										<p:ajax event="dateSelect" update="form001" />
+										<p:ajax event="change" update="form001" />
+									</p:calendar>
+								</div>
+								<div class="col-md-4">
+									<p:outputLabel for="fechaFin" value="Fecha Fin" />
+									<p:calendar id="fechaFin" required="true"
+										requiredMessage="Ingrese la fecha Fin." locale="es"
+										styleClass="myWid100"
+										value="#{reportGeneralesCajaController.fechaFin}"
+										pattern="dd-MM-yyyy" mask="true">
+										<p:ajax event="change" update="form001" />
+										<p:ajax event="dateSelect" update="form001" />
+									</p:calendar>
+
+								</div>
+								<div class="col-md-4">
+									<p:outputLabel for="cajasID" value="Cajas" />
+									<p:selectOneMenu id="cajasID"
+										value="#{reportGeneralesCajaController.caja.id}"
+										style=" color: #555555; background-image: none;padding: 0 10px;"
+										required="true">
+										<f:selectItems var="item"
+											value="#{reportGeneralesCajaController.cajas}"
+											itemValue="#{item.id}" itemLabel="#{item.nombre}" />
+										<p:ajax event="change" update="form001" />
+									</p:selectOneMenu>
+
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="panel">
+									<div class="panel-heading">
+										<h3 class="panel-title">
+											<strong class="text-uppercase text-primary">REPORTES
+												GENERALES CAJA MOVIMIENTO</strong>
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div class="note note-primary" style="padding-bottom: 1px;">
+											<div class="row">
+												<div class="col-md-1">
+													<div class="form-group">
+														<h:graphicImage name="report-icon.png" library="gfx"
+															width="80" height="80" />
+													</div>
+												</div>
+												<div class="col-md-11">
+													<div class="form-group">
+														<div class="col-md-12">
+															<h4>INFORME DE MOVIMIENTOS</h4>
+														</div>
+														<div class="col-md-12">
+															<p>Generar un informe de todos los productos por
+																linea .</p>
+														</div>
+
+														<div class="col-md-12">
+															<h4>#{' '}</h4>
+														</div>
+
+														<div class="col-md-12">
+															<div class="btn-group-demo">
+																<div class="btn-group">
+																	<p:commandLink id="button1" value="&#160; Ingreso"
+																		styleClass="btn white btn-outlined " immediate="true"
+																		actionListener="#{reportGeneralesCajaController.loadInformeIgreso()}">
+																	</p:commandLink>
+
+																	<p:commandLink id="button2" value="&#160; Egreso"
+																		styleClass="btn white btn-outlined " immediate="true"
+																		actionListener="#{reportGeneralesCajaController.loadInformeEgreso()}">
+																	</p:commandLink>
+																</div>
+															</div>
+														</div>
+
+													</div>
+
+												</div>
+											</div>
+										</div>
+										<div class="note note-primary" style="padding-bottom: 1px;">
+											<div class="row">
+												<div class="col-md-1">
+													<div class="form-group">
+														<h:graphicImage name="report-icon.png" library="gfx"
+															width="80" height="80" />
+													</div>
+												</div>
+												<div class="col-md-11">
+													<div class="form-group">
+														<div class="col-md-12">
+															<h4>INFORME MOVIMIENTOS POR TIPO</h4>
+														</div>
+														<div class="col-md-12">
+															<p>Generar un informe.</p>
+														</div>
+
+														<div class="col-md-12">
+															<h4>#{' '}</h4>
+														</div>
+
+														<div class="col-md-12">
+															<div class="btn-group-demo">
+																<div class="btn-group">
+																	<p:commandLink value="&#160; Ingresos"
+																		styleClass="btn white btn-outlined " immediate="true"
+																		actionListener="#{reportGeneralesCajaController. loadInformePorTipo()}">
+																	</p:commandLink>
+
+																	<p:commandLink value="&#160; Comisiones"
+																		styleClass="btn white btn-outlined " immediate="true"
+																		actionListener="#{reportGeneralesCajaController. loadInformeComisiones()}">
+																	</p:commandLink>
+																	
+																	<p:commandLink value="&#160; Todos"
+																		styleClass="btn white btn-outlined " immediate="true"
+																		actionListener="#{reportGeneralesCajaController. loadInformeTodos()}">
+																	</p:commandLink>
+
+
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</ui:fragment>
+					<ui:fragment
+						rendered="#{  reportGeneralesCajaController.verReporte}">
+						<div class="row" style="padding-top: 10px;">
+							<div class="col-md-12">
+								<div class="panel">
+									<div class="panel-heading">
+										<h3 class="panel-title">
+											<strong class="text-uppercase text-primary">#{reportGeneralesCajaController.tituloReporte}</strong>
+										</h3>
+									</div>
+									<div class="panel-body">
+										<p:media player="pdf" rendered="true"
+											value="#{reportGeneralesCajaController.urlGeneric}"
+											width="800px" height="1125px" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</ui:fragment>
+
+					<!-- END PANEL TABLE -->
+					<p:growl id="msgs1" showDetail="true" />
+				</h:form>
+			</section>
+		</div>
+		<!--END CONTENT-->
+
+
+
+
+	</ui:define>
+
+</ui:composition>
