@@ -464,9 +464,6 @@ public class OrdenIngresoController implements Serializable {
 		List<AlmacenProducto> listAlmacenProducto = new ArrayList<>();
 		Proveedor proveedor = selectedOrdenIngreso.getProveedor();
 		for(DetalleOrdenIngreso d: listDetalleOrdenIngreso){
-			System.out.println("FechaExpiracion: "+d.getFechaExpiracion());
-			System.out.println("NumeroLote: "+d.getNumeroLote());
-			System.out.println("UbicacionFisica: "+d.getUbicacionFisica());
 			Producto prod = d.getProducto();
 			AlmacenProducto almProd = new AlmacenProducto();
 			almProd = new AlmacenProducto();
@@ -489,6 +486,17 @@ public class OrdenIngresoController implements Serializable {
 			almProd.setFechaExpiracion(d.getFechaExpiracion());
 			almProd.setNumeroLote(d.getNumeroLote());
 			almProd.setUbicacionFisica(d.getUbicacionFisica());
+			//precios
+			System.out.println("d.getCantidad(): "+d.getCantidad());
+			System.out.println("d.getPrecio1(): "+d.getPrecio1());
+			System.out.println("d.getPrecio2(): "+d.getPrecio2());
+			almProd.setPrecioAlmacen(d.getPrecioAlmacen());
+			almProd.setPrecio1(d.getPrecio1());
+			almProd.setPrecio2(d.getPrecio2());
+			almProd.setPrecio3(d.getPrecio3());
+			almProd.setPrecio4(d.getPrecio4());
+			almProd.setPrecio5(d.getPrecio5());
+			almProd.setPrecio6(d.getPrecio6());
 			listAlmacenProducto.add(almProd);
 		}
 		boolean sw = ordenIngresaDao.procesar(empresaLogin,"ORDEN INGRESO X "+selectedOrdenIngreso.getMotivoIngreso(),usuarioSession,selectedOrdenIngreso, listAlmacenProducto);
@@ -653,6 +661,14 @@ public class OrdenIngresoController implements Serializable {
 		double cantidad = selectedDetalleOrdenIngreso.getCantidad();
 		selectedDetalleOrdenIngreso.setTotal(precio * cantidad);
 		selectedDetalleOrdenIngreso.setTotalCompra(precioCompra * cantidad);
+		//precios 1,2,3,4,5,6
+		selectedDetalleOrdenIngreso.setPrecioCompra(selectedProducto.getPrecioCompra());
+		selectedDetalleOrdenIngreso.setPrecio1(selectedProducto.getPrecioCompra1());
+		selectedDetalleOrdenIngreso.setPrecio2(selectedProducto.getPrecioCompra2());
+		selectedDetalleOrdenIngreso.setPrecio3(selectedProducto.getPrecioCompra3());
+		selectedDetalleOrdenIngreso.setPrecio4(selectedProducto.getPrecioCompra4());
+		selectedDetalleOrdenIngreso.setPrecio5(selectedProducto.getPrecioCompra5());
+		selectedDetalleOrdenIngreso.setPrecio6(selectedProducto.getPrecioCompra6());
 	}
 
 	public void calcularTotal(){

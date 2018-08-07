@@ -29,11 +29,15 @@ import org.primefaces.model.map.Marker;
 
 import com.erp360.dao.ClienteAdicionalDao;
 import com.erp360.dao.ClienteDao;
+import com.erp360.dao.EjecutivoClienteDao;
+import com.erp360.dao.EjecutivoDao;
 import com.erp360.interfaces.ITipoClienteDao;
 import com.erp360.model.Adjunto;
 import com.erp360.model.Cliente;
 import com.erp360.model.ClienteAdicional;
 import com.erp360.model.Concepto;
+import com.erp360.model.Ejecutivo;
+import com.erp360.model.EjecutivoCliente;
 import com.erp360.model.TipoCliente;
 import com.erp360.model.TipoConcepto;
 import com.erp360.util.EDAdjunto;
@@ -55,8 +59,9 @@ public class ClienteController implements Serializable {
 	//DAO
 	private @Inject SessionMain sessionMain; //variable del login
 	private @Inject ClienteDao clienteDao;
-	//private @Inject ClienteAdicionalDao clienteAdicionalDao;
+	private @Inject EjecutivoClienteDao ejecutivoClienteDao;
 	private @Inject ITipoClienteDao tipoClienteDao;
+	private @Inject EjecutivoDao ejecutivoDao;
 
 	//estados
 	private boolean crear ;
@@ -70,8 +75,8 @@ public class ClienteController implements Serializable {
 	//OBJECT
 	private Cliente newCliente;
 	private Cliente selectedCliente;
-	//private ClienteAdicional newClienteAdicional;
 	private UploadedFile uploadedFile;
+	private Ejecutivo ejecutivo;
 
 	//LISTAS
 	private List<Cliente> listClientes = new ArrayList<Cliente>();
@@ -80,6 +85,8 @@ public class ClienteController implements Serializable {
 	private List<Adjunto> listAdjunto;
 	private List<EDAdjunto> listUploadedFile;
 	public static List<TipoCliente> tipoClientes = new ArrayList<TipoCliente>();
+	public static List<Ejecutivo> listPatrocinador = new ArrayList<Ejecutivo>();
+	private List<Ejecutivo> ejecutivos;
 	//MAP
 	private MapModel emptyModel;
 	private Marker marker;
@@ -108,6 +115,7 @@ public class ClienteController implements Serializable {
 		newCliente.setCodigo(String.format("%08d",clienteDao.obtenerCorrelativo2()));
 		selectedCliente = new Cliente();
 		listClientes = clienteDao.obtenerTodosActivosOrdenadosPorId();
+
 	}
 
 	// -- event action
@@ -142,6 +150,17 @@ public class ClienteController implements Serializable {
 		newCliente.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
 		newCliente.setEmpresa(sessionMain.getEmpresaLogin());
 		Cliente c = clienteDao.registrar(newCliente,null);
+		if(ejecutivo!=null){
+			EjecutivoCliente ejecutivoCliente = new EjecutivoCliente();
+			ejecutivoCliente.setId(0);
+			ejecutivoCliente.setEstado("AC");
+			ejecutivoCliente.setUsuarioRegistro(c.getUsuarioRegistro());
+			ejecutivoCliente.setCliente(c);
+			ejecutivoCliente.setEjecutivo(ejecutivo);
+			ejecutivoCliente.setFechaRegistro(c.getFechaRegistro());
+			ejecutivoClienteDao.registrar(ejecutivoCliente);
+		}
+		ejecutivo = null;
 		if(c!=null){
 			loadDefault();
 		}
@@ -168,14 +187,33 @@ public class ClienteController implements Serializable {
 		}
 		//newClienteAdicional.setEstado("AC");
 		//newClienteAdicional.setFechaModificacion(fechaActual);
-		
+
 		newCliente.setEstado(estado);
 		newCliente.setFechaRegistro(fechaActual);
 		newCliente.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
 		boolean sw = clienteDao.modificar(newCliente,null);
+		ejecutivo = newCliente.getEjecutivo();
+		if(ejecutivo!=null){
+			eliminarEjecutivoCliente(newCliente);
+			EjecutivoCliente ejecutivoCliente = new EjecutivoCliente();
+			ejecutivoCliente.setId(0);
+			ejecutivoCliente.setEstado("AC");
+			ejecutivoCliente.setUsuarioRegistro(newCliente.getUsuarioRegistro());
+			ejecutivoCliente.setCliente(newCliente);
+			ejecutivoCliente.setEjecutivo(ejecutivo);
+			ejecutivoCliente.setFechaRegistro(new Date());
+			ejecutivoClienteDao.registrar(ejecutivoCliente);
+		}
+		ejecutivo = null;
+		newCliente.setEjecutivo(null);
 		if(sw){
 			loadDefault();
 		}
+	}
+
+	private void eliminarEjecutivoCliente(Cliente cliente) {
+		ejecutivoClienteDao.eliminarAsociacionCliente(cliente);
+		
 	}
 
 	public void eliminar(){
@@ -191,6 +229,7 @@ public class ClienteController implements Serializable {
 		modificar = false;
 		newCliente = new Cliente();	
 		selectedCliente = new Cliente();
+		ejecutivo = null;
 	}
 
 	public void cambiarAspecto(){
@@ -204,6 +243,11 @@ public class ClienteController implements Serializable {
 		newCliente = selectedCliente;
 		if(newCliente.getPesoFoto()>0){
 			FacesUtil.setSessionAttribute("imagenCliente", newCliente.getFoto());
+		}
+		EjecutivoCliente ejecutivoCliente = ejecutivoClienteDao.getEjecutivoClienteByIdCliente(newCliente);
+		if(ejecutivoCliente != null){
+			ejecutivo = ejecutivoCliente.getEjecutivo();
+			newCliente.setEjecutivo(ejecutivo);
 		}
 		//newClienteAdicional = clienteAdicionalDao.obtenerPorCLiente(newCliente);
 		//if(newClienteAdicional!=null){
@@ -329,9 +373,9 @@ public class ClienteController implements Serializable {
 		FacesUtil.setSessionAttribute("imagenCliente", data);
 		FacesUtil.hideDialog("dlgphotoCam");
 	}
-	
-	
-	//tipo cliente
+
+
+	//---- TIPO CLIENTE ------
 	public List<TipoCliente> onCompleteTipoCliente(String query) {
 		// ystem.out.println("Entro en Oncomplete Caja"+ query);
 		tipoClientes = tipoClienteDao.RetornarOnCompletePorEmpresa(
@@ -339,10 +383,19 @@ public class ClienteController implements Serializable {
 		return tipoClientes;
 	}
 
-	// ACTION
-
 	public void onSelectTipoCliente(SelectEvent event) {
 		newCliente.setTipoCliente((TipoCliente) event.getObject());
+	}
+
+	//---- EJECUTIVO ------
+	public List<Ejecutivo> onCompleteEjecutivo(String query) {
+		listPatrocinador = ejecutivoDao.obtenerPorConsulta(query.toUpperCase());
+		return listPatrocinador;
+	}
+
+	public void onSelectEjecutivo(SelectEvent event) {
+		//ejecutivo = (Ejecutivo) event.getObject();
+		newCliente.setEjecutivo((Ejecutivo) event.getObject());
 	}
 
 	// --------------   get and set  ---------------
@@ -403,13 +456,13 @@ public class ClienteController implements Serializable {
 		this.selectedCliente = selectedCliente;
 	}
 
-//	public ClienteAdicional getNewClienteAdicional() {
-//		return newClienteAdicional;
-//	}
-//
-//	public void setNewClienteAdicional(ClienteAdicional newClienteAdicional) {
-//		this.newClienteAdicional = newClienteAdicional;
-//	}
+	//	public ClienteAdicional getNewClienteAdicional() {
+	//		return newClienteAdicional;
+	//	}
+	//
+	//	public void setNewClienteAdicional(ClienteAdicional newClienteAdicional) {
+	//		this.newClienteAdicional = newClienteAdicional;
+	//	}
 
 	public MapModel getEmptyModel() {
 		return emptyModel;
@@ -481,6 +534,30 @@ public class ClienteController implements Serializable {
 
 	public static void setTipoClientes(List<TipoCliente> tipoClientes) {
 		ClienteController.tipoClientes = tipoClientes;
+	}
+	
+	public static List<Ejecutivo> getListPatrocinador() {
+		return listPatrocinador;
+	}
+
+	public static void setListPatrocinador(List<Ejecutivo> listPatrocinador) {
+		ClienteController.listPatrocinador = listPatrocinador;
+	}
+
+	public Ejecutivo getEjecutivo() {
+		return ejecutivo;
+	}
+
+	public void setEjecutivo(Ejecutivo ejecutivo) {
+		this.ejecutivo = ejecutivo;
+	}
+
+	public List<Ejecutivo> getEjecutivos() {
+		return ejecutivos;
+	}
+
+	public void setEjecutivos(List<Ejecutivo> ejecutivos) {
+		this.ejecutivos = ejecutivos;
 	}
 }
 

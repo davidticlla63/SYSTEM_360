@@ -184,7 +184,47 @@
 												</div>
 												
 												<div class="form-group ">
-													<div class="col-md-4">Precio Compra</div>
+													<div class="col-md-4">Stock Mínimo</div>
+													<div class="col-md-8">
+														<p:inputText id="stockMinimoID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.stockMin}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Stock Máximo</div>
+													<div class="col-md-8">
+														<p:inputText id="stockMaximoID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.stockMax}"
+															required="true" requiredMessage="Requerido.">
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Precios</h3>
+									</div>
+									<div class="panel-body">
+										<!-- start here register -->
+										<div class="row">
+											<div class="col-md-12 box-content form-horizontal">
+												<div class="form-group ">
+													<div class="col-md-4">Precio Compra General</div>
 													<div class="col-md-8">
 														<p:inputText id="precioCompraID" autocomplete="off"
 															style=" color: #555555; background-image: none;padding: 0 10px;"
@@ -193,6 +233,90 @@
 															required="true" requiredMessage="Requerido.">
 															<p:ajax event="change" update="precioVentaContadoID,precioVentaCreditoID" listener="#{productoController.calcularPorcentajePrecio()}" />
 															<f:convertNumber pattern="#,##0.000" locale="en" />
+														</p:inputText>
+													</div>
+												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Precio 1</div>
+													<div class="col-md-8">
+														<p:inputText id="precioCompra1ID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.precioCompra1}"
+															required="true" requiredMessage="Requerido.">
+															<f:convertNumber pattern="#,##0.000" locale="en" />
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Precio 2</div>
+													<div class="col-md-8">
+														<p:inputText id="precioCompra2ID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.precioCompra2}"
+															required="true" requiredMessage="Requerido.">
+															<f:convertNumber pattern="#,##0.000" locale="en" />
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Precio 3</div>
+													<div class="col-md-8">
+														<p:inputText id="precioCompra3ID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.precioCompra3}"
+															required="true" requiredMessage="Requerido.">
+															<f:convertNumber pattern="#,##0.000" locale="en" />
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Precio 4</div>
+													<div class="col-md-8">
+														<p:inputText id="precioCompra4ID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.precioCompra4}"
+															required="true" requiredMessage="Requerido.">
+															<f:convertNumber pattern="#,##0.000" locale="en" />
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Precio 5</div>
+													<div class="col-md-8">
+														<p:inputText id="precioCompra5ID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.precioCompra5}"
+															required="true" requiredMessage="Requerido.">
+															<f:convertNumber pattern="#,##0.000" locale="en" />
+															<p:ajax event="change" />
+														</p:inputText>
+													</div>
+												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Precio 6</div>
+													<div class="col-md-8">
+														<p:inputText id="precioCompra6ID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.precioCompra6}"
+															required="true" requiredMessage="Requerido.">
+															<f:convertNumber pattern="#,##0.000" locale="en" />
+															<p:ajax event="change" />
 														</p:inputText>
 													</div>
 												</div>
@@ -225,33 +349,6 @@
 													</div>
 												</div>
 												
-												<div class="form-group ">
-													<div class="col-md-4">Stock Mínimo</div>
-													<div class="col-md-8">
-														<p:inputText id="stockMinimoID" autocomplete="off"
-															style=" color: #555555; background-image: none;padding: 0 10px;"
-															styleClass="input-sm form-control" size="40"
-															value="#{productoController.newProducto.stockMin}"
-															required="true" requiredMessage="Requerido.">
-															<p:ajax event="change" />
-															<f:convertNumber pattern="#,##0.000" locale="en" />
-														</p:inputText>
-													</div>
-												</div>
-												
-												<div class="form-group ">
-													<div class="col-md-4">Stock Máximo</div>
-													<div class="col-md-8">
-														<p:inputText id="stockMaximoID" autocomplete="off"
-															style=" color: #555555; background-image: none;padding: 0 10px;"
-															styleClass="input-sm form-control" size="40"
-															value="#{productoController.newProducto.stockMax}"
-															required="true" requiredMessage="Requerido.">
-															<p:ajax event="change" />
-															<f:convertNumber pattern="#,##0.000" locale="en" />
-														</p:inputText>
-													</div>
-												</div>
 											</div>
 										</div>
 									</div>

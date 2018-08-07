@@ -98,6 +98,7 @@ public class NotaVentaController implements Serializable {
 	private List<DetalleNotaVenta> listDetalleNotaVenta;
 	private List<PlanCobranza> listPlanPago;
 	private List<Ejecutivo> ejecutivos;
+	private List<DetalleNotaVenta> detalleNotaVentas;
 
 	//STATE
 	private boolean crear ;
@@ -828,7 +829,9 @@ public class NotaVentaController implements Serializable {
 				FacesUtil.infoMessage("VALIDACION", "La Cantidad debe ser mayor a 0.");
 				return;
 			}
-			if (selectedDetalleNotaVenta.getPrecio() <= 0 ) {
+			if(detalleNotaVentas.size()>0){
+				//nada
+			}else if (selectedDetalleNotaVenta.getPrecio() <= 0 ) {
 				FacesUtil.infoMessage("VALIDACION", "Revisar el precio.");
 				return;
 			}
@@ -838,7 +841,7 @@ public class NotaVentaController implements Serializable {
 			}
 			// verifica si tiene stock
 			if(! notaVenta.getEstadoPago().equals("CO")){
-				AlmacenProducto almProd = almacenProductoDao.findByProductoConStockPromedio(sessionMain.getGestionLogin(), selectedProducto,selectedParametroVenta.getAlmacenVenta());//selectedProducto.getAlmacenProductos().get(0);
+				AlmacenProducto almProd = almacenProductoDao.findByProductoConStockPromedio(sessionMain.getGestionLogin(), selectedProducto,selectedParametroVenta.getAlmacenVenta(),selectedDetalleNotaVenta.getCantidad());//selectedProducto.getAlmacenProductos().get(0);
 				if(almProd.getStock()==0){
 					FacesUtil.showDialog("dlgpValidationStock");
 					return;
@@ -851,7 +854,10 @@ public class NotaVentaController implements Serializable {
 			double porcentajeDescuento = selectedCliente.getTipoCliente().getPorcentaje();
 			porcentajeDescuento = selectedCliente.getTipoCliente().getTipoDescuento().equals("DESC")?(porcentajeDescuento*(-1)):porcentajeDescuento;
 			if(detalle != null){
-				if(notaVenta.getTipoVenta().equals("CREDITO")){
+				//no avanzar
+				FacesUtil.infoMessage("VALIDACION", "El Producto ya existe");
+				return;
+				/*if(notaVenta.getTipoVenta().equals("CREDITO")){
 					detalle.setCantidad(detalle.getCantidad()+1);
 					detalle.setPrecio(detalle.getPrecio()+selectedDetalleNotaVenta.getPrecio());
 					listDetalleNotaVenta.set(listDetalleNotaVenta.indexOf(detalle),detalle);
@@ -859,12 +865,16 @@ public class NotaVentaController implements Serializable {
 					detalle.setCantidad(detalle.getCantidad()+1);
 					detalle.setPrecio(detalle.getPrecio()+selectedDetalleNotaVenta.getPrecio());
 					listDetalleNotaVenta.set(listDetalleNotaVenta.indexOf(detalle),detalle);
-				}
+				}*/
 			}else{
 				selectedDetalleNotaVenta.setId(listDetalleNotaVenta.size() * (-1));//asignacion de id's temp
 				selectedDetalleNotaVenta.setProducto(selectedProducto);
 				selectedDetalleNotaVenta.setPorcentajeDescuento(porcentajeDescuento);
-				listDetalleNotaVenta.add(selectedDetalleNotaVenta);
+				if(detalleNotaVentas.size()>0){
+					listDetalleNotaVenta.addAll(detalleNotaVentas);
+				}else{
+					listDetalleNotaVenta.add(selectedDetalleNotaVenta);
+				}
 			}
 			loadPayPLan();
 			selectedDetalleNotaVenta = new DetalleNotaVenta();
@@ -991,6 +1001,11 @@ public class NotaVentaController implements Serializable {
 	}
 
 	public void onRowSelectProductoClick(SelectEvent event) {
+		System.out.println("selectedCliente: "+selectedCliente);
+		if(selectedCliente.getId()==0){
+			FacesUtil.infoMessage("VALIDACION", "El cliente no está asociado a ningun Ejecutivo.");
+			return;
+		}
 		Producto pr = (Producto)event.getObject();
 		selectedProducto = listProducto.get(listProducto.indexOf(pr));
 		
@@ -998,7 +1013,13 @@ public class NotaVentaController implements Serializable {
 		updateImporte();
 	}
 	
+	public void changeCantidad(){
+		loadSelectProduct();
+		updateImporte();
+	}
+	
 	private void loadSelectProduct(){
+		detalleNotaVentas = new ArrayList<>();
 		if(notaVenta.getEstadoPago().equals("CO")){
 			double tipoCambio = notaVenta.getTipoCambio();
 			selectedProducto.setDescripcion(" "+selectedProducto.getDescripcion());
@@ -1007,23 +1028,87 @@ public class NotaVentaController implements Serializable {
 			selectedDetalleNotaVenta.setPrecioContadoNacional(selectedProducto.getPrecioVentaContado()*tipoCambio);//contado nacional
 			selectedDetalleNotaVenta.setPrecioContadoExtranjero(selectedProducto.getPrecioVentaContado());
 		}else{
-			AlmacenProducto i = almacenProductoDao.findByProductoConStockPromedio(sessionMain.getGestionLogin(), selectedProducto,selectedParametroVenta.getAlmacenVenta());//selectedProducto.getAlmacenProductos().get(0);
-			
-			if(i.getStock()==0){
+			double cantidad = selectedDetalleNotaVenta.getCantidad();
+			List<AlmacenProducto> list = almacenProductoDao.findAllByProductoAndAlmacenOrderByFecha(sessionMain.getGestionLogin(),selectedParametroVenta.getAlmacenVenta(),selectedProducto);//selectedProducto.getAlmacenProductos().get(0);
+			AlmacenProducto i = new AlmacenProducto();
+			if(obtenerStocktTotalAlmacenProducto(list)<cantidad){
 				FacesUtil.showDialog("dlgpValidationStock");
 				return;
+			}else if(list.size()>1){
+				//hay varias lineas de stock
+				for(AlmacenProducto ap : list){
+					//==7,4
+					//3
+					//5
+					if(cantidad > 0){
+						DetalleNotaVenta d = new DetalleNotaVenta();
+						d.setProducto(selectedProducto);
+						double disminucion = ap.getStock() < cantidad ? (ap.getStock()) : (cantidad);
+						d.setCantidad(disminucion);
+						double precio = 0;
+						if(selectedCliente.getTipoCliente().getPrecio().equals("A")){
+							precio = ap.getPrecio1();
+						}else if(selectedCliente.getTipoCliente().getPrecio().equals("B")){
+							precio = ap.getPrecio2();
+						}else if(selectedCliente.getTipoCliente().getPrecio().equals("C")){
+							precio = ap.getPrecio3();
+						}else if(selectedCliente.getTipoCliente().getPrecio().equals("D")){
+							precio = ap.getPrecio4();
+						}else if(selectedCliente.getTipoCliente().getPrecio().equals("E")){
+							precio = ap.getPrecio5();
+						}else{
+							precio = ap.getPrecio6();
+						}
+						double tipoCambio = notaVenta.getTipoCambio();
+						selectedProducto.setDescripcion(" "+selectedProducto.getDescripcion());
+						//credito
+						d.setPrecio(precio*tipoCambio);//credito nacional
+						d.setPrecioExtranjero(precio);//credito extranjero
+						//contado
+						d.setPrecioContadoNacional(ap.getPrecioVentaContado()*tipoCambio);//contado nacional
+						d.setPrecioContadoExtranjero(ap.getPrecioVentaContado());//contado extanjero
+						detalleNotaVentas.add(d);
+						cantidad = cantidad - ap.getStock();
+					}
+				}
+			}else{
+				//solo hay una linea de stock
+				i = list.get(0);
+				double precio = 0;
+				if(selectedCliente.getTipoCliente().getPrecio().equals("A")){
+					precio = i.getPrecio1();
+				}else if(selectedCliente.getTipoCliente().getPrecio().equals("B")){
+					precio = i.getPrecio2();
+				}else if(selectedCliente.getTipoCliente().getPrecio().equals("C")){
+					precio = i.getPrecio3();
+				}else if(selectedCliente.getTipoCliente().getPrecio().equals("D")){
+					precio = i.getPrecio4();
+				}else if(selectedCliente.getTipoCliente().getPrecio().equals("E")){
+					precio = i.getPrecio5();
+				}else{
+					precio = i.getPrecio6();
+				}
+				double tipoCambio = notaVenta.getTipoCambio();
+				selectedProducto.setDescripcion(" "+selectedProducto.getDescripcion());
+				//credito
+				selectedDetalleNotaVenta.setPrecio(precio*tipoCambio);//credito nacional
+				selectedDetalleNotaVenta.setPrecioExtranjero(precio);//credito extranjero
+				//contado
+				selectedDetalleNotaVenta.setPrecioContadoNacional(i.getPrecioVentaContado()*tipoCambio);//contado nacional
+				selectedDetalleNotaVenta.setPrecioContadoExtranjero(i.getPrecioVentaContado());//contado extanjero
 			}
-			double tipoCambio = notaVenta.getTipoCambio();
-			selectedProducto.setDescripcion(" "+selectedProducto.getDescripcion());
-			//credito
-			selectedDetalleNotaVenta.setPrecio(i.getPrecioVentaCredito()*tipoCambio);//credito nacional
-			selectedDetalleNotaVenta.setPrecioExtranjero(i.getPrecioVentaCredito());//credito extranjero
-			//contado
-			selectedDetalleNotaVenta.setPrecioContadoNacional(i.getPrecioVentaContado()*tipoCambio);//contado nacional
-			selectedDetalleNotaVenta.setPrecioContadoExtranjero(i.getPrecioVentaContado());//contado extanjero
 		}
 	}
 	
+	private double obtenerStocktTotalAlmacenProducto(List<AlmacenProducto> list) {
+		double cantidad = 0;
+		for(AlmacenProducto ap: list){
+			cantidad = cantidad + ap.getStock();
+		}
+		// TODO Auto-generated method stub
+		return cantidad;
+	}
+
 	public void updateImporte(){
 		if(notaVenta.getTipoVenta().equals("CONTADO")){
 			if(notaVenta.getMoneda().equals("DOLAR")){

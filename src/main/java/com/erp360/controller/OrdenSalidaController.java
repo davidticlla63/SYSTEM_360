@@ -774,7 +774,7 @@ public class OrdenSalidaController implements Serializable {
 		System.out.println("getNombre: "+selectedProducto.getNombre());
 		System.out.println("id: "+selectedProducto.getId());
 		selectedProducto.setDescripcion(" "+selectedProducto.getDescripcion());
-		AlmacenProducto ap = almacenProductoRepository.findByProductoConStockPromedio(sessionMain.getGestionLogin(),selectedProducto,selectedAlmacen);
+		AlmacenProducto ap = almacenProductoRepository.findByProductoConStockPromedio(sessionMain.getGestionLogin(),selectedProducto,selectedAlmacen,1d);
 		//for(AlmacenProducto ap : listAlmacenProducto){
 			//if(ap.getProducto().getId().equals(id)){
 				selectedProducto = ap.getProducto();

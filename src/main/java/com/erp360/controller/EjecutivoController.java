@@ -16,9 +16,8 @@ import com.erp360.dao.ClienteDao;
 import com.erp360.dao.EjecutivoClienteDao;
 import com.erp360.dao.EjecutivoDao;
 import com.erp360.model.Cliente;
-import com.erp360.model.EjecutivoCliente;
 import com.erp360.model.Ejecutivo;
-import com.erp360.model.TipoCliente;
+import com.erp360.model.EjecutivoCliente;
 import com.erp360.util.FacesUtil;
 import com.erp360.util.NumberUtil;
 import com.erp360.util.SessionMain;
@@ -194,7 +193,7 @@ public class EjecutivoController implements Serializable {
 		Cliente customer = (Cliente) event.getObject();
 		int index = listCliente.indexOf(customer);
 		selectedCliente = listCliente.get(index);
-		selectedCliente.setNombres(selectedCliente.getNombres()+" ");
+		selectedCliente.setNombres(selectedCliente.getNombres());
 	}
 	
 	public void limpiarDatosCliente(){
@@ -204,7 +203,12 @@ public class EjecutivoController implements Serializable {
 	
 	public void agregarDetalleCliente(){
 		if(selectedCliente == null){
-			//msg
+			FacesUtil.infoMessage("Validación", "Seleccione un  cliente");
+			return;
+		}
+		if(existeClienteAsociadoAEjecutivo(selectedCliente,ejecutivoClientes)){
+			FacesUtil.infoMessage("Validación", "Este  cliente ya fué agregado");
+			return;
 		}
 		ejecutivoCliente.setId((ejecutivoClientes.size()+1)*-1);
 		ejecutivoCliente.setCliente(selectedCliente);
@@ -218,6 +222,17 @@ public class EjecutivoController implements Serializable {
 		FacesUtil.hideDialog("dlgCliente");
 	}
 	
+	private boolean existeClienteAsociadoAEjecutivo(Cliente selectedCliente,
+			List<EjecutivoCliente> ejecutivoClientes) {
+		for(EjecutivoCliente ec: ejecutivoClientes){
+			if(ec.getCliente().getId().equals(selectedCliente.getId())){
+				return true;
+			}
+		}
+		EjecutivoCliente ec = ejecutivoClienteDao.getEjecutivoClienteByIdCliente(selectedCliente);
+		return ec != null;
+	}
+
 	public void borrarEjecutivoCliente(Integer id){
 		EjecutivoCliente removed = new EjecutivoCliente();
 		for(EjecutivoCliente ejecutivoCliente: ejecutivoClientes){

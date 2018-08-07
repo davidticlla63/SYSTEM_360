@@ -752,7 +752,6 @@ public abstract class DataAccessObjectJpa<T, E, R, S, O, P, Q, U, V, W> implemen
 				+ ", 'áéíóúÁÉÍÓÚäëïöüÄËÏÖÜñ', 'aeiouAEIOUaeiouAEIOUÑ')) like '%"
 				+ upperQuery + "%' and em." + parameter1 + "='" + value1
 				+ "' order by em." + parameter2 + " desc";
-		System.out.println(qu);
 		Query q = em.createQuery(qu);
 		return q.getResultList();
 	}

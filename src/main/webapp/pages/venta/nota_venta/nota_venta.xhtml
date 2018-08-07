@@ -140,7 +140,7 @@
 																maxResults="10">
 
 																<p:ajax event="itemSelect"
-																	update="nombreCliente,tooltipId1"
+																	update="nombreCliente,tooltipId1,ejecutivoId"
 																	listener="#{notaVentaController.onRowSelectClienteClick}" />
 
 																<p:column>
@@ -286,7 +286,11 @@
 															</div>
 															<div class="col-md-2" style="padding-left: 30px;">Ejecutivo</div>
 															<div class="col-md-4">
-																#{notaVentaController.nombreEjecutivo}
+																<h:inputText id="ejecutivoId"
+																value="#{notaVentaController.nombreEjecutivo}"
+																style=" color: #555555; background-image: none;"
+																styleClass="input-sm form-control" disabled="true">
+															</h:inputText>
 															</div>
 														</div>
 													</div>
@@ -440,7 +444,7 @@
 																	style=" color: #555555; background-image: none;"
 																	styleClass="input-sm form-control">
 																	<p:ajax event="keyup" update="importeExtranjeroID"
-																		listener="#{notaVentaController.updateImporte()}" />
+																		listener="#{notaVentaController.changeCantidad()}" />
 																</h:inputText>
 															</div>
 															<div class="col-md-2">Importe</div>
