@@ -406,7 +406,7 @@
 											<li
 												class="#{(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :'inactive'}"><a
 												href="#{request.contextPath}/pages/inventario/kardex_producto.xhtml">
-													<i class="icon-globe"></i><span class="sidebar-text">Kardex</span>
+													<i class="icon-globe"></i><span class="sidebar-text">Kardex Producto</span>
 											</a></li>
 										</ui:fragment>
 
@@ -552,6 +552,14 @@
 										href="#{request.contextPath}/pages/caja/movimiento/index.xhtml">
 											<i class="icon-notebook"></i> <span class="sidebar-text">Movimiento
 												Caja</span>
+									</a></li>
+								</ui:fragment>
+								<ui:fragment
+									rendered="#{true}">
+									<li
+										class="#{(view.viewId.equals('/pages/caja/reporte/report.xhtml')) ? 'active' :'inactive'}"><a
+										href="#{request.contextPath}/pages/caja/reporte/report.xhtml">
+											<i class="icon-notebook"></i> <span class="sidebar-text">Reporte</span>
 									</a></li>
 								</ui:fragment>
 								<li

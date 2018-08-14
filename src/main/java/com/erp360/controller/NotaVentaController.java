@@ -1043,6 +1043,7 @@ public class NotaVentaController implements Serializable {
 					if(cantidad > 0){
 						DetalleNotaVenta d = new DetalleNotaVenta();
 						d.setProducto(selectedProducto);
+						d.setAlmacenProductoId(ap.getId());
 						double disminucion = ap.getStock() < cantidad ? (ap.getStock()) : (cantidad);
 						d.setCantidad(disminucion);
 						double precio = 0;
@@ -1089,6 +1090,7 @@ public class NotaVentaController implements Serializable {
 					precio = i.getPrecio6();
 				}
 				double tipoCambio = notaVenta.getTipoCambio();
+				selectedDetalleNotaVenta.setAlmacenProductoId(i.getId());
 				selectedProducto.setDescripcion(" "+selectedProducto.getDescripcion());
 				//credito
 				selectedDetalleNotaVenta.setPrecio(precio*tipoCambio);//credito nacional

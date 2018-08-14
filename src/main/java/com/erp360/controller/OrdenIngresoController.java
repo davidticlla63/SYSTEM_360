@@ -611,6 +611,15 @@ public class OrdenIngresoController implements Serializable {
 			return ;
 		}
 		//selectedDetalleOrdenIngreso
+		System.out.println("precioCompra: "+selectedDetalleOrdenIngreso.getPrecioCompra());
+		System.out.println("precioAlmacen: "+selectedDetalleOrdenIngreso.getPrecioAlmacen());
+		System.out.println("precio1: "+selectedDetalleOrdenIngreso.getPrecio1());
+		System.out.println("precio2: "+selectedDetalleOrdenIngreso.getPrecio2());
+		System.out.println("precio3: "+selectedDetalleOrdenIngreso.getPrecio3());
+		System.out.println("precio4: "+selectedDetalleOrdenIngreso.getPrecio4());
+		System.out.println("precio5: "+selectedDetalleOrdenIngreso.getPrecio5());
+		System.out.println("precio6: "+selectedDetalleOrdenIngreso.getPrecio6());
+		
 		selectedDetalleOrdenIngreso.setProducto(selectedProducto);
 		selectedOrdenIngreso.setProveedor(selectedProveedor);
 		listaDetalleOrdenIngreso.add(0, selectedDetalleOrdenIngreso);
@@ -661,14 +670,7 @@ public class OrdenIngresoController implements Serializable {
 		double cantidad = selectedDetalleOrdenIngreso.getCantidad();
 		selectedDetalleOrdenIngreso.setTotal(precio * cantidad);
 		selectedDetalleOrdenIngreso.setTotalCompra(precioCompra * cantidad);
-		//precios 1,2,3,4,5,6
-		selectedDetalleOrdenIngreso.setPrecioCompra(selectedProducto.getPrecioCompra());
-		selectedDetalleOrdenIngreso.setPrecio1(selectedProducto.getPrecioCompra1());
-		selectedDetalleOrdenIngreso.setPrecio2(selectedProducto.getPrecioCompra2());
-		selectedDetalleOrdenIngreso.setPrecio3(selectedProducto.getPrecioCompra3());
-		selectedDetalleOrdenIngreso.setPrecio4(selectedProducto.getPrecioCompra4());
-		selectedDetalleOrdenIngreso.setPrecio5(selectedProducto.getPrecioCompra5());
-		selectedDetalleOrdenIngreso.setPrecio6(selectedProducto.getPrecioCompra6());
+		
 	}
 
 	public void calcularTotal(){
@@ -768,6 +770,14 @@ public class OrdenIngresoController implements Serializable {
 		for(Producto i : listProducto){
 			if(i.getId().equals(id)){
 				selectedProducto = i;
+				//precios 1,2,3,4,5,6
+				selectedDetalleOrdenIngreso.setPrecioCompra(selectedProducto.getPrecioCompra());
+				selectedDetalleOrdenIngreso.setPrecio1(selectedProducto.getPrecioCompra1());
+				selectedDetalleOrdenIngreso.setPrecio2(selectedProducto.getPrecioCompra2());
+				selectedDetalleOrdenIngreso.setPrecio3(selectedProducto.getPrecioCompra3());
+				selectedDetalleOrdenIngreso.setPrecio4(selectedProducto.getPrecioCompra4());
+				selectedDetalleOrdenIngreso.setPrecio5(selectedProducto.getPrecioCompra5());
+				selectedDetalleOrdenIngreso.setPrecio6(selectedProducto.getPrecioCompra6());
 				calcular();
 				return;
 			}

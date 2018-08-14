@@ -3,12 +3,14 @@ package com.erp360.util;
 import java.util.List;
 
 import com.erp360.model.CuentaCobrar;
+import com.erp360.model.NotaVenta;
 import com.erp360.model.PlanCobranza;
 
 public class EDDeudaPendiente {
 	
 	private Integer id;
 	private CuentaCobrar cuentaCobrar;
+	private NotaVenta notaVenta;
 	private boolean pagarTodo;
 	private boolean pagarSiguienteCuota;
 	private int cuotasPendientes;
@@ -105,6 +107,14 @@ public class EDDeudaPendiente {
 
 	public void setCollectionPlan(List<PlanCobranza> collectionPlan) {
 		this.collectionPlan = collectionPlan;
+	}
+
+	public NotaVenta getNotaVenta() {
+		return notaVenta;
+	}
+
+	public void setNotaVenta(NotaVenta notaVenta) {
+		this.notaVenta = notaVenta;
 	}
 	
 }

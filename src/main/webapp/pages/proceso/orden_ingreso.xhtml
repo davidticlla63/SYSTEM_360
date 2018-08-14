@@ -480,7 +480,7 @@
 									requiredMessage="Producto Requerido." forceSelection="true"
 									var="_var" itemLabel="#{_var.nombre}" itemValue="#{_var}"
 									placeholder="[Escriba Producto]" scrollHeight="300">
-									<p:ajax event="itemSelect" update="productoID,precio1ID,precio2ID,precio3ID,precio4ID,precio5ID,precio6ID"
+									<p:ajax event="itemSelect" update="productoID,precioCompraID,precio1ID,precio2ID,precio3ID,precio4ID,precio5ID,precio6ID,formDialogProducto:totalID"
 										listener="#{ordenIngresoController.onRowSelectProductoClick}" />
 									<p:column>
 										<h:outputText value="#{_var.codigo}" />

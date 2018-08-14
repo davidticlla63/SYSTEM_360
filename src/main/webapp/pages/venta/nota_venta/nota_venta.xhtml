@@ -408,7 +408,7 @@
 																	rendered="#{notaVentaController.notaVenta.tipoVenta.equals('CREDITO')}"
 																	value="#{notaVentaController.selectedDetalleNotaVenta.precioExtranjero}"
 																	style=" color: #555555; background-image: none; width: 80px"
-																	styleClass="input-sm form-control" disabled="false">
+																	styleClass="input-sm form-control" disabled="true">
 																	<p:ajax event="change" update="importeExtranjeroID"
 																		listener="#{notaVentaController.updateImporte()}" />
 																</h:inputText>
@@ -416,7 +416,7 @@
 																	rendered="#{notaVentaController.notaVenta.tipoVenta.equals('CONTADO')}"
 																	value="#{notaVentaController.selectedDetalleNotaVenta.precioContadoExtranjero}"
 																	style=" color: #555555; background-image: none; width: 80px"
-																	styleClass="input-sm form-control" disabled="false">
+																	styleClass="input-sm form-control" disabled="true">
 																	<p:ajax event="change" update="importeExtranjeroID"
 																		listener="#{notaVentaController.updateImporte()}" />
 																</h:inputText>

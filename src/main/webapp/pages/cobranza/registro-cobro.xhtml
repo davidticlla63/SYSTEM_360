@@ -163,7 +163,7 @@
        																</f:facet>
 
 																	<p:column width="2%">
-																		<p:rowToggler />
+																		<p:rowToggler rendered="#{var.notaVenta == null}" />
 																	</p:column>
 
 																	<p:rowExpansion id="rowExpansionId">
@@ -269,12 +269,13 @@
 
 																	<p:column width="5%" headerText="Nº Venta" 
 																		disabledSelection="true" style="text-align:center;">
-																		<h:outputText
-																			value="#{var.cuentaCobrar.notaVenta.codigo}" />
+																		<h:outputText value="#{var.cuentaCobrar.notaVenta.codigo}" rendered="#{var.notaVenta == null}" />
+																		<h:outputText value="#{var.notaVenta.codigo}" rendered="#{var.notaVenta != null}" />
 																	</p:column>
 
-																	<p:column width="10%" headerText="Monto Plan Pago"
+																	<p:column width="10%" headerText="Monto Plan Pago" 
 																		style="text-align:center;">
+																		<ui:fragment  rendered="#{var.notaVenta == null}" >
 																		<h:outputText
 																			rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}"
 																			value="#{var.cuentaCobrar.notaVenta.montoTotal}">
@@ -293,10 +294,15 @@
 																			<p:outputLabel value=" Bs."
 																				rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}" />
 																		</span>
+																		</ui:fragment>
+																		<ui:fragment  rendered="#{var.notaVenta != null}" >
+																			<p:outputLabel value=" - "/>
+																		</ui:fragment>
 																	</p:column>
 
-																	<p:column width="10%" headerText="Cuota Inicial"
+																	<p:column width="10%" headerText="Cuota Inicial"  
 																		style="text-align:center;">
+																		<ui:fragment  rendered="#{var.notaVenta == null}" >
 																		<h:outputText
 																			rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}"
 																			value="#{var.cuentaCobrar.notaVenta.cuotaInicial}">
@@ -315,11 +321,33 @@
 																			<p:outputLabel value=" Bs."
 																				rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}" />
 																		</span>
+																		</ui:fragment>
+																	<ui:fragment  rendered="#{var.notaVenta != null}" >
+																		<h:outputText
+																			rendered="#{var.notaVenta.moneda.equals('BOLIVIANOS')}"
+																			value="#{var.notaVenta.cuotaInicial}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<h:outputText
+																			rendered="#{var.notaVenta.moneda.equals('DOLAR')}"
+																			value="#{var.notaVenta.cuotaInicialExtranjero}">
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<span class="label label-success"> <p:outputLabel
+																				value=" $us."
+																				rendered="#{var.notaVenta.moneda.equals('DOLAR')}" />
+																			<p:outputLabel value=" Bs."
+																				rendered="#{var.notaVenta.moneda.equals('BOLIVIANOS')}" />
+																		</span>
+																		</ui:fragment>
 																	</p:column>
 
 																	<p:column width="10%" headerText="Nº Cuotas Pendientes"
 																		style="text-align:center;">
-																		<h:outputText value="#{var.cuotasPendientes}" />
+																		<h:outputText value="#{var.cuotasPendientes}"  rendered="#{var.notaVenta == null}" />
+																		<h:outputText value=" - "  rendered="#{var.notaVenta != null}" />
 																	</p:column>
 
 																	<p:column width="10%" headerText="Saldo"
@@ -328,6 +356,7 @@
 
 																	<p:column width="10%" headerText="Cuota a pagar"
 																		style="text-align:center;">
+																		<ui:fragment  rendered="#{var.notaVenta == null}" >
 																		<span class="label label-success"> <h:outputText
 																				rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}"
 																				value="#{var.montoProximaCuota}">
@@ -345,6 +374,18 @@
 																					rendered="#{var.cuentaCobrar.notaVenta.moneda.equals('BOLIVIANOS')}" />
 																		</span>
 																		</span>
+																		</ui:fragment>
+																		<ui:fragment  rendered="#{var.notaVenta != null}" >
+																			
+																			<p:commandLink id="buttonSelected02"
+																				value="&#160; Cobrar"
+																				styleClass="btn btn-default"
+																				style="height:31px; padding:center">
+																				<p:ajax
+																					update="form001:msgs1,form001:table001,form001:montoCuotaInicialSubTotalNacional,form001:totalCobro01"
+																					listener="#{registroCobroController.checkCashCollectionForCreditFee(var.id)}" />
+																			</p:commandLink>
+																		</ui:fragment>
 																	</p:column>
 
 																	<p:column width="10%" headerText="Cobrar Cuota vigente"
@@ -432,27 +473,26 @@
 										<h3 class="panel-title">VISUALIZACIÓN COBRANZA</h3>
 									</div>
 									<div class="panel-body">
-									<p:tabView>
-										<p:tab title="Recibo de Amortización" rendered="false">
-											<div class="row">
-												<div class="col-md-12">
-													<p:media player="pdf" rendered="true"
-														value="#{registroCobroController.urlReporteAmortizacion}"
-														width="800px" height="800px" />
-												</div>
-											</div>
-										</p:tab>
-										<p:tab title="Plan de Pago" >
-											<div class="row">
-												<div class="col-md-12">
-													<p:media player="pdf" rendered="true"
-														value="#{registroCobroController.urlReporteCobro}"
-														width="800px" height="800px" />
-												</div>
-											</div>
-										</p:tab>
-									</p:tabView>
 									
+										<ui:fragment rendered="#{registroCobroController.urlReciboAmortizacion.length()>0}">
+												<div class="row">
+													<div class="col-md-12">
+														<p:media player="pdf" rendered="true"
+															value="#{registroCobroController.urlReciboAmortizacion}"
+															width="800px" height="800px" />
+													</div>
+												</div>
+										</ui:fragment>
+										
+										<ui:fragment rendered="#{registroCobroController.urlReporteCobro.length()>0}">
+												<div class="row">
+													<div class="col-md-12">
+														<p:media player="pdf" rendered="true"
+															value="#{registroCobroController.urlReporteCobro}"
+															width="800px" height="800px" />
+													</div>
+												</div>
+										</ui:fragment>
 									</div>
 								</div>
 							</div>
@@ -875,6 +915,121 @@
 				</div>
 			</div>
 		</div>
+		
+		<div id="m-r-02" tabindex="-1" role="dialog" data-keyboard="false"
+			data-backdrop="static" aria-labelledby="myModalLabel"
+			aria-hidden="true" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<h:form id="formModalCobro00">
+						<div class="modal-header">
+							<!-- INIT HEADER -->
+							<h4 id="myModalLabel" class="modal-title">
+								<strong>COBRO - CUOTA INICIAL</strong>
+							</h4>
+							<!-- END HEADER -->
+						</div>
+						<div class="modal-body">
+							<!-- INIT BODY -->
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div class="col-md-5">Nota</div>
+										<div class="col-md-7">
+											<p:inputTextarea id="observacionAmortizacion00"
+												style="padding: 0 10px;" styleClass="form-control" size="40"
+												value="#{registroCobroController.glosa}" maxlength="250"
+												rows="3">
+												<p:ajax event="change" />
+											</p:inputTextarea>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div class="col-md-5">Total a cobrar</div>
+										<div class="col-md-7">
+											<h:inputText id="importeTotal00"
+												value="#{registroCobroController.totalCobrarExtranjero}"
+												style=" color: #555555; background-image: none;"
+												readonly="true" styleClass="input-sm form-control">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:inputText>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div class="col-md-5">Pago</div>
+										<div class="col-md-7">
+										<p:focus for="formModalCobro:importeTotalCobro"/>
+											<p:inputText id="importeTotalCobro00"
+												value="#{registroCobroController.cobroExtranjero}"
+												style=" color: #555555; background-image: none; padding-left:10px !important;"
+												onclick="selectAll('formModalCobro:importeTotalCobro')"
+												styleClass="input-sm form-control">
+												<p:ajax event="keyup" update="formModalCobro00:cambio00"
+													listener="#{registroCobroController.calcularCambio()}" />
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</p:inputText>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div class="col-md-5">Cambio</div>
+										<div class="col-md-7">
+											<h:inputText id="cambio00"
+												value="#{registroCobroController.cambioExtranjero}"
+												style=" color: #555555; background-image: none;"
+												readonly="true" styleClass="input-sm form-control">
+												<f:convertNumber type="number" groupingUsed="true"
+													minFractionDigits="2" pattern="#0.00" />
+											</h:inputText>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- END BODY -->
+						</div>
+						<div class="modal-footer">
+							<!-- INIT FOOTER -->
+							<div class="row">
+								<div class="col-md-4"></div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonCancelar001" value="&#160; Cancelar"
+										styleClass="btn btn-warning btn-block ion-minus-circled"
+										update="form001" immediate="true"
+										style="height:31px; padding:center"
+										actionListener="#{registroCobroController.closeModalCuotaInicialPlanPago()}">
+									</p:commandLink>
+								</div>
+								<div class="col-md-4">
+									<p:commandLink id="buttonRegistrar001" value="&#160; Cobrar"
+										styleClass="btn btn-success btn-block ion-checkmark"
+										style="height:31px; padding:center" immediate="true"
+										action="#{registroCobroController.registrarCobroCuotaInicial()}">
+									</p:commandLink>
+								</div>
+							</div>
+							<!-- END FOOTER -->
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+		
 		<script type="text/javascript"> 
 		    function selectAll(id){
 		        document.getElementById(id).focus();
