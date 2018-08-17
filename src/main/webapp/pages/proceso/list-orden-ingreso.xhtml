@@ -51,6 +51,13 @@
 											style="height:31px;" update="form001"
 											onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/proceso/orden_ingreso.xhtml';">
 										</p:commandLink>
+										
+										<p:commandLink id="buttonVerDetalle" value="&#160; Ver Detalle"
+											rendered="#{listOrdenIngresoController.ver}"
+											styleClass="btn btn-primary " style="height:31px;"
+											update="form001" 
+											action="#{listOrdenIngresoController.prepareViewDetail()}">
+										</p:commandLink>
 
 										<p:commandLink id="buttonModificar" value="&#160; Modificar"
 											rendered="#{listOrdenIngresoController.modificar}"

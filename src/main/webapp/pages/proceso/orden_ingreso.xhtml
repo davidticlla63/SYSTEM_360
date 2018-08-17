@@ -51,7 +51,7 @@
 
 										<p:commandLink id="buttonRegistrar" value="&#160; Registrar"
 											styleClass="btn btn-success ion-checkmark"
-											rendered="#{ ! ordenIngresoController.verReport and (!ordenIngresoController.modificar)}"
+											rendered="#{ ! ordenIngresoController.verReport and ordenIngresoController.modificar}"
 											update="form001" style="height:31px; padding:center"
 											disabled="#{ ! ordenIngresoController.estaGestionIniciada()}"
 											action="#{ordenIngresoController.registrarOrdenIngreso()}">
@@ -321,6 +321,7 @@
 												<p:commandLink id="buttonDlgTelefono"
 													value="&#160; Producto"
 													styleClass="btn btn-success btn-outlined ion-plus"
+													rendered="#{ ordenIngresoController.modificar}"
 													style="height:27px; padding-top: 5px" immediate="true"
 													update="form001"
 													actionListener="#{ordenIngresoController.actionLoadDialogProducto()}">

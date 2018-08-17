@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui">
+	
+
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											style="height:31px; padding:center" immediate="true"
+											rendered="false"
+											update="form001" action="#{listPagoController.loadDefault()}">
+										</p:commandLink>
+
+										<p:commandLink id="buttonCrear1" value="&#160; Nuevo Pago"
+											styleClass="btn btn-success ion-plus-round"  style="height:31px;">
+											<p:ajax update="form001" listener="#{pagoComisionController.prepareCreate()}"/>
+										</p:commandLink>
+
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/index"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a href="#{request.contextPath}/user"
+										style="color: #0090FF; font-size: 12px;">Caja</a></li>
+									<li class="active" style="font-size: 12px;">Pago Comisión</li>
+								</ol>
+							</div>
+						</section>
+					</div>
+					<!-- END BUTTONS -->
+
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;"></div>
+					<!-- END PANEL REGISTER -->
+
+					<!-- BEGIN PANEL TABLE -->
+					<div class="row">
+							<div class="col-md-12">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">Lista Pagos de Comisión a Ejecutivos</h3>
+									</div>
+									<div class="form-group">
+										<p:dataTable id="dataTableUser" var="item" rendered="true"
+											value="#{pagoComisionController.comisionesPagadas}" reflow="true"
+											style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+											selection="#{listPagoController.cobranza}" sortBy="#{item.codigo}"
+											rowKey="#{item.id}" sortOrder="DESCENDING"
+											emptyMessage="No se encontraron registros" rows="20"
+											paginator="true" paginatorPosition="top">
+
+											<p:ajax event="rowSelect"
+												listener="#{listPagoController.onRowSelect}"
+												update="form001" />
+
+											<p:column headerText="Código" width="5%" 
+												style="text-align:center;" filterMatchMode="contains"
+												filterStyle="width: 100%; height:25px;"
+												filterBy="#{item.codigo}">
+												<h:outputText value="#{item.codigo}" />
+											</p:column>
+
+											<p:column headerText="Ejecutivo" width="12%"
+												filterStyle="width: 100%; height:25px;"
+												style="text-align:center;" filterMatchMode="contains"
+												filterBy="#{item.ejecutivo.nombres}">
+												<h:outputText value="#{item.ejecutivo.nombres}" />
+											</p:column>
+
+
+											<p:column headerText="Monto Cobrado ($us)" width="12%"
+												filterStyle="width: 100%; height:25px;"
+												style="text-align:center;" filterMatchMode="contains"
+												filterBy="#{item.montoExtranjero}">
+												<h:outputText value="#{item.montoExtranjero}">
+													<f:convertNumber type="number" groupingUsed="true"
+														minFractionDigits="2" pattern="#0.00" />
+												</h:outputText>
+											</p:column>
+
+											<p:column width="8%" headerText="Fecha "
+												filterStyle="width: 100%; height:25px;"
+												style="text-align:center;" filterBy="#{item.fechaRegistro}">
+												<h:outputText value="#{item.fechaRegistro}">
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+												</h:outputText>
+											</p:column>
+											<f:facet name="footer">
+												<h:outputText
+													value="#{listPagoController.listCobranza.size()} Registros en Total" />
+											</f:facet>
+										</p:dataTable>
+									</div>
+									<div class="panel-body"></div>
+								</div>
+							</div>
+					</div>
+					
+		<!-- START GROWL -->
+		<h:form id="formGrowl">
+			<p:growl id="msgs1" showDetail="true" />
+		</h:form>
+		<!-- END GROWL -->
+
+		<!-- START DIALOG -->
+		<p:dialog header="DIALOG TEST" widgetVar="dlg1" modal="true"
+			height="100%">
+		</p:dialog>
+		<!-- END DIALOG -->
+
+</ui:composition>
