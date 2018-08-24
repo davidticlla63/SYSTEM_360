@@ -77,6 +77,26 @@ public class EjecutivoClienteDao extends DataAccessObjectJpa<EjecutivoCliente,E,
 			return false;
 		}
 	}
+	
+	public boolean eliminarAsociacionCliente(Cliente cliente){
+		try{
+			EjecutivoCliente ejecutivoCliente = getEjecutivoClienteByIdCliente(cliente);
+			if(ejecutivoCliente== null){
+				return true;
+			}
+			ejecutivoCliente.setEstado("RM");
+			update(ejecutivoCliente);
+			return true;
+		}catch(Exception e){
+			String cause=e.getMessage();
+			if (cause.contains("org.hibernate.exception.ConstraintViolationException: could not execute statement")) {
+				FacesUtil.errorMessage("Ya existe un registro igual.");
+			}else{
+				FacesUtil.errorMessage("Error al modificar");
+			}
+			return false;
+		}
+	}
 
 	public boolean eliminar(EjecutivoCliente ejecutivoCliente){
 		try{
@@ -104,10 +124,14 @@ public class EjecutivoClienteDao extends DataAccessObjectJpa<EjecutivoCliente,E,
 			return new ArrayList<>();
 		}
 	}
-	
+
 	public EjecutivoCliente getEjecutivoClienteByIdCliente(Cliente cliente) {
-		String query = "select ser from EjecutivoCliente ser where (ser.estado='AC' or ser.estado='IN') and ser.cliente.id="+cliente.getId();
-		return executeQuerySingleResult(query);
+		try{
+			String query = "select ser from EjecutivoCliente ser where (ser.estado='AC' or ser.estado='IN') and ser.cliente.id="+cliente.getId();
+			return executeQuerySingleResult(query);
+		}catch (Exception e) {
+			return null;
+		}
 	}
 
 }

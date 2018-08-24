@@ -65,6 +65,7 @@ public class ListOrdenIngresoController implements Serializable {
 	private boolean modificar ;
 	private boolean verReport;
 	private boolean cargadoDesdeOtraPagina;
+	private boolean ver;
 
 	//VAR
 	private String urlOrdenIngreso ;
@@ -80,7 +81,7 @@ public class ListOrdenIngresoController implements Serializable {
 	private Usuario usuarioSession;
 	private Gestion gestionSesion;
 	private Empresa empresaLogin;
-	
+
 	//VAR
 	private int sizeList;
 	private int sizePage;
@@ -96,6 +97,7 @@ public class ListOrdenIngresoController implements Serializable {
 	}
 
 	public void loadDefault(){
+		ver = false;
 		cargarLazyDataModel();
 		setVerReport(false);
 		cargadoDesdeOtraPagina = false;
@@ -112,37 +114,47 @@ public class ListOrdenIngresoController implements Serializable {
 			cargarReporte();
 		}
 	}
-	
+
 	//PROCESS
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public void cargarLazyDataModel(){
-			sizeList = ordenIngresaDao.countTotalRecord("orden_ingreso").intValue();
-			ordenesIngreso = new LazyDataModel() {
-				private static final long serialVersionUID = 3565223586960673287L;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void cargarLazyDataModel(){
+		sizeList = ordenIngresaDao.countTotalRecord("orden_ingreso").intValue();
+		ordenesIngreso = new LazyDataModel() {
+			private static final long serialVersionUID = 3565223586960673287L;
 
-				@Override
-				public List<OrdenIngreso> load(int first, int pageSize,
-						String sortField, SortOrder sortOrder, Map filters) {
-					setFirst(first);
-					setSizePage(pageSize);
-					return ordenIngresaDao.obtenerPorTamanio(getFirst(),getSizePage(),filters);
-				}
+			@Override
+			public List<OrdenIngreso> load(int first, int pageSize,
+					String sortField, SortOrder sortOrder, Map filters) {
+				setFirst(first);
+				setSizePage(pageSize);
+				return ordenIngresaDao.obtenerPorTamanio(getFirst(),getSizePage(),filters);
+			}
 
-				@Override
-				public OrdenIngreso getRowData(String rowKey) {
-					List<OrdenIngreso> ordenesIngreso = (List<OrdenIngreso>) getWrappedData();
-					Integer value = Integer.valueOf(rowKey);
-					for (OrdenIngreso ordenIngreso : ordenesIngreso) {
-						if (ordenIngreso.getId().equals(value)) {
-							return ordenIngreso;
-						}
+			@Override
+			public OrdenIngreso getRowData(String rowKey) {
+				List<OrdenIngreso> ordenesIngreso = (List<OrdenIngreso>) getWrappedData();
+				Integer value = Integer.valueOf(rowKey);
+				for (OrdenIngreso ordenIngreso : ordenesIngreso) {
+					if (ordenIngreso.getId().equals(value)) {
+						return ordenIngreso;
 					}
-					return null;
 				}
-			};
-			ordenesIngreso.setRowCount(getSizeList());
-			ordenesIngreso.setPageSize(getSizePage());
+				return null;
+			}
+		};
+		ordenesIngreso.setRowCount(getSizeList());
+		ordenesIngreso.setPageSize(getSizePage());
+	}
+
+	public void prepareViewDetail(){
+		try{
+			FacesUtil.setSessionAttribute("pIdOrdenIngreso", selectedOrdenIngreso.getId());
+			String page = "pages/proceso/orden_ingreso.xhtml";
+			PageUtil.cargarPagina(page);
+		}catch(Exception e){
+			System.out.println("Error : " +e.getMessage());
 		}
+	}
 
 	public void initConversation() {
 		if (!FacesContext.getCurrentInstance().isPostback() && conversation.isTransient()) {
@@ -166,6 +178,7 @@ public class ListOrdenIngresoController implements Serializable {
 
 	public void onRowSelect(SelectEvent event) {
 		modificar = true;
+		ver = true;
 		if(selectedOrdenIngreso.getEstado().equals("PR")){
 			modificar = false;
 		}
@@ -202,6 +215,14 @@ public class ListOrdenIngresoController implements Serializable {
 			almProd.setFechaExpiracion(d.getFechaExpiracion());
 			almProd.setNumeroLote(d.getNumeroLote());
 			almProd.setUbicacionFisica(d.getUbicacionFisica());
+			//precios
+			almProd.setPrecioAlmacen(d.getPrecioAlmacen());
+			almProd.setPrecio1(d.getPrecio1());
+			almProd.setPrecio2(d.getPrecio2());
+			almProd.setPrecio3(d.getPrecio3());
+			almProd.setPrecio4(d.getPrecio4());
+			almProd.setPrecio5(d.getPrecio5());
+			almProd.setPrecio6(d.getPrecio6());
 			listAlmacenProducto.add(almProd);
 		}
 		boolean sw = ordenIngresaDao.procesar(empresaLogin,"ORDEN INGRESO X "+selectedOrdenIngreso.getMotivoIngreso(),usuarioSession,selectedOrdenIngreso, listAlmacenProducto);
@@ -329,6 +350,14 @@ public class ListOrdenIngresoController implements Serializable {
 
 	public void setFirst(int first) {
 		this.first = first;
+	}
+
+	public boolean isVer() {
+		return ver;
+	}
+
+	public void setVer(boolean ver) {
+		this.ver = ver;
 	}
 
 }

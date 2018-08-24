@@ -50,6 +50,27 @@ public class DetalleOrdenIngreso implements Serializable{
 	@Column(name="precio_compra", nullable = true)
 	private double precioCompra;
 	
+	@Column(name="precio_almacen", nullable = true)
+	private double precioAlmacen;
+	
+	@Column(name="precio_1", nullable = true)
+	private double precio1;
+	
+	@Column(name="precio_2", nullable = true)
+	private double precio2;
+	
+	@Column(name="precio_3", nullable = true)
+	private double precio3;
+	
+	@Column(name="precio_4", nullable = true)
+	private double precio4;
+	
+	@Column(name="precio_5", nullable = true)
+	private double precio5;
+	
+	@Column(name="precio_6", nullable = true)
+	private double precio6;
+	
 	@Column(name="porcentaje_venta_contado", nullable = true)
 	private double porcentajeVentaContado;
 	
@@ -303,6 +324,62 @@ public class DetalleOrdenIngreso implements Serializable{
 
 	public void setNumeroLote(String numeroLote) {
 		this.numeroLote = numeroLote;
+	}
+
+	public double getPrecio1() {
+		return precio1;
+	}
+
+	public void setPrecio1(double precio1) {
+		this.precio1 = precio1;
+	}
+
+	public double getPrecio2() {
+		return precio2;
+	}
+
+	public void setPrecio2(double precio2) {
+		this.precio2 = precio2;
+	}
+
+	public double getPrecio3() {
+		return precio3;
+	}
+
+	public void setPrecio3(double precio3) {
+		this.precio3 = precio3;
+	}
+
+	public double getPrecio4() {
+		return precio4;
+	}
+
+	public void setPrecio4(double precio4) {
+		this.precio4 = precio4;
+	}
+
+	public double getPrecio5() {
+		return precio5;
+	}
+
+	public void setPrecio5(double precio5) {
+		this.precio5 = precio5;
+	}
+
+	public double getPrecio6() {
+		return precio6;
+	}
+
+	public void setPrecio6(double precio6) {
+		this.precio6 = precio6;
+	}
+
+	public double getPrecioAlmacen() {
+		return precioAlmacen;
+	}
+
+	public void setPrecioAlmacen(double precioAlmacen) {
+		this.precioAlmacen = precioAlmacen;
 	}
 
 }

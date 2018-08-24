@@ -1,12 +1,6 @@
 package com.erp360.controller;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -23,28 +17,22 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.richfaces.cdi.push.Push;
 
-import com.erp360.dao.AlmacenDao;
 import com.erp360.dao.AlmacenProductoDao;
 import com.erp360.dao.DetalleOrdenTraspasoDao;
-import com.erp360.dao.DetalleProductoDao;
 import com.erp360.dao.OrdenTraspasoDao;
 import com.erp360.dao.ProductoDao;
 import com.erp360.model.Almacen;
 import com.erp360.model.AlmacenProducto;
 import com.erp360.model.DetalleOrdenTraspaso;
-import com.erp360.model.DetalleProducto;
 import com.erp360.model.Empresa;
 import com.erp360.model.Gestion;
 import com.erp360.model.OrdenTraspaso;
 import com.erp360.model.Producto;
 import com.erp360.model.Proveedor;
-import com.erp360.util.Cifrado;
 import com.erp360.util.FacesUtil;
-import com.erp360.util.NumberUtil;
 import com.erp360.util.SessionMain;
 
 @Named(value = "ordenTraspasoController")
@@ -64,7 +52,7 @@ public class OrdenTraspasoController implements Serializable {
 	private @Inject ProductoDao productoRepository;
 	private @Inject DetalleOrdenTraspasoDao detalleOrdenTraspasoRepository;
 	private @Inject AlmacenProductoDao almacenProductoRepository;
-	private @Inject DetalleProductoDao detalleProductoRepository;
+	//private @Inject DetalleProductoDao detalleProductoRepository;
 	//private @Inject CierreGestionAlmacenD cierreGestionAlmacenRepository;
 
 	@Inject
@@ -405,6 +393,7 @@ public class OrdenTraspasoController implements Serializable {
 
 	public void cargarDetalleProducto(Date fechaActual,Almacen almacen,Producto producto,double cantidad, double precio, Date fecha, String correlativoTransaccion,String usuarioSession ) {
 		try{
+			/*
 			DetalleProducto detalleProducto = new DetalleProducto();
 			detalleProducto.setCodigo("OT"+correlativoTransaccion+fecha.toString());
 			detalleProducto.setAlmacen(almacen);
@@ -418,6 +407,7 @@ public class OrdenTraspasoController implements Serializable {
 			detalleProducto.setProducto(producto);
 			detalleProducto.setUsuarioRegistro(usuarioSession);
 			detalleProducto.setGestion(gestionSesion);
+			*/
 			//detalleProductoRegistration.register(detalleProducto);
 		}catch(Exception e){
 			System.out.println("ERROR cargarDetalleProducto() "+e.getMessage());
@@ -439,6 +429,7 @@ public class OrdenTraspasoController implements Serializable {
 			double cantidadAux = detalle.getCantidadSolicitada();
 			double cantidadSolicitada = detalle.getCantidadSolicitada();// 15
 			int cantidad = 1;
+			/*
 			//obtener todos los detalles del producto, para poder descontar stock de acuerdo a la cantidad solicitada
 			List<DetalleProducto> listDetalleProducto = detalleProductoRepository.findAllByProductoAndAlmacenOrderByFecha(almacen,producto,gestionSesion);
 			System.out.println("listDetalleProducto.size()"+listDetalleProducto.size());
@@ -478,6 +469,7 @@ public class OrdenTraspasoController implements Serializable {
 				totalCantidaEntregada = cantidadAux - cantidadSolicitada;
 				return true;
 			}
+			*/
 			return false;
 		}catch(Exception e){
 			System.out.println("actualizarDetalleProductoByOrdenSalida() ERROR: "+e.getMessage());
@@ -619,10 +611,10 @@ public class OrdenTraspasoController implements Serializable {
 
 	private double cantidadExistenciasByProductoAlmacen(Almacen almacen,Producto producto){
 		double cantidad = 0;
-		List<DetalleProducto> listDetalleProducto = detalleProductoRepository.findAllByProductoAndAlmacenOrderByFecha(almacen,producto,gestionSesion);
-		for(DetalleProducto detalle:listDetalleProducto){
-			cantidad = cantidad + detalle.getStockActual();
-		}
+		//List<DetalleProducto> listDetalleProducto = detalleProductoRepository.findAllByProductoAndAlmacenOrderByFecha(almacen,producto,gestionSesion);
+		//for(DetalleProducto detalle:listDetalleProducto){
+		//	cantidad = cantidad + detalle.getStockActual();
+		//}
 		return cantidad;
 	}
 

@@ -35,8 +35,8 @@
 		<connection-property name="char.encoding">UTF-8
 		</connection-property>
 		<pool>
-			<min-pool-size>10</min-pool-size>
-			<max-pool-size>80</max-pool-size>
+			<min-pool-size>5</min-pool-size>
+			<max-pool-size>25</max-pool-size>
 			<prefill>true</prefill>
 		</pool>
 		<security>

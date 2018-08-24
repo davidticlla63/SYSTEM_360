@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 
 import com.erp360.model.AlmacenProducto;
 import com.erp360.model.DetalleOrdenIngreso;
-import com.erp360.model.DetalleProducto;
 import com.erp360.model.DetalleTomaInventario;
 import com.erp360.model.DetalleTomaInventarioOrdenIngreso;
 import com.erp360.model.Gestion;
@@ -15,7 +14,7 @@ import com.erp360.model.KardexProducto;
 import com.erp360.model.OrdenIngreso;
 import com.erp360.model.TomaInventario;
 import com.erp360.util.FacesUtil;
-import com.erp360.util.V;
+import com.erp360.util.P;
 import com.erp360.util.W;
 
 /**
@@ -24,10 +23,11 @@ import com.erp360.util.W;
  *
  */
 @Stateless
-public class TomaInventarioDao extends DataAccessObjectJpa<TomaInventario,DetalleTomaInventarioOrdenIngreso,OrdenIngreso,DetalleOrdenIngreso,DetalleTomaInventario, DetalleProducto, Gestion, AlmacenProducto, KardexProducto, W> {
+//T, E, R, S, O, P, Q, U, V, W
+public class TomaInventarioDao extends DataAccessObjectJpa<TomaInventario,DetalleTomaInventarioOrdenIngreso,OrdenIngreso,DetalleOrdenIngreso,DetalleTomaInventario,P, Gestion, AlmacenProducto, KardexProducto, W> {
 
 	public TomaInventarioDao(){
-		super(TomaInventario.class,DetalleTomaInventarioOrdenIngreso.class,OrdenIngreso.class,DetalleOrdenIngreso.class,DetalleTomaInventario.class,DetalleProducto.class,Gestion.class,AlmacenProducto.class,KardexProducto.class);
+		super(TomaInventario.class,DetalleTomaInventarioOrdenIngreso.class,OrdenIngreso.class,DetalleOrdenIngreso.class,DetalleTomaInventario.class,P.class,Gestion.class,AlmacenProducto.class,KardexProducto.class);
 	}
 	
 	public boolean modificar(TomaInventario tomaInventario){
@@ -109,7 +109,7 @@ public class TomaInventarioDao extends DataAccessObjectJpa<TomaInventario,Detall
 		}
 	}
 
-	public boolean procesarTomaInventarioInicial(OrdenIngreso ordenIngreso,TomaInventario tomaInventario,Gestion gestion,List<AlmacenProducto>listAlmacenProducto,List<DetalleProducto>listDetalleProducto){
+	public boolean procesarTomaInventarioInicial(OrdenIngreso ordenIngreso,TomaInventario tomaInventario,Gestion gestion,List<AlmacenProducto>listAlmacenProducto,List<Object> objects){
 		try{
 			//set fechas
 			Date fechaActual = ordenIngreso.getFechaAprobacion();
@@ -127,6 +127,7 @@ public class TomaInventarioDao extends DataAccessObjectJpa<TomaInventario,Detall
 				ap = createU(ap);
 			}
 			//DetalleProducto
+			/*
 			for(DetalleProducto dp: listDetalleProducto){
 				dp.setFechaRegistro(fechaActual);
 				dp.setFecha(fechaActual);
@@ -146,6 +147,7 @@ public class TomaInventarioDao extends DataAccessObjectJpa<TomaInventario,Detall
 				kardex.setProducto(dp.getProducto());
 				createV(kardex);
 			}
+			*/
 			commitTransaction();
 			FacesUtil.infoMessage("Toma de Inventario Procesada Correctamente", "Toma de Inventario Nº"+tomaInventario.getId());
 			return true;

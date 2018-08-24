@@ -166,7 +166,7 @@ public class AlmacenProductoDao extends DataAccessObjectJpa<AlmacenProducto,E,R,
 	}
 		
 
-	public AlmacenProducto findByProductoConStockPromedio(Gestion gestion,Producto producto, Almacen almacen) {
+	public AlmacenProducto findByProductoConStockPromedio(Gestion gestion,Producto producto, Almacen almacen,double cantidad) {
 		List<AlmacenProducto> almacenProductos = new ArrayList<AlmacenProducto>();
 		AlmacenProducto almacenProducto = new AlmacenProducto(0,0,0,0);
 		try{
@@ -177,9 +177,23 @@ public class AlmacenProductoDao extends DataAccessObjectJpa<AlmacenProducto,E,R,
 				almacenProducto.setStock(almacenProducto.getStock() + ap.getStock());
 				almacenProducto.setPrecioVentaContado(almacenProducto.getPrecioVentaContado() + ap.getPrecioVentaContado());
 				almacenProducto.setPrecioVentaCredito(almacenProducto.getPrecioVentaCredito() + ap.getPrecioVentaCredito());
+				almacenProducto.setPrecio1(almacenProducto.getPrecio1() + ap.getPrecio1());
+				almacenProducto.setPrecio2(almacenProducto.getPrecio2() + ap.getPrecio2());
+				almacenProducto.setPrecio3(almacenProducto.getPrecio3() + ap.getPrecio3());
+				almacenProducto.setPrecio4(almacenProducto.getPrecio4() + ap.getPrecio4());
+				almacenProducto.setPrecio5(almacenProducto.getPrecio5() + ap.getPrecio5());
+				almacenProducto.setPrecio6(almacenProducto.getPrecio6() + ap.getPrecio6());
+				almacenProducto.setPrecioAlmacen(almacenProducto.getPrecioAlmacen() + ap.getPrecioAlmacen());
 			}
 			almacenProducto.setPrecioVentaContado(almacenProducto.getPrecioVentaContado()/almacenProductos.size());
 			almacenProducto.setPrecioVentaCredito(almacenProducto.getPrecioVentaCredito()/almacenProductos.size());
+			almacenProducto.setPrecio1(almacenProducto.getPrecio1() / almacenProductos.size());
+			almacenProducto.setPrecio2(almacenProducto.getPrecio2() / almacenProductos.size());
+			almacenProducto.setPrecio3(almacenProducto.getPrecio3() / almacenProductos.size());
+			almacenProducto.setPrecio4(almacenProducto.getPrecio4() / almacenProductos.size());
+			almacenProducto.setPrecio5(almacenProducto.getPrecio5() / almacenProductos.size());
+			almacenProducto.setPrecio6(almacenProducto.getPrecio6() / almacenProductos.size());
+			almacenProducto.setPrecioAlmacen(almacenProducto.getPrecioAlmacen() / almacenProductos.size());
 		}catch(Exception e){
 			//AlmacenProducto
 		}
@@ -196,7 +210,7 @@ public class AlmacenProductoDao extends DataAccessObjectJpa<AlmacenProducto,E,R,
 	public List<AlmacenProducto> findAllByProductoAndAlmacenOrderByFecha(Gestion gestion, Almacen almacen,Producto producto) {
 		try{
 			String query = "select em from AlmacenProducto em where em.estado='AC' and em.producto.id="
-					+ producto.getId() +" and em.almacen.id="+almacen.getId()+" and em.gestion.id="+gestion.getId()+" order by em.fechaRegistro asc";
+					+ producto.getId() +" and em.almacen.id="+almacen.getId()+" and em.gestion.id="+gestion.getId() +" and em.stock>0 order by em.fechaRegistro asc";
 			return executeQueryResulList(query);
 		}catch(Exception e){
 			return null;

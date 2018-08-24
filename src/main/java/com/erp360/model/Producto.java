@@ -68,6 +68,24 @@ public class Producto implements Serializable {
 	@Column(name="precio_compra",nullable=true)
 	private double precioCompra;
 	
+	@Column(name="precio_compra_1",nullable=true)
+	private double precioCompra1;
+	
+	@Column(name="precio_compra_2",nullable=true)
+	private double precioCompra2;
+	
+	@Column(name="precio_compra_3",nullable=true)
+	private double precioCompra3;
+	
+	@Column(name="precio_compra_4",nullable=true)
+	private double precioCompra4;
+	
+	@Column(name="precio_compra_5",nullable=true)
+	private double precioCompra5;
+	
+	@Column(name="precio_compra_6",nullable=true)
+	private double precioCompra6;
+	
 	@Column(name="stock_min")
 	private double stockMin;
 
@@ -87,6 +105,11 @@ public class Producto implements Serializable {
 		this.nombre = "";
 		this.precioUnitario = 0;
 		this.precioCompra = 0;
+		this.precioCompra1 = 0;
+		this.precioCompra2 = 0;
+		this.precioCompra3 = 0;
+		this.precioCompra4 = 0;
+		this.precioCompra5 = 0;
 		this.precioVentaCredito = 0;
 		this.precioVentaContado = 0;
 		this.unidadMedidas = new UnidadMedida();
@@ -265,6 +288,54 @@ public class Producto implements Serializable {
 
 	public void setStockMax(double stockMax) {
 		this.stockMax = stockMax;
+	}
+
+	public double getPrecioCompra1() {
+		return precioCompra1;
+	}
+
+	public void setPrecioCompra1(double precioCompra1) {
+		this.precioCompra1 = precioCompra1;
+	}
+
+	public double getPrecioCompra2() {
+		return precioCompra2;
+	}
+
+	public void setPrecioCompra2(double precioCompra2) {
+		this.precioCompra2 = precioCompra2;
+	}
+
+	public double getPrecioCompra3() {
+		return precioCompra3;
+	}
+
+	public void setPrecioCompra3(double precioCompra3) {
+		this.precioCompra3 = precioCompra3;
+	}
+
+	public double getPrecioCompra4() {
+		return precioCompra4;
+	}
+
+	public void setPrecioCompra4(double precioCompra4) {
+		this.precioCompra4 = precioCompra4;
+	}
+
+	public double getPrecioCompra5() {
+		return precioCompra5;
+	}
+
+	public void setPrecioCompra5(double precioCompra5) {
+		this.precioCompra5 = precioCompra5;
+	}
+
+	public double getPrecioCompra6() {
+		return precioCompra6;
+	}
+
+	public void setPrecioCompra6(double precioCompra6) {
+		this.precioCompra6 = precioCompra6;
 	}
 
 }

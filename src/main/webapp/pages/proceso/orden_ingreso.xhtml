@@ -51,7 +51,7 @@
 
 										<p:commandLink id="buttonRegistrar" value="&#160; Registrar"
 											styleClass="btn btn-success ion-checkmark"
-											rendered="#{ ! ordenIngresoController.verReport and (!ordenIngresoController.modificar)}"
+											rendered="#{ ! ordenIngresoController.verReport and ordenIngresoController.modificar}"
 											update="form001" style="height:31px; padding:center"
 											disabled="#{ ! ordenIngresoController.estaGestionIniciada()}"
 											action="#{ordenIngresoController.registrarOrdenIngreso()}">
@@ -277,19 +277,21 @@
 														</p:inputText>
 													</div>
 												</div>
-												<div class="form-group">
-													<div class="col-md-4">Orden Por Pagar</div>
-													<div class="col-md-8">
-														<div class="actions">
-															<label class="switch switch-success switch-sm"> <h:selectBooleanCheckbox
-																	value="#{ordenIngresoController.newOrdenIngreso.porPagar}"
-																	id="checkEV" styleClass="switch">
-																	<p:ajax update="checkEV" />
-																</h:selectBooleanCheckbox> <span class="switch"></span>
-															</label>
+												<ui:fragment rendered="false">
+													<div class="form-group">
+														<div class="col-md-4">Orden Por Pagar</div>
+														<div class="col-md-8">
+															<div class="actions">
+																<label class="switch switch-success switch-sm"> <h:selectBooleanCheckbox
+																		value="#{ordenIngresoController.newOrdenIngreso.porPagar}"
+																		id="checkEV" styleClass="switch">
+																		<p:ajax update="checkEV" />
+																	</h:selectBooleanCheckbox> <span class="switch"></span>
+																</label>
+															</div>
 														</div>
 													</div>
-												</div>
+												</ui:fragment>
 
 												<div class="form-group ">
 													<div class="col-md-4">Observación</div>
@@ -319,6 +321,7 @@
 												<p:commandLink id="buttonDlgTelefono"
 													value="&#160; Producto"
 													styleClass="btn btn-success btn-outlined ion-plus"
+													rendered="#{ ordenIngresoController.modificar}"
 													style="height:27px; padding-top: 5px" immediate="true"
 													update="form001"
 													actionListener="#{ordenIngresoController.actionLoadDialogProducto()}">
@@ -458,10 +461,13 @@
 		<!--   MODAL PRODUCTO -->
 		<p:dialog widgetVar="dlgProducto" resizable="false" header="AGREGAR PRODUCTO"
 			showHeader="true" modal="false" closeOnEscape="true" draggable="true"
-			position="center" style="padding: 0px 0px 0px 0px;" width="700"
+			position="center" style="padding: 0px 0px 0px 0px;" width="730"
 			visible="#{partidaController.diagloProducto}" id="modalProductoID">
 			<h:form id="formDialogProducto">
 				<ui:fragment rendered="#{ ! ordenIngresoController.nuevoProducto}">
+					<p:tabView>
+						<p:tab title="Precios">
+						
 					<div class="row">
 						<div class="form-group">
 							<div class="col-md-2">Producto</div>
@@ -475,7 +481,7 @@
 									requiredMessage="Producto Requerido." forceSelection="true"
 									var="_var" itemLabel="#{_var.nombre}" itemValue="#{_var}"
 									placeholder="[Escriba Producto]" scrollHeight="300">
-									<p:ajax event="itemSelect" update="productoID"
+									<p:ajax event="itemSelect" update="productoID,precioCompraID,precio1ID,precio2ID,precio3ID,precio4ID,precio5ID,precio6ID,formDialogProducto:totalID"
 										listener="#{ordenIngresoController.onRowSelectProductoClick}" />
 									<p:column>
 										<h:outputText value="#{_var.codigo}" />
@@ -489,101 +495,127 @@
 
 								</p:autoComplete>
 							</div>
-							<label class="col-md-2 control-label">Observación</label>
-							<div class="col-md-4">
-								
-								<p:inputTextarea id="descripcionID" required="true"
-									style="padding: 4px 10px;"
-									requiredMessage="Observacion Requerido."
-									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.observacion}"
-									size="20" rows="2" cols="39">
+							<label class="col-md-3 control-label">Precio 1</label>
+							<div class="col-md-3">
+								<p:inputText id="precio1ID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precio1}"
+									size="40">
 									<p:ajax event="change" />
-								</p:inputTextarea>
+									<f:convertNumber pattern="#,##0.00" locale="en" />
+								</p:inputText>
 							</div>
 						</div>
 					</div>
 					
-					<div class="row">
+					<div class="row" style="padding-top: 5px;">
 						<div class="form-group">
-							<label class="col-md-2 control-label">Cantidad</label>
-							<div class="col-md-4">
+							<label class="col-md-3 control-label">Cantidad</label>
+							<div class="col-md-3">
 								<p:inputText id="cantidadID" required="true"
 									requiredMessage="Cantidad Requerido."
 									style="padding: 4px 10px;"
 									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.cantidad}"
 									size="40">
-									<p:ajax event="change" update="totalID"
+									<p:ajax event="change" update="formDialogProducto:totalID"
 										listener="#{ordenIngresoController.calcular()}" />
 								</p:inputText>
 							</div>
-							<label for="descripcionID" class="col-md-2 control-label">Garantía (Días)</label>
-							<div class="col-md-4">
-								<p:inputText id="garantiaID" required="true"
-									requiredMessage="Garantía Requerido."
-									style="padding: 4px 10px;"
-									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.garantia}"
+							<label for="descripcionID" class="col-md-3 control-label">Precio 2</label>
+							<div class="col-md-3">
+								<p:inputText id="precio2ID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precio2}"
 									size="40">
 									<p:ajax event="change" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
 								</p:inputText>
 							</div>
 							
 						</div>
 					</div>
-					<div class="row">
+					
+					<div class="row" style="padding-top: 5px;">
 						<div class="form-group">
-							<label class="col-md-2 control-label">Precio Compra ($us)</label>
-							<div class="col-md-4">
+							<label class="col-md-3 control-label">Precio Compra</label>
+							<div class="col-md-3">
 								<p:inputText id="precioCompraID" required="true"
 									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
 									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioCompra}"
 									size="40">
-									<p:ajax event="change" update="precioVCoID,precioVCrID,totalID"
+									<p:ajax event="change" update="precioVCoID,precioVCrID,formDialogProducto:totalID"
 										listener="#{ordenIngresoController.calcularPorcentajePrecio()}" />
 									<f:convertNumber pattern="#,##0.00" locale="en" />
 								</p:inputText>
 							</div>
-							<label class="col-md-2 control-label">Ubicación Física</label>
-							<div class="col-md-4">
-								<p:inputText id="ubicacionFisicaID" style="padding: 4px 10px;"
-									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.ubicacionFisica}"
+							<label for="descripcionID" class="col-md-3 control-label">Precio 3</label>
+							<div class="col-md-3">
+								<p:inputText id="precio3ID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precio3}"
 									size="40">
 									<p:ajax event="change" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
 								</p:inputText>
 							</div>
-							
+						</div>
+					</div>
+				
+					<div class="row" style="padding-top: 5px;">
+						<div class="form-group">
+							<label class="col-md-3 control-label">Precio Almacén</label>
+							<div class="col-md-3">
+								<p:inputText id="precioAlmacenID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioAlmacen}"
+									size="40">
+									<p:ajax event="change" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
+								</p:inputText>
+							</div>
+							<label class="col-md-3 control-label">Precio 4</label>
+							<div class="col-md-3">
+								<p:inputText id="precio4ID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precio4}"
+									size="40">
+									<p:ajax event="change" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
+								</p:inputText>
+							</div>
 						</div>
 					</div>
 					
-					<div class="row">
+					<div class="row" style="padding-top: 5px;">
 						<div class="form-group">
-							<label class="col-md-2 control-label">Precio Venta
-								Contado ($us)</label>
-							<div class="col-md-4">
+							<label class="col-md-3 control-label">Precio Venta Contado</label>
+							<div class="col-md-3">
 								<p:inputText id="precioVCoID" required="true"
 									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
 									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioVentaContado}"
 									size="40">
-									<p:ajax event="change" update="totalID"
+									<p:ajax event="change" update="formDialogProducto:totalID"
 										listener="#{ordenIngresoController.calcular()}" />
 									<f:convertNumber pattern="#,##0.00" locale="en" />
 								</p:inputText>
 							</div>
-							<label class="col-md-2 control-label">Número Lote</label>
-							<div class="col-md-4">
-								<p:inputText id="numeroLoteID" style="padding: 4px 10px;"
-									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.numeroLote}"
+							<label class="col-md-3 control-label">Precio 5</label>
+							<div class="col-md-3">
+								<p:inputText id="precio5ID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precio5}"
 									size="40">
 									<p:ajax event="change" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
 								</p:inputText>
 							</div>
 						</div>
 					</div>
 					
-					<div class="row">
+					<div class="row" style="padding-top: 5px;">
 						<div class="form-group">
-							<label class="col-md-2 control-label">Precio Venta
-								Credito ($us)</label>
-							<div class="col-md-4">
+							<label class="col-md-3 control-label">Precio Venta Credito</label>
+							<div class="col-md-3">
 								<p:inputText id="precioVCrID" required="true"
 									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
 									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precioVentaCredito}"
@@ -592,21 +624,89 @@
 									<f:convertNumber pattern="#,##0.00" locale="en" />
 								</p:inputText>
 							</div>
-							<label class="col-md-2 control-label">Fecha Expiración</label>
-							<div class="col-md-4">
-								<p:calendar pattern="dd/MM/yyyy" id="fechaExpiracion"
-									styleClass="myWid100" locale="es"
-									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.fechaExpiracion}"
-									onkeypress="return permiteKey(event, 'none')">
-									<p:ajax event="dateSelect" />
-								</p:calendar>
+							<label class="col-md-3 control-label">Precio 6</label>
+							<div class="col-md-3">
+								<p:inputText id="precio6ID" required="true"
+									requiredMessage="Precio Requerido." style="padding: 4px 10px;"
+									value="#{ordenIngresoController.selectedDetalleOrdenIngreso.precio6}"
+									size="40">
+									<p:ajax event="change" />
+									<f:convertNumber pattern="#,##0.00" locale="en" />
+								</p:inputText>
 							</div>
 						</div>
 					</div>
 					
-					<div class="row">
+					
+					</p:tab>
+					
+					<p:tab title="Detalle">
+						<div class="row">
+							<div class="form-group">
+								<div class="col-md-2">Observación</div>
+								<div class="col-md-4">
+									<p:inputTextarea id="descripcionID" required="true"
+										style="padding: 4px 10px;"
+										requiredMessage="Observacion Requerido."
+										value="#{ordenIngresoController.selectedDetalleOrdenIngreso.observacion}"
+										size="20" rows="2" cols="39">
+										<p:ajax event="change" />
+									</p:inputTextarea>
+								</div>
+								<div class="col-md-2">Garantia(Días)</div>
+								<div class="col-md-4">
+									<p:inputText id="garantiaID" required="true"
+										requiredMessage="Garantía Requerido."
+										style="padding: 4px 10px;"
+										value="#{ordenIngresoController.selectedDetalleOrdenIngreso.garantia}"
+										size="40">
+										<p:ajax event="change" />
+									</p:inputText>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row" style="padding-top: 5px;">
+							<div class="form-group">
+								<div class="col-md-2">Ubic. Física</div>
+								<div class="col-md-4">
+									<p:inputText id="ubicacionFisicaID" style="padding: 4px 10px;"
+										value="#{ordenIngresoController.selectedDetalleOrdenIngreso.ubicacionFisica}"
+										size="40">
+										<p:ajax event="change" />
+									</p:inputText>
+								</div>
+								<div class="col-md-2">Fecha Exp.</div>
+								<div class="col-md-4">
+									<p:calendar pattern="dd/MM/yyyy" id="fechaExpiracion"
+										styleClass="myWid100" locale="es"
+										value="#{ordenIngresoController.selectedDetalleOrdenIngreso.fechaExpiracion}"
+										onkeypress="return permiteKey(event, 'none')">
+										<p:ajax event="dateSelect" />
+									</p:calendar>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row" style="padding-top: 5px;">
+							<div class="form-group">
+								<label class="col-md-2 control-label">Número Lote</label>
+								<div class="col-md-4">
+									<p:inputText id="numeroLoteID" style="padding: 4px 10px;"
+										value="#{ordenIngresoController.selectedDetalleOrdenIngreso.numeroLote}"
+										size="40">
+										<p:ajax event="change" />
+									</p:inputText>
+								</div>
+							</div>
+						</div>
+					</p:tab>
+						
+					</p:tabView>
+					<div class="row" style="padding-top: 10px; padding-bottom: 15px;">
 						<div class="form-group">
-						<label for="totalID" class="col-md-2 control-label">Total
+							<div class="col-md-4"></div>
+							<label for="totalID" class="col-md-4 control-label">Total
 								Compra ($us)</label>
 							<div class="col-md-4">
 								<p:inputText id="totalID" required="true"
@@ -619,7 +719,6 @@
 							</div>
 						</div>
 					</div>
-
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="form-group">

@@ -11,13 +11,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "modulo", schema = "public")
-public class Modulo implements  Serializable, Comparable<Modulo> {
+public class Modulo implements Serializable {
 
 	private static final long serialVersionUID = 5422461008458515295L;
 	private Integer id;
 	private String nombre;
-	@Column(name = "modulo_icono", nullable = true)
-	private String moduloIcono;
+	
 	private String estado;
 
 	public Modulo() {
@@ -78,25 +77,6 @@ public class Modulo implements  Serializable, Comparable<Modulo> {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
-	}
-	
-	@Override
-	public int compareTo(Modulo o) {
-		if (this.id < o.id) {
-			return -1;
-		}
-		if (this.id > o.id) {
-			return 1;
-		}
-		return 0;
-	}
-
-	public String getModuloIcono() {
-		return moduloIcono;
-	}
-
-	public void setModuloIcono(String moduloIcono) {
-		this.moduloIcono = moduloIcono;
 	}
 }
 

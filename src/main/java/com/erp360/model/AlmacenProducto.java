@@ -34,6 +34,27 @@ public class AlmacenProducto implements Serializable {
 
 	@Column(name="porcentaje_venta_credito", nullable = true)
 	private double porcentajeVentaCredito;
+	
+	@Column(name="precio_almacen", nullable = true)
+	private double precioAlmacen;
+	
+	@Column(name="precio_1", nullable = true)
+	private double precio1;
+	
+	@Column(name="precio_2", nullable = true)
+	private double precio2;
+	
+	@Column(name="precio_3", nullable = true)
+	private double precio3;
+	
+	@Column(name="precio_4", nullable = true)
+	private double precio4;
+	
+	@Column(name="precio_5", nullable = true)
+	private double precio5;
+	
+	@Column(name="precio_6", nullable = true)
+	private double precio6;
 
 	private double stock;
 
@@ -58,27 +79,24 @@ public class AlmacenProducto implements Serializable {
 	@Column(name = "numero_lote",nullable=true)
 	private String numeroLote;
 
-	//bi-directional many-to-one association to Almacen
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_almacen", nullable=false, referencedColumnName="id")
-	@ManyToOne(fetch=FetchType.EAGER, optional=false)
 	private Almacen almacen;
 
-	//bi-directional many-to-one association to Producto
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_producto", nullable=false, referencedColumnName="id")
-	@ManyToOne(fetch=FetchType.EAGER, optional=false)
 	private Producto producto;
 
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_proveedor", nullable=true)
-	@ManyToOne(fetch=FetchType.EAGER, optional=false)
 	private Proveedor proveedor;
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_gestion", nullable=true)
 	private Gestion gestion;
 
-	// bi-directional many-to-one association to PedidoMov
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "id_orden_ingreso", nullable=false)
+	@JoinColumn(name = "id_orden_ingreso", nullable=true)
 	private OrdenIngreso ordenIngreso;
 	
 	private String estado;
@@ -311,6 +329,62 @@ public class AlmacenProducto implements Serializable {
 
 	public void setFechaExpiracion(Date fechaExpiracion) {
 		this.fechaExpiracion = fechaExpiracion;
+	}
+
+	public double getPrecioAlmacen() {
+		return precioAlmacen;
+	}
+
+	public void setPrecioAlmacen(double precioAlmacen) {
+		this.precioAlmacen = precioAlmacen;
+	}
+
+	public double getPrecio1() {
+		return precio1;
+	}
+
+	public void setPrecio1(double precio1) {
+		this.precio1 = precio1;
+	}
+
+	public double getPrecio2() {
+		return precio2;
+	}
+
+	public void setPrecio2(double precio2) {
+		this.precio2 = precio2;
+	}
+
+	public double getPrecio3() {
+		return precio3;
+	}
+
+	public void setPrecio3(double precio3) {
+		this.precio3 = precio3;
+	}
+
+	public double getPrecio4() {
+		return precio4;
+	}
+
+	public void setPrecio4(double precio4) {
+		this.precio4 = precio4;
+	}
+
+	public double getPrecio5() {
+		return precio5;
+	}
+
+	public void setPrecio5(double precio5) {
+		this.precio5 = precio5;
+	}
+
+	public double getPrecio6() {
+		return precio6;
+	}
+
+	public void setPrecio6(double precio6) {
+		this.precio6 = precio6;
 	}
 
 }

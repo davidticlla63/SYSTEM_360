@@ -64,12 +64,6 @@
 								</div>
 								<div class="panel-body">
 									<p:tabView>
-										<p:tab title="Contrato">
-											<p:editor id="editor" widgetVar="editorWidget" value="#{parametroVentaController.selectedParametroVenta.contrato}" width="850" height="900" requiredMessage="true" 
-												onchange="submitMainNotes()">
-											</p:editor>
-											<p:remoteCommand name="submitMainNotes" process="@parent" update="@none"/>
-										</p:tab>
 										<p:tab title="Coeficiente de Interes">
 											<div class="row">
 												<div class="col-md-12"
@@ -178,7 +172,7 @@
 												<div class="col-md-12"
 													style="padding-left: 30px; padding-right: 30px;">
 													<h4 class="pbm border-bottom">
-														Almacen para descantar en la Venta
+														Almacen para descontar en la Venta
 													</h4>
 												</div>
 											</div>

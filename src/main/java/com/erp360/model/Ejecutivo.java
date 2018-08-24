@@ -105,10 +105,10 @@ public class Ejecutivo  implements Serializable {
 		this.porcentaje = 20d;
 		this.porcentajePatrocinador=5d;
 	}
-
+	
 	@Override
 	public String toString() {
-		return nombres;
+		return String.valueOf(nombres);
 	}
 
 	@Override

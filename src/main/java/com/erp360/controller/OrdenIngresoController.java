@@ -23,7 +23,6 @@ import org.richfaces.cdi.push.Push;
 import com.erp360.dao.AlmacenDao;
 import com.erp360.dao.AlmacenProductoDao;
 import com.erp360.dao.DetalleOrdenIngresoDao;
-import com.erp360.dao.DetalleProductoDao;
 import com.erp360.dao.OrdenIngresoDao;
 import com.erp360.dao.ProductoDao;
 import com.erp360.dao.ProveedorDao;
@@ -32,7 +31,6 @@ import com.erp360.dao.UsuarioDao;
 import com.erp360.model.Almacen;
 import com.erp360.model.AlmacenProducto;
 import com.erp360.model.DetalleOrdenIngreso;
-import com.erp360.model.DetalleProducto;
 import com.erp360.model.Empresa;
 import com.erp360.model.Gestion;
 import com.erp360.model.OrdenIngreso;
@@ -74,7 +72,7 @@ public class OrdenIngresoController implements Serializable {
 	private @Inject DetalleOrdenIngresoDao detalleOrdenIngresoDao;
 	private @Inject UnidadMedidaDao unidadMedidaDao;
 	private @Inject AlmacenProductoDao almacenProductoDao;
-	private @Inject DetalleProductoDao detalleProductoDao;
+	//private @Inject DetalleProductoDao detalleProductoDao;
 
 	//STATE
 	private boolean crear ;
@@ -181,16 +179,30 @@ public class OrdenIngresoController implements Serializable {
 		//cuando agreguen un nuevo producto
 		newProducto = new Producto();
 		ocultarProveedor = false;
-		
-		String pIdOrdenIntgreso = sessionMain.getAttributeSession("pIdOrdenIngreso");//get atribute
-		if(pIdOrdenIntgreso!=null){
-			selectedOrdenIngreso = ordenIngresaDao.findById(new Integer(pIdOrdenIntgreso));
+
+		//String pIdOrdenIntgreso = sessionMain.getAttributeSession("pIdOrdenIngreso");//get atribute
+		//if(pIdOrdenIntgreso!=null){
+		if(FacesUtil.getSessionAttribute("pIdOrdenIngreso")!=null){
+			Integer pIdOrdenIngreso = (Integer) FacesUtil.getSessionAttribute("pIdOrdenIngreso");
+			FacesUtil.setSessionAttribute("pIdOrdenIngreso",null);
+			selectedOrdenIngreso = ordenIngresaDao.findById(new Integer(pIdOrdenIngreso));
 			newOrdenIngreso = selectedOrdenIngreso;
 			listaDetalleOrdenIngreso = detalleOrdenIngresoDao.obtenerPorOrdenIngreso(selectedOrdenIngreso);
 			selectedProveedor = selectedOrdenIngreso.getProveedor();
-			ocultarProveedor = true;
 			selectedAlmacen = selectedOrdenIngreso.getAlmacen();
-			modificar = true;
+			if(selectedOrdenIngreso.getEstado().equals("AC")){
+				modificar = true;
+				ocultarProveedor = false;
+			}else{
+				modificar = false;	
+				ocultarProveedor = true;
+				verButtonAnular= false;
+				modificar = false;
+				registrar = false;
+				atencionCliente=false;
+				verProcesar = false;
+				verReport = false;
+			}
 		}
 	}
 
@@ -262,22 +274,22 @@ public class OrdenIngresoController implements Serializable {
 			System.out.println("Error al anular : "+e.getMessage());
 		}
 	}
-	
+
 	public void calcularPorcentajePrecio(){
-//		double precioCompra = selectedDetalleOrdenIngreso.getPrecioCompra();
-//		//1000*0,25
-//		double porcentajeContado = selectedProducto.getLineaProducto().getGrupoProducto().getPorcentajeVentaContado() / 100;
-//		double porcentajeCredito = selectedProducto.getLineaProducto().getGrupoProducto().getPorcentajeVentaCredito() / 100;
-//		System.out.println(porcentajeContado);
-//		selectedDetalleOrdenIngreso.setPrecioVentaContado(precioCompra + (precioCompra*porcentajeContado));
-//		System.out.println(selectedDetalleOrdenIngreso.getPrecioVentaContado());
-//		selectedDetalleOrdenIngreso.setPrecioVentaCredito(precioCompra + (precioCompra*porcentajeCredito));
-//		double precio = selectedDetalleOrdenIngreso.getPrecioVentaContado();//.getPrecioUnitario();
-//		double precioCompra = selectedDetalleOrdenIngreso.getPrecioCompra();
-//		double cantidad = selectedDetalleOrdenIngreso.getCantidad();
-//		System.out.println("calcular() p="+precio+",c="+cantidad);
-//		selectedDetalleOrdenIngreso.setTotal(precio * cantidad);
-//		selectedDetalleOrdenIngreso.setTotalCompra(precioCompra * cantidad);
+		//		double precioCompra = selectedDetalleOrdenIngreso.getPrecioCompra();
+		//		//1000*0,25
+		//		double porcentajeContado = selectedProducto.getLineaProducto().getGrupoProducto().getPorcentajeVentaContado() / 100;
+		//		double porcentajeCredito = selectedProducto.getLineaProducto().getGrupoProducto().getPorcentajeVentaCredito() / 100;
+		//		System.out.println(porcentajeContado);
+		//		selectedDetalleOrdenIngreso.setPrecioVentaContado(precioCompra + (precioCompra*porcentajeContado));
+		//		System.out.println(selectedDetalleOrdenIngreso.getPrecioVentaContado());
+		//		selectedDetalleOrdenIngreso.setPrecioVentaCredito(precioCompra + (precioCompra*porcentajeCredito));
+		//		double precio = selectedDetalleOrdenIngreso.getPrecioVentaContado();//.getPrecioUnitario();
+		//		double precioCompra = selectedDetalleOrdenIngreso.getPrecioCompra();
+		//		double cantidad = selectedDetalleOrdenIngreso.getCantidad();
+		//		System.out.println("calcular() p="+precio+",c="+cantidad);
+		//		selectedDetalleOrdenIngreso.setTotal(precio * cantidad);
+		//		selectedDetalleOrdenIngreso.setTotalCompra(precioCompra * cantidad);
 		if(selectedProducto == null){
 			return;
 		}
@@ -290,7 +302,7 @@ public class OrdenIngresoController implements Serializable {
 		System.out.println(selectedDetalleOrdenIngreso.getPrecioVentaContado());
 		selectedDetalleOrdenIngreso.setPrecioVentaCredito(precioCompra + (precioCompra*porcentajeCredito));
 		calcular();
-		
+
 	}
 
 	private void actualizarAlmacenProductoAndDetalleProducto(Producto prod,Almacen alm, Gestion ges, Date fech){
@@ -303,11 +315,11 @@ public class OrdenIngresoController implements Serializable {
 			}
 
 			//actualizar detalle_producto
-			List<DetalleProducto> listDetProd = detalleProductoDao.findByAlmacenProductoAndFecha(ges, alm, prod, fech);
-			for(DetalleProducto detProd: listDetProd){
-				detProd.setEstado("RM");
-				//detalleProductoRegistration.updated(detProd);
-			}
+			//List<DetalleProducto> listDetProd = detalleProductoDao.findByAlmacenProductoAndFecha(ges, alm, prod, fech);
+			//for(DetalleProducto detProd: listDetProd){
+			//	detProd.setEstado("RM");
+			//detalleProductoRegistration.updated(detProd);
+			//}
 		}catch(Exception e){
 			System.out.println("actualizarAlmacenProductoAndDetalleProducto Error: "+e.getMessage());
 		}
@@ -466,9 +478,6 @@ public class OrdenIngresoController implements Serializable {
 		List<AlmacenProducto> listAlmacenProducto = new ArrayList<>();
 		Proveedor proveedor = selectedOrdenIngreso.getProveedor();
 		for(DetalleOrdenIngreso d: listDetalleOrdenIngreso){
-			System.out.println("FechaExpiracion: "+d.getFechaExpiracion());
-			System.out.println("NumeroLote: "+d.getNumeroLote());
-			System.out.println("UbicacionFisica: "+d.getUbicacionFisica());
 			Producto prod = d.getProducto();
 			AlmacenProducto almProd = new AlmacenProducto();
 			almProd = new AlmacenProducto();
@@ -491,6 +500,17 @@ public class OrdenIngresoController implements Serializable {
 			almProd.setFechaExpiracion(d.getFechaExpiracion());
 			almProd.setNumeroLote(d.getNumeroLote());
 			almProd.setUbicacionFisica(d.getUbicacionFisica());
+			//precios
+			System.out.println("d.getCantidad(): "+d.getCantidad());
+			System.out.println("d.getPrecio1(): "+d.getPrecio1());
+			System.out.println("d.getPrecio2(): "+d.getPrecio2());
+			almProd.setPrecioAlmacen(d.getPrecioAlmacen());
+			almProd.setPrecio1(d.getPrecio1());
+			almProd.setPrecio2(d.getPrecio2());
+			almProd.setPrecio3(d.getPrecio3());
+			almProd.setPrecio4(d.getPrecio4());
+			almProd.setPrecio5(d.getPrecio5());
+			almProd.setPrecio6(d.getPrecio6());
 			listAlmacenProducto.add(almProd);
 		}
 		boolean sw = ordenIngresaDao.procesar(empresaLogin,"ORDEN INGRESO X "+selectedOrdenIngreso.getMotivoIngreso(),usuarioSession,selectedOrdenIngreso, listAlmacenProducto);
@@ -581,17 +601,17 @@ public class OrdenIngresoController implements Serializable {
 	}
 
 	public void agregarDetalleOrdenIngreso(){
-//		System.out.println("agregarDetalleOrdenIngreso ");
-//		//verificar si el producto ya fue agregado
-//		if(verificarProductoAgregado(selectedProducto)){
-//			FacesUtil.infoMessage("OBSERVACION", "Este producto ya fue agregado.");
-//			return ;
-//		}
-//		selectedDetalleOrdenIngreso.setProveedor(selectedProveedor);
-//		selectedDetalleOrdenIngreso.setProducto(selectedProducto);
-//		listaDetalleOrdenIngreso.add(0, selectedDetalleOrdenIngreso);
-//		selectedProducto = new Producto();
-//		selectedDetalleOrdenIngreso = new DetalleOrdenIngreso();
+		//		System.out.println("agregarDetalleOrdenIngreso ");
+		//		//verificar si el producto ya fue agregado
+		//		if(verificarProductoAgregado(selectedProducto)){
+		//			FacesUtil.infoMessage("OBSERVACION", "Este producto ya fue agregado.");
+		//			return ;
+		//		}
+		//		selectedDetalleOrdenIngreso.setProveedor(selectedProveedor);
+		//		selectedDetalleOrdenIngreso.setProducto(selectedProducto);
+		//		listaDetalleOrdenIngreso.add(0, selectedDetalleOrdenIngreso);
+		//		selectedProducto = new Producto();
+		//		selectedDetalleOrdenIngreso = new DetalleOrdenIngreso();
 		//====================================================================
 		//====================================================================
 		//validaciones
@@ -605,12 +625,21 @@ public class OrdenIngresoController implements Serializable {
 			return ;
 		}
 		//selectedDetalleOrdenIngreso
+		System.out.println("precioCompra: "+selectedDetalleOrdenIngreso.getPrecioCompra());
+		System.out.println("precioAlmacen: "+selectedDetalleOrdenIngreso.getPrecioAlmacen());
+		System.out.println("precio1: "+selectedDetalleOrdenIngreso.getPrecio1());
+		System.out.println("precio2: "+selectedDetalleOrdenIngreso.getPrecio2());
+		System.out.println("precio3: "+selectedDetalleOrdenIngreso.getPrecio3());
+		System.out.println("precio4: "+selectedDetalleOrdenIngreso.getPrecio4());
+		System.out.println("precio5: "+selectedDetalleOrdenIngreso.getPrecio5());
+		System.out.println("precio6: "+selectedDetalleOrdenIngreso.getPrecio6());
+
 		selectedDetalleOrdenIngreso.setProducto(selectedProducto);
 		selectedOrdenIngreso.setProveedor(selectedProveedor);
 		listaDetalleOrdenIngreso.add(0, selectedDetalleOrdenIngreso);
 		actionCerrarDialogProducto();
 	}
-	
+
 	public void actionCerrarDialogProducto(){
 		selectedProducto = new Producto();
 		selectedDetalleOrdenIngreso = new DetalleOrdenIngreso();
@@ -619,7 +648,7 @@ public class OrdenIngresoController implements Serializable {
 		FacesUtil.updateComponent("form001");
 		closeDialogProducto();
 	}
-	
+
 	public void closeDialogProducto(){
 		FacesUtil.hideDialog("dlgProducto");
 	}
@@ -646,15 +675,16 @@ public class OrdenIngresoController implements Serializable {
 
 	//calcular totales
 	public void calcular(){
-//		System.out.println("calcular()");
-//		double precio = selectedDetalleOrdenIngreso.getPrecioVentaContado();//.getPrecioUnitario();
-//		double cantidad = selectedDetalleOrdenIngreso.getCantidad();
-//		selectedDetalleOrdenIngreso.setTotal(precio * cantidad);
+		//		System.out.println("calcular()");
+		//		double precio = selectedDetalleOrdenIngreso.getPrecioVentaContado();//.getPrecioUnitario();
+		//		double cantidad = selectedDetalleOrdenIngreso.getCantidad();
+		//		selectedDetalleOrdenIngreso.setTotal(precio * cantidad);
 		double precio = selectedDetalleOrdenIngreso.getPrecioVentaContado();//.getPrecioUnitario();
 		double precioCompra = selectedDetalleOrdenIngreso.getPrecioCompra();
 		double cantidad = selectedDetalleOrdenIngreso.getCantidad();
 		selectedDetalleOrdenIngreso.setTotal(precio * cantidad);
 		selectedDetalleOrdenIngreso.setTotalCompra(precioCompra * cantidad);
+
 	}
 
 	public void calcularTotal(){
@@ -667,14 +697,14 @@ public class OrdenIngresoController implements Serializable {
 
 	// ONCOMPLETETEXT PROVEEDOR
 	public List<Proveedor> completeProveedor(String query) {
-//		String upperQuery = query.toUpperCase();
-//		List<Proveedor> results = new ArrayList<Proveedor>();
-//		for(Proveedor i : listaProveedor) {
-//			if(i.getNombre().toUpperCase().startsWith(upperQuery)){
-//				results.add(i);
-//			}
-//		}         
-//		return results;
+		//		String upperQuery = query.toUpperCase();
+		//		List<Proveedor> results = new ArrayList<Proveedor>();
+		//		for(Proveedor i : listaProveedor) {
+		//			if(i.getNombre().toUpperCase().startsWith(upperQuery)){
+		//				results.add(i);
+		//			}
+		//		}         
+		//		return results;
 		//==============================================
 		String upperQuery = query.toUpperCase();
 		//listProveedor = proveedorRepository.findAllProveedorForQueryNombre(upperQuery,gestionSesion);
@@ -723,9 +753,9 @@ public class OrdenIngresoController implements Serializable {
 
 	// ONCOMPLETETEXT PRODUCTO
 	public List<Producto> completeProducto(String query) {
-//		String upperQuery = query.toUpperCase();
-//		listProducto = productoRepository.findAllProductoForQueryNombre(upperQuery);
-//		return listProducto;
+		//		String upperQuery = query.toUpperCase();
+		//		listProducto = productoRepository.findAllProductoForQueryNombre(upperQuery);
+		//		return listProducto;
 		if(selectedProveedor.getId().equals(0)){
 			FacesUtil.infoMessage("", "Antes seleccione un Proveedor");
 			return new ArrayList<>();
@@ -737,23 +767,31 @@ public class OrdenIngresoController implements Serializable {
 	}
 
 	public void onRowSelectProductoClick(SelectEvent event) {
-//		String nombre =  event.getObject().toString();
-//		for(Producto i : listProducto){
-//			if(i.getNombre().equals(nombre)){
-//				selectedProducto = i;
-//				//				if(devolucion){
-//				//					calcularPrecioPromedioForDevolucion(selectedProducto);
-//				//				}else{
-//				//					selectedDetalleOrdenIngreso.setPrecioUnitario(0);
-//				//				}
-//				calcular();
-//				return;
-//			}
-//		}
+		//		String nombre =  event.getObject().toString();
+		//		for(Producto i : listProducto){
+		//			if(i.getNombre().equals(nombre)){
+		//				selectedProducto = i;
+		//				//				if(devolucion){
+		//				//					calcularPrecioPromedioForDevolucion(selectedProducto);
+		//				//				}else{
+		//				//					selectedDetalleOrdenIngreso.setPrecioUnitario(0);
+		//				//				}
+		//				calcular();
+		//				return;
+		//			}
+		//		}
 		Integer id = ((Producto) event.getObject()).getId();
 		for(Producto i : listProducto){
 			if(i.getId().equals(id)){
 				selectedProducto = i;
+				//precios 1,2,3,4,5,6
+				selectedDetalleOrdenIngreso.setPrecioCompra(selectedProducto.getPrecioCompra());
+				selectedDetalleOrdenIngreso.setPrecio1(selectedProducto.getPrecioCompra1());
+				selectedDetalleOrdenIngreso.setPrecio2(selectedProducto.getPrecioCompra2());
+				selectedDetalleOrdenIngreso.setPrecio3(selectedProducto.getPrecioCompra3());
+				selectedDetalleOrdenIngreso.setPrecio4(selectedProducto.getPrecioCompra4());
+				selectedDetalleOrdenIngreso.setPrecio5(selectedProducto.getPrecioCompra5());
+				selectedDetalleOrdenIngreso.setPrecio6(selectedProducto.getPrecioCompra6());
 				calcular();
 				return;
 			}
@@ -1011,7 +1049,7 @@ public class OrdenIngresoController implements Serializable {
 	public void setVerButtonAnular(boolean verButtonAnular) {
 		this.verButtonAnular = verButtonAnular;
 	}
-	
+
 	public List<Proveedor> getListProveedor() {
 		return listProveedor;
 	}

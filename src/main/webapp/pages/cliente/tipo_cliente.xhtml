@@ -113,17 +113,17 @@
 												<div class="form-group ">
 													<div class="col-md-4">Precio</div>
 													<div class="col-md-8">
-														<p:selectOneMenu 
+														<p:selectOneMenu id="precioId"
 															value="#{tipoClienteController.newTipoCliente.precio}"
 															style=" color: #555555; background-image: none;padding: 0 10px;"
 															required="true">
-															<f:selectItem itemValue="" itemLabel="Seleccione Uno" />
-															<f:selectItem itemValue="A" itemLabel="Precio A" />
-															<f:selectItem itemValue="B" itemLabel="Precio B" />
-															<f:selectItem itemValue="C" itemLabel="Precio C" />
-															<f:selectItem itemValue="D" itemLabel="Precio D" />
-															<f:selectItem itemValue="E" itemLabel="Precio E" />
-															<p:ajax event="change" />
+															<f:selectItem itemValue="A" itemLabel="Precio 1" />
+															<f:selectItem itemValue="B" itemLabel="Precio 2" />
+															<f:selectItem itemValue="C" itemLabel="Precio 3" />
+															<f:selectItem itemValue="D" itemLabel="Precio 4" />
+															<f:selectItem itemValue="E" itemLabel="Precio 5" />
+															<f:selectItem itemValue="F" itemLabel="Precio 6" />
+															<p:ajax event="change" update="precioId" />
 														</p:selectOneMenu>
 													</div>
 												</div>

@@ -21,14 +21,12 @@ import org.richfaces.cdi.push.Push;
 import com.erp360.dao.AlmacenDao;
 import com.erp360.dao.AlmacenProductoDao;
 import com.erp360.dao.DetalleOrdenSalidaDao;
-import com.erp360.dao.DetalleProductoDao;
 import com.erp360.dao.OrdenSalidaDao;
 import com.erp360.dao.ProductoDao;
 import com.erp360.dao.UsuarioDao;
 import com.erp360.model.Almacen;
 import com.erp360.model.AlmacenProducto;
 import com.erp360.model.DetalleOrdenSalida;
-import com.erp360.model.DetalleProducto;
 import com.erp360.model.Empresa;
 import com.erp360.model.Gestion;
 import com.erp360.model.OrdenSalida;
@@ -60,7 +58,7 @@ public class OrdenSalidaController implements Serializable {
 	private @Inject UsuarioDao usuarioRepository;
 	private @Inject OrdenSalidaDao ordenSalidaRepository;
 	private @Inject DetalleOrdenSalidaDao detalleOrdenSalidaRepository;
-	private @Inject DetalleProductoDao detalleProductoRepository;
+	//private @Inject DetalleProductoDao detalleProductoRepository;
 	private @Inject AlmacenProductoDao almacenProductoRepository;
 	private @Inject ProductoDao productoDao; 
 
@@ -322,11 +320,11 @@ public class OrdenSalidaController implements Serializable {
 			}
 
 			//actualizar detalle_producto
-			List<DetalleProducto> listDetProd = detalleProductoRepository.findByAlmacenProductoAndFecha(ges, alm, prod, fech);
-			for(DetalleProducto detProd: listDetProd){
-				detProd.setEstado("RM");
+			//List<DetalleProducto> listDetProd = detalleProductoRepository.findByAlmacenProductoAndFecha(ges, alm, prod, fech);
+			//for(DetalleProducto detProd: listDetProd){
+			//	detProd.setEstado("RM");
 				//detalleProductoRegistration.updated(detProd);
-			}
+			//}
 		}catch(Exception e){
 			System.out.println("actualizarAlmacenProductoAndDetalleProducto Error: "+e.getMessage());
 		}
@@ -513,6 +511,7 @@ public class OrdenSalidaController implements Serializable {
 			double cantidadSolicitada = detalle.getCantidadSolicitada();//6
 			int cantidad = 1;
 			//obtener todos los detalles del producto, para poder descontar stock de acuerdo a la cantidad solicitada
+			/*
 			List<DetalleProducto> listDetalleProducto = detalleProductoRepository.findAllByProductoAndAlmacenOrderByFecha(almacen,producto,gestionSesion);
 			//5 | 10
 			if(listDetalleProducto.size()>0){
@@ -545,7 +544,9 @@ public class OrdenSalidaController implements Serializable {
 				}
 				cantidadEntregada = cantidadAux - cantidadSolicitada;
 				return true;
+				
 			}
+			*/
 			return false;
 		}catch(Exception e){
 			System.out.println("actualizarDetalleProductoByOrdenSalida() ERROR: "+e.getMessage());
@@ -614,10 +615,10 @@ public class OrdenSalidaController implements Serializable {
 
 	private double cantidadExistenciasByProductoAlmacen(Almacen almacen,Producto producto){
 		double cantidad = 0;
-		List<DetalleProducto> listDetalleProducto = detalleProductoRepository.findAllByProductoAndAlmacenOrderByFecha(almacen,producto,gestionSesion);
-		for(DetalleProducto detalle:listDetalleProducto){
-			cantidad = cantidad + detalle.getStockActual();
-		}
+		//List<DetalleProducto> listDetalleProducto = detalleProductoRepository.findAllByProductoAndAlmacenOrderByFecha(almacen,producto,gestionSesion);
+		//for(DetalleProducto detalle:listDetalleProducto){
+		//	cantidad = cantidad + detalle.getStockActual();
+		//}
 		return cantidad;
 	}
 
@@ -773,7 +774,7 @@ public class OrdenSalidaController implements Serializable {
 		System.out.println("getNombre: "+selectedProducto.getNombre());
 		System.out.println("id: "+selectedProducto.getId());
 		selectedProducto.setDescripcion(" "+selectedProducto.getDescripcion());
-		AlmacenProducto ap = almacenProductoRepository.findByProductoConStockPromedio(sessionMain.getGestionLogin(),selectedProducto,selectedAlmacen);
+		AlmacenProducto ap = almacenProductoRepository.findByProductoConStockPromedio(sessionMain.getGestionLogin(),selectedProducto,selectedAlmacen,1d);
 		//for(AlmacenProducto ap : listAlmacenProducto){
 			//if(ap.getProducto().getId().equals(id)){
 				selectedProducto = ap.getProducto();
@@ -809,9 +810,9 @@ public class OrdenSalidaController implements Serializable {
 	}
 
 	private  boolean verificarExistencias(Producto producto, double cantidad){
-		List<DetalleProducto> listDetalleProducto = detalleProductoRepository.findAllByProductoOrderByFecha(selectedProducto,gestionSesion);
-		if(listDetalleProducto.size()>0){
-		}
+		//List<DetalleProducto> listDetalleProducto = detalleProductoRepository.findAllByProductoOrderByFecha(selectedProducto,gestionSesion);
+		//if(listDetalleProducto.size()>0){
+		//}
 		return true;
 	}
 

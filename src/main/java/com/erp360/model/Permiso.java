@@ -21,10 +21,6 @@ public class Permiso implements Serializable {
 	
 	private String nombre;
 	
-	private String ruta;
-	@Column(name = "menu_icono", nullable = true)
-	private String menuIcono;
-	
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name="id_modulo")
 	private Modulo modulo;
@@ -96,36 +92,6 @@ public class Permiso implements Serializable {
 
 	public void setModulo(Modulo modulo) {
 		this.modulo = modulo;
-	}
-
-	public String getRuta() {
-		return ruta;
-	}
-
-	public void setRuta(String ruta) {
-		this.ruta = ruta;
-	}
-	
-	@SuppressWarnings("el-syntax")
-	public String classPath() {
-		return "#{(view.viewId.equals('" + getRuta() + "')) ? 'active' : 'inactive'}";
-	}
-
-	public String href() {
-		return getRuta();
-	}
-
-	@SuppressWarnings("el-syntax")
-	public String styleDisplay() {
-		return "display:#{accesos2Controller.verificarMenu('" + getRuta() + "')}";
-	}
-
-	public String getMenuIcono() {
-		return menuIcono;
-	}
-
-	public void setMenuIcono(String menuIcono) {
-		this.menuIcono = menuIcono;
 	}
 }
 

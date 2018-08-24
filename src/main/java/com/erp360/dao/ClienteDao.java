@@ -54,8 +54,8 @@ public class ClienteDao extends DataAccessObjectJpa<Cliente,ClienteAdicional,R,S
 		try{
 			beginTransaction();
 			cliente = create(cliente);
-			newClienteAdicional.setCliente(cliente);
-			createE(newClienteAdicional);
+			//newClienteAdicional.setCliente(cliente);
+			//createE(newClienteAdicional);
 			commitTransaction();
 			FacesUtil.infoMessage("Registro Correcto", "Cliente Nº "+cliente.getCodigo());
 			return cliente;
@@ -75,8 +75,8 @@ public class ClienteDao extends DataAccessObjectJpa<Cliente,ClienteAdicional,R,S
 		try{
 			beginTransaction();
 			cliente = update(cliente);
-			newClienteAdicional.setCliente(cliente);
-			updateE(newClienteAdicional);
+			//newClienteAdicional.setCliente(cliente);
+			//updateE(newClienteAdicional);
 			commitTransaction();
 			FacesUtil.infoMessage("Modificación Correcta", "Cliente Nº "+cliente.getCodigo());
 			return true;
@@ -98,9 +98,9 @@ public class ClienteDao extends DataAccessObjectJpa<Cliente,ClienteAdicional,R,S
 			cliente.setEstado("RM");
 			cliente.setCi(new Date()+"|"+cliente.getCi());
 			cliente = update(cliente);
-			newClienteAdicional.setEstado("RM");
-			newClienteAdicional.setCliente(cliente);
-			updateE(newClienteAdicional);
+			//newClienteAdicional.setEstado("RM");
+			//newClienteAdicional.setCliente(cliente);
+			//updateE(newClienteAdicional);
 			commitTransaction();
 			FacesUtil.infoMessage("Modificación Correcta", "Cliente "+cliente.getId());
 			return true;

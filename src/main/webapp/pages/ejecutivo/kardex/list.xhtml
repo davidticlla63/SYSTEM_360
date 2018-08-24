@@ -36,7 +36,7 @@
 		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h3 class="panel-title">Kardex por ejecutivo</h3>
+					<h3 class="panel-title">Kardex por Ejecutivo</h3>
 				</div>
 				<div class="panel-body">
 				<div class="row">
@@ -55,14 +55,14 @@
 													forceSelection="true" var="_var"
 													itemLabel="#{_var.nombres}"
 													itemValue="#{_var}"
-													placeholder="Escriba Nit o Nombre cliente " maxResults="10">
+													placeholder="Escriba Nombre ejecutivo " maxResults="10">
 
 													<p:ajax event="itemSelect" update="form001"
 														listener="#{kardexEjecutivoController.onRowSelectEjecutivoClick}" />
 
 													<p:column>
 														<h:outputText value="#{_var.nombres}" />
-													</p:column>s
+													</p:column>
 
 												</p:autoComplete>
 											</div>

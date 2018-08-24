@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui">
+
+					<div class="row" style="background-color: #f9fafa;">
+						<section class="content-header">
+
+							<div class="pull-left"
+								style="padding-top: 8px; padding-left: 15px;">
+								<div class="btn-group-demo">
+									<div class="btn-group">
+										<p:commandLink id="buttonAtras" value="&#160; Atras"
+											styleClass="btn btn-warning ion-minus-circled"
+											rendered="#{ ! registroCobroController.verReporte}"
+											style="height:31px; padding:center"
+											onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/cobranza/list_cobro.xhtml';">
+										</p:commandLink>
+										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
+											styleClass="btn btn-warning ion-minus-circled"
+											immediate="true"
+											rendered="#{registroCobroController.verReporte}"
+											style="height:31px; padding:center" update="form001"
+											action="#{registroCobroController.loadDefault()}">
+										</p:commandLink>
+										<p:commandLink id="buttonRegistrar"
+											value="&#160; Registrar Pago"
+											styleClass="btn btn-success ion-checkmark" immediate="true"
+											style="height:31px; padding:center"
+											rendered="#{ ! registroCobroController.verReporte}"
+											action="#{registroCobroController.loadDialogCollectMoney()}">
+										</p:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="pull-right">
+								<ol class="breadcrumb">
+									<li><a href="#{request.contextPath}/pages/dashboard.xhtml"
+										style="color: #0090FF; font-size: 12px;">Inicio</a></li>
+									<li><a
+										href="#{request.contextPath}/pages/cobranza/nota-venta.xhtml"
+										style="color: #0090FF; font-size: 12px;">Pago</a></li>
+									<li class="active" style="font-size: 12px;">Comisión</li>
+								</ol>
+							</div>
+
+						</section>
+					</div>
+					<!-- BEGIN PANEL REGISTER -->
+					<div class="row" style="padding-top: 10px;">
+						<ui:fragment rendered="#{ ! registroCobroController.verReporte}">
+							<div class="col-md-12">
+								<div id="page-invoice">
+									<div class="invoice">
+										<div class="invoice-company">
+											<h3>Pago Comisión - Ejecutivo</h3>
+										</div>
+										<div class="invoice-header">
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<div class="col-md-2">
+															<p:outputLabel value="Ejecutivo" />
+														</div>
+														<div class="col-md-9">
+															<p:autoComplete id="nombreCliente" style="width: 100%"
+																converter="ejecutivoConverter"
+																inputStyle="width: 100%; color: #555555; background-image: none; padding: 4px 10px;"
+																value="#{pagoComisionController.ejecutivo}"
+																completeMethod="#{pagoComisionController.completeEjecutivo}"
+																minQueryLength="1" required="true"
+																requiredMessage="Nombre Ejecutivo Requerido."
+																forceSelection="true" var="_var"
+																itemLabel="#{_var.nombres}"
+																itemValue="#{_var}"
+																placeholder="Escriba Nit o Nombre cliente " maxResults="10">
+			
+																<p:ajax event="itemSelect" update="form001"
+																	listener="#{pagoComisionController.onRowSelectEjecutivoClick}" />
+			
+																<p:column>
+																	<h:outputText value="#{_var.nombres}" />
+																</p:column>
+			
+															</p:autoComplete>
+														</div>
+														<div class="col-md-1">
+															
+														</div>
+													</div>
+												</div>
+
+												<div class="col-md-4">
+													<div class="form-group ">
+														<div class="col-md-3">
+															<p:outputLabel value="Fecha" />
+														</div>
+														<div class="col-md-9">
+															<p:calendar id="fechaCompra" readonly="true"
+																value="#{registroCobroController.newCobranza.fechaCobranza}"
+																locale="es" styleClass="myWid100" required="true"
+																requiredMessage="Fecha requerido" pattern="dd/MM/yyyy">
+																<p:ajax event="dateSelect" />
+															</p:calendar>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-4">
+													<div class="form-group ">
+														<div class="col-md-3">
+															<p:outputLabel value="Data 3" rendered="false"/>
+														</div>
+														<div class="col-md-9">
+															<p:inputText readonly="true" style="padding: 0 10px;"
+																styleClass="form-control" value="0" rendered="false" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="invoice-content">
+											<div class="table-responsive">
+												<br />
+												<div class="row">
+													<div class="col-md-12">
+														<div class="form-group ">
+															<div class="col-md-12">
+																<p:dataTable id="comisionEjecutivoTable" var="item" value="#{pagoComisionController.ejecutivoComisiones}"
+																	paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+																	selectionMode="single"
+																	selection="#{pagoComisionController.ejecutivoComision}" 
+																	rowKey="#{item.id}" paginatorPosition="top" lazy="true"
+																	loadingmessage="Realizando operación espere.."
+																	style="font-size: 12px !important; line-height: 1.33846154 !important; font-family: sans-serif !important;"
+																	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+																	
+																	
+											
+																	<p:column width="8%" headerText="Fecha " style="text-align:center;">
+																		<h:outputText value="#{item.fechaRegistro}">
+																			<f:convertDateTime pattern="dd/MM/yyyy" />
+																		</h:outputText>
+																	</p:column>
+											
+																	<p:column headerText="Documento" width="10%"
+																		style="text-align:center;">
+																		<h:outputText value="#{item.concepto}" />
+																	</p:column>
+																	
+																	<p:column headerText="Importe" width="10%" style="text-align:center;">
+																		<h:outputText value="#{item.notaVenta.cuotaInicialExtranjero}" rendered="#{item.notaVenta != null}" >
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<h:outputText value="#{item.cobranza.montoExtranjero}" rendered="#{item.cobranza != null}" >
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																	</p:column>
+											
+																	<p:column headerText="%" width="7%" style="text-align:center;">
+																		<h:outputText value="#{item.porcentaje}" >
+																		</h:outputText>
+																	</p:column>
+											
+																	<p:column headerText="Monto Comisión" width="10%" style="text-align:center;">
+																		<h:outputText value="#{item.importe}" rendered="#{item.tipoMovimiento.equals('VENTA') or item.tipoMovimiento.equals('CUOTA')}" >
+																			<f:convertNumber type="number" groupingUsed="true"
+																				minFractionDigits="2" pattern="#0.00" />
+																		</h:outputText>
+																		<h:outputText value="-" rendered="#{item.tipoMovimiento.equals('PAGO')}" >
+																		</h:outputText>
+																	</p:column>
+																	
+																	
+																	<p:column headerText="Aplicar Pago" width="8%" style="text-align:center;">
+																		<h:outputText value=" - " >
+																			
+																		</h:outputText>
+																	</p:column>
+																	
+																</p:dataTable>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<br />
+											<div class="invoice-price">
+												<div class="invoice-price-left">
+													<div class="invoice-price-row">
+														<div class="sub-price">
+
+															<div class="form-group ">
+																<div class="col-md-10">
+																	<p:outputLabel value="Comisiones a Pagar" />
+																</div>
+																<div class="col-md-2">
+																	<p:outputLabel id="montoCuotaInicialSubTotalNacional"
+																		value="#{registroCobroController.numeroCuotasACobrar}" />
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="invoice-price-right">
+													<div class="form-group ">
+														<div class="col-md-7"
+															style="padding-left: 1px; padding-right: 5px; width: 180px !important;">
+															<p:outputLabel value="Pago $us." />
+
+														</div>
+														<div class="col-md-5" style="padding-left: 1px; width: 30px !important;">
+															<p:outputLabel id="totalCobro01"
+																value="#{registroCobroController.totalCobrarExtranjero}">
+																<f:convertNumber type="number" groupingUsed="true"
+																	minFractionDigits="2" pattern="#0.00" />
+															</p:outputLabel>
+
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="invoice-note"></div>
+										<div class="invoice-footer">
+											<p class="text-center">
+												<span class="mrm"><i class="fa fa-globe"></i>
+													www.teds.com.bo</span>
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ui:fragment>
+
+						<ui:fragment rendered="#{registroCobroController.verReporte}">
+							<div class="col-md-12">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title">VISUALIZACIÓN COBRANZA</h3>
+									</div>
+									<div class="panel-body">
+									
+										<ui:fragment rendered="#{registroCobroController.urlReciboAmortizacion.length()>0}">
+												<div class="row">
+													<div class="col-md-12">
+														<p:media player="pdf" rendered="true"
+															value="#{registroCobroController.urlReciboAmortizacion}"
+															width="800px" height="800px" />
+													</div>
+												</div>
+										</ui:fragment>
+										
+										<ui:fragment rendered="#{registroCobroController.urlReporteCobro.length()>0}">
+												<div class="row">
+													<div class="col-md-12">
+														<p:media player="pdf" rendered="true"
+															value="#{registroCobroController.urlReporteCobro}"
+															width="800px" height="800px" />
+													</div>
+												</div>
+										</ui:fragment>
+									</div>
+								</div>
+							</div>
+						</ui:fragment>
+					</div>
+					
+		<!-- INIT MODAL -->
+	
+		
+		<!-- END MODAL -->
+
+</ui:composition>

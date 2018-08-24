@@ -1,12 +1,12 @@
 package com.erp360.controller;
 
 import java.io.Serializable;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.net.URLEncoder;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Conversation;
@@ -35,7 +35,6 @@ import com.erp360.model.AlmacenProducto;
 import com.erp360.model.BajaProducto;
 import com.erp360.model.CierreGestionAlmacen;
 import com.erp360.model.DetalleOrdenIngreso;
-import com.erp360.model.DetalleProducto;
 import com.erp360.model.DetalleTomaInventario;
 import com.erp360.model.DetalleTomaInventarioOrdenIngreso;
 import com.erp360.model.Empresa;
@@ -454,7 +453,7 @@ public class TomaInventarioController implements Serializable {
 		listaDetalleOrdenIngreso = detalleOrdenIngresoDao.findAllByOrdenIngreso(newOrdenIngreso);
 		Proveedor proveedor = newOrdenIngreso.getProveedor();
 		List<AlmacenProducto> listAlmacenProducto = new ArrayList<>();
-		List<DetalleProducto> listDetalleProducto = new ArrayList<>();
+		//List<DetalleProducto> listDetalleProducto = new ArrayList<>();
 		for(DetalleOrdenIngreso d: listaDetalleOrdenIngreso){
 			Producto prod = d.getProducto();
 			//actualiza el esstock por producto almacen(teniendo en cuenta la agrupacion de productos)
@@ -478,6 +477,7 @@ public class TomaInventarioController implements Serializable {
 			almProd.setUsuarioRegistro(usuarioSession.getLogin());
 			almProd.setGestion(gestionSesion);
 			listAlmacenProducto.add(almProd);
+			/*
 			DetalleProducto detalleProducto = new DetalleProducto();
 			detalleProducto.setCodigo("OI"+newOrdenIngreso.getCorrelativo()+fechaActual.toString());
 			detalleProducto.setAlmacen(newOrdenIngreso.getAlmacen());
@@ -494,6 +494,7 @@ public class TomaInventarioController implements Serializable {
 			detalleProducto.setUsuarioRegistro(usuarioSession.getLogin());
 			detalleProducto.setGestion(gestionSesion);
 			listDetalleProducto.add(detalleProducto);
+			*/
 		}
 		//actualizar estado
 		selectedTomaInventario.setFechaRevision(fechaActual);
@@ -504,10 +505,10 @@ public class TomaInventarioController implements Serializable {
 		//gestion
 		//listAlmacenProducto
 		//listDetalleProducto
-		boolean sw = tomaInventarioDao.procesarTomaInventarioInicial(newOrdenIngreso, selectedTomaInventario, gestionSesion, listAlmacenProducto, listDetalleProducto);
-		if(sw){
-			loadDefault();
-		}
+		//boolean sw = tomaInventarioDao.procesarTomaInventarioInicial(newOrdenIngreso, selectedTomaInventario, gestionSesion, listAlmacenProducto, listDetalleProducto);
+		//if(sw){
+		//	loadDefault();
+		//}
 	}
 
 	private void procesarOrdenIngreso(){

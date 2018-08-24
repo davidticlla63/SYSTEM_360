@@ -37,6 +37,9 @@ public class DetalleNotaVenta implements Serializable {
 	
 	private double cantidad;
 	
+	@Transient
+	private Integer almacenProductoId;
+	
 	@ManyToOne(fetch=FetchType.EAGER, optional=false)
 	@JoinColumn(name="id_nota_venta", nullable=false)
 	private NotaVenta notaVenta;
@@ -189,6 +192,14 @@ public class DetalleNotaVenta implements Serializable {
 
 	public void setPorcentajeDescuento(double porcentajeDescuento) {
 		this.porcentajeDescuento = porcentajeDescuento;
+	}
+
+	public Integer getAlmacenProductoId() {
+		return almacenProductoId;
+	}
+
+	public void setAlmacenProductoId(Integer almacenProductoId) {
+		this.almacenProductoId = almacenProductoId;
 	}
 }
 

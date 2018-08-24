@@ -69,6 +69,9 @@ public class Cliente  implements Serializable {
 	@JoinColumn(name="id_tipo_cliente", nullable=true)
 	private TipoCliente tipoCliente;
 	
+	@Transient
+	private Ejecutivo ejecutivo;
+	
 	@Column(name = "foto", nullable = true)
 	private byte[] foto;
 	
@@ -298,6 +301,14 @@ public class Cliente  implements Serializable {
 
 	public void setTipoCliente(TipoCliente tipoCliente) {
 		this.tipoCliente = tipoCliente;
+	}
+
+	public Ejecutivo getEjecutivo() {
+		return ejecutivo;
+	}
+
+	public void setEjecutivo(Ejecutivo ejecutivo) {
+		this.ejecutivo = ejecutivo;
 	}
 
 }

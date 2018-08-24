@@ -24,12 +24,14 @@ import com.erp360.util.NumberUtil;
 import com.erp360.dao.ClienteDao;
 import com.erp360.dao.CobranzaDao;
 import com.erp360.dao.CuentaCobrarDao;
+import com.erp360.dao.NotaVentaDao;
 import com.erp360.dao.PlanCobranzaDao;
 import com.erp360.model.Cliente;
 import com.erp360.model.Cobranza;
 import com.erp360.model.CuentaCobrar;
 import com.erp360.model.DetalleCobranza;
 import com.erp360.model.Empresa;
+import com.erp360.model.NotaVenta;
 import com.erp360.util.SessionMain;
 
 /**
@@ -50,6 +52,7 @@ public class RegistroCobroController implements Serializable {
 	private @Inject CobranzaDao cobranzaDao;
 	private @Inject PlanCobranzaDao planCobranzaDao;
 	private @Inject CuentaCobrarDao cuentaCobrarDao;
+	private @Inject NotaVentaDao notaVentaDao;
 
 	//OBJECT
 	private Cobranza newCobranza;
@@ -80,6 +83,7 @@ public class RegistroCobroController implements Serializable {
 	private double cambioExtranjero;
 	private int numeroCuotasACobrar;
 	private String glosa;
+	private String urlReciboAmortizacion;
 
 	//SESSION
 	private @Inject SessionMain sessionMain; //variable del login
@@ -93,8 +97,8 @@ public class RegistroCobroController implements Serializable {
 
 	public void loadDefault(){
 		urlReporteCobro = "";
-		urlReporteAmortizacion = "";
-
+		urlReciboAmortizacion = "";
+		
 		crear = true;
 		registrar = false;
 		modificar = false;
@@ -125,6 +129,21 @@ public class RegistroCobroController implements Serializable {
 		listDeudaPendiente = new ArrayList<>();
 		if( ! selectedCliente.getId().equals(0)){
 			List<CuentaCobrar> listCuentaCobrar = cuentaCobrarDao.obtenerTodosPorCliente(selectedCliente);
+			List<NotaVenta> notaVentas = notaVentaDao.obtenerSinCuotaInicialPagadaPorCliente(selectedCliente);
+			for(NotaVenta nv :notaVentas){
+				EDDeudaPendiente edDeudaPendiente = new EDDeudaPendiente();
+				edDeudaPendiente.setId(listDeudaPendiente.size() + 1);
+				edDeudaPendiente.setCuentaCobrar(null);
+				edDeudaPendiente.setNotaVenta(nv);
+				edDeudaPendiente.setCuotasPendientes(0);
+				edDeudaPendiente.setMontoProximaCuota(0);
+				edDeudaPendiente.setMontoProximaCuotaExtranjero(0);
+				edDeudaPendiente.setPagarSiguienteCuota(false);
+				edDeudaPendiente.setPagarTodo(false);
+				edDeudaPendiente.setTotalCuotas(0);
+				edDeudaPendiente.setCollectionPlan(new ArrayList<PlanCobranza>());
+				listDeudaPendiente.add(edDeudaPendiente);
+			}
 			for(CuentaCobrar cc :listCuentaCobrar){
 				EDDeudaPendiente edDeudaPendiente = new EDDeudaPendiente();
 				edDeudaPendiente.setId(listDeudaPendiente.size() + 1);
@@ -162,14 +181,14 @@ public class RegistroCobroController implements Serializable {
 		}
 		return 0;
 	}
-	
+
 	//ACTION EVENT
-	
+
 	public void loadModalCliente(){
 		FacesUtil.updateComponent("formModalCliente");
 		FacesUtil.showModal("m-r-0");
 	}
-	
+
 	public void closeModalCliente(){
 		FacesUtil.hideModal("m-r-0");	
 	}
@@ -181,6 +200,10 @@ public class RegistroCobroController implements Serializable {
 
 	public void closeModalPlanPago(){
 		FacesUtil.hideModal("m-r-2");	
+	}
+
+	public void closeModalCuotaInicialPlanPago(){
+		FacesUtil.hideModal("m-r-02");	
 	}
 
 	public void loadModalModificarProducto(){
@@ -201,8 +224,32 @@ public class RegistroCobroController implements Serializable {
 		FacesUtil.showModal("m-r-2");
 	}
 
+	public void loadDialogCuotaInicialCollectMoney(){
+		if (sessionMain.getCajaSesion()==null) {
+			FacesUtil.infoMessage("Verificación", "No hay Cajas abiertas con el Cajero : "+sessionMain.getUsuarioLogin().getNombre());
+			return;
+		}
+		FacesUtil.updateComponent("formModalCobro00");
+		FacesUtil.showModal("m-r-02");
+	}
+
 	int numeroCuotasPendientePorCobrar = 0;
-	
+
+	public void checkCashCollectionForCreditFee(Integer  idEDDeudaPendiente){
+		EDDeudaPendiente deudaPendiente = new EDDeudaPendiente();
+		for(EDDeudaPendiente dp: listDeudaPendiente){
+			if(dp.getId().equals(idEDDeudaPendiente)){
+				deudaPendiente = dp;
+				break;
+			}
+		}
+		//open dialog
+		selectedEDDeudaPendiente = deudaPendiente;
+		totalCobrarExtranjero = deudaPendiente.getNotaVenta().getCuotaInicialExtranjero();
+		glosa = "Pago de Cuota Incial";
+		loadDialogCuotaInicialCollectMoney();
+	}
+
 	public void checkCashCollectionForCreditFee(Integer  idEDDeudaPendiente,Integer idPlanCobranza){
 		EDDeudaPendiente deudaPendiente = new EDDeudaPendiente();
 		numeroCuotasPendientePorCobrar = 0;
@@ -306,6 +353,28 @@ public class RegistroCobroController implements Serializable {
 	}
 
 	//PROCESOS
+
+	public void registrarCobroCuotaInicial(){
+		String  observacion = "Pago Cuota Inicial";
+		NotaVenta notaVenta = selectedEDDeudaPendiente.getNotaVenta();
+		notaVenta.setCuotaIncialPagada(Boolean.TRUE);
+		notaVentaDao.pagoCuotaInicial(observacion, sessionMain.getUsuarioLogin(),notaVenta , sessionMain.getGestionLogin());
+		closeModalCuotaInicialPlanPago();
+		//cargarReporte(c);
+		//cargarReporteAmortizacion(c);
+		FacesUtil.infoMessage("Coorecto", "Pago Cuota Inicial Correcto.");
+		//goto report
+		cargarReporteCuotaInicial(notaVenta);
+		selectedEDDeudaPendiente = null;
+		cobroExtranjero = 0;
+		cambioExtranjero = 0;
+		totalCobrarExtranjero = 0;
+		listDeudaPendiente = new ArrayList<>();
+		selectedCliente = new Cliente();
+		
+		FacesUtil.updateComponent("form001");
+	}
+
 	public void registrarCobro(){
 		List<DetalleCobranza> detalleCobranzas = new ArrayList<>();
 		List<PlanCobranza> planCobranzas = new ArrayList<>();
@@ -366,6 +435,24 @@ public class RegistroCobroController implements Serializable {
 		urlReporteAmortizacion = buildUrl("ReportReciboAmortizacionCobranza",map1);
 	}
 	
+	private void cargarReporteCuotaInicial(NotaVenta notaVenta){
+		verReporte = true;
+		Map<String,String> map1 = new HashMap<>();
+		map1.put("pNombreUsuario", sessionMain.getUsuarioLogin().getLogin());
+		map1.put("pRazonSocial", empresaSession.getRazonSocial());
+		map1.put("pDireccion", empresaSession.getDireccion());
+		map1.put("pTelefono", empresaSession.getTelefono());
+		map1.put("pIdNotaVenta", String.valueOf(notaVenta.getId()));
+		map1.put("pIdEmpresa", String.valueOf(empresaSession.getId()));
+		map1.put("pMoneda", notaVenta.getMoneda());
+		map1.put("pPagoNacional", String.valueOf(totalCobrarNacional));
+		map1.put("pPagoExtranjero", String.valueOf(totalCobrarExtranjero));
+		map1.put("pTipoRecibo", "ORIGINAL");
+		//---URL NOTA VENTA
+		urlReciboAmortizacion = buildUrl("ReportReciboAmortizacionNotaVenta",map1);
+		urlReporteCobro ="";
+	}
+
 	private void cargarReporte(Cobranza c){
 		verReporte = true;
 		Map<String,String> map1 = new HashMap<>();
@@ -376,6 +463,7 @@ public class RegistroCobroController implements Serializable {
 		map1.put("pIdEmpresa", String.valueOf(sessionMain.getEmpresaLogin().getId()));
 		//---URL NOTA VENTA
 		urlReporteCobro = buildUrl("ReportCobranza",map1);
+		urlReciboAmortizacion ="";
 	}
 
 	public void agregarCuotaAPagar(){
@@ -622,5 +710,13 @@ public class RegistroCobroController implements Serializable {
 
 	public void setUrlReporteAmortizacion(String urlReporteAmortizacion) {
 		this.urlReporteAmortizacion = urlReporteAmortizacion;
+	}
+
+	public String getUrlReciboAmortizacion() {
+		return urlReciboAmortizacion;
+	}
+
+	public void setUrlReciboAmortizacion(String urlReciboAmortizacion) {
+		this.urlReciboAmortizacion = urlReciboAmortizacion;
 	}
 }

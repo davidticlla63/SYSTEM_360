@@ -127,16 +127,35 @@
 												<div class="form-group ">
 													<div class="col-md-4">Tipo Cliente</div>
 													<div class="col-md-8">
-														<p:autoComplete id="concepto" required="true"
+														<p:autoComplete id="TipoCliente" required="true" style="width: 100%"
+															inputStyle="width: 93%; color: #555555; background-image: none;padding: 4px 10px;"
 															value="#{clienteController.newCliente.tipoCliente}"
 															var="theme" converter="tipoClienteConverter"
 															itemLabel="#{theme.nombre}" itemValue="#{theme}"
 															completeMethod="#{clienteController.onCompleteTipoCliente}"
 															forceSelection="true" dropdown="true"
-															placeholder="Concepto">
+															placeholder=" Tipo Cliente">
 															<p:ajax event="itemSelect"
 																listener="#{clienteController.onSelectTipoCliente}"
-																update="concepto" />
+																update="TipoCliente" />
+														</p:autoComplete>
+													</div>
+												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Ejecutivo</div>
+													<div class="col-md-8">
+														<p:autoComplete id="ejecutivoId" style="width: 100%"
+															inputStyle="width: 93%; color: #555555; background-image: none;padding: 4px 10px;"
+															value="#{clienteController.newCliente.ejecutivo}"
+															var="item" converter="protocolEjecutivoConverter"
+															itemLabel="#{item.nombres}" itemValue="#{item}"
+															completeMethod="#{clienteController.onCompleteEjecutivo}"
+															forceSelection="true" dropdown="true"
+															placeholder="Ejecutivo">
+															<p:ajax event="itemSelect"
+																listener="#{clienteController.onSelectEjecutivo}"
+																update="ejecutivoId" />
 														</p:autoComplete>
 													</div>
 												</div>
@@ -246,6 +265,7 @@
 								</div>
 							</div>
 							<div class="col-md-8">
+							<ui:fragment rendered="false">
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<h3 class="panel-title">Detalle Cliente</h3>
@@ -875,6 +895,7 @@
 										</p:tabView>
 									</div>
 								</div>
+								</ui:fragment>
 							</div>
 						</ui:fragment>
 					</div>

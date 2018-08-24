@@ -63,7 +63,6 @@ public class SessionMain implements Serializable {
 	private TipoCambio tipoCambio;
 	private Sucursal sucursalLogin;
 	private CajaSesion cajaSesion;
-	private Roles selectedRol;
 	
 	
 	private String pathFisico;
@@ -71,7 +70,6 @@ public class SessionMain implements Serializable {
 	private String caja;
 
 	private boolean seActualizoTipoCambio = false;
-	private List<Privilegio> listPrivilegios;// = privilegioDao.findAllByRol(selectedRoles);
 
 	@PostConstruct
 	public void initSessionMain(){
@@ -325,22 +323,5 @@ public class SessionMain implements Serializable {
 
 	public void setSucursalLogin(Sucursal sucursalLogin) {
 		this.sucursalLogin = sucursalLogin;
-	}
-
-	public Roles getSelectedRol() {
-		return selectedRol;
-	}
-
-	public void setSelectedRol(Roles selectedRol) {
-		this.selectedRol = selectedRol;
-	}
-
-	public List<Privilegio> getListPrivilegios() {
-		listPrivilegios= privilegioDao.findAllByRol(selectedRol);
-		return listPrivilegios;
-	}
-
-	public void setListPrivilegios(List<Privilegio> listPrivilegios) {
-		this.listPrivilegios = listPrivilegios;
 	}
 }
