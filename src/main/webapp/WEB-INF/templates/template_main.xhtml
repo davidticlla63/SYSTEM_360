@@ -150,476 +150,478 @@
 			</nav> </header>
 			<!--END HEADER-->
 
+<ui:include src="WEB-INF/menu.xhtml" />
+
 			<!--BEGIN WRAPPER-->
-			<div class="wrapper row-offcanvas row-offcanvas-left">
+<!-- 			<div class="wrapper row-offcanvas row-offcanvas-left"> -->
 
-				<!--BEGIN SIDEBAR-->
-				<aside class="page-sidebar sidebar-offcanvas"> <section
-					class="sidebar">
-				<ul class="sidebar-menu">
+<!-- 				BEGIN SIDEBAR -->
+<!-- 				<aside class="page-sidebar sidebar-offcanvas"> <section -->
+<!-- 					class="sidebar"> -->
+<!-- 				<ul class="sidebar-menu"> -->
 
-					<li
-						class="#{(view.viewId.equals('/pages/dashboard.xhtml')) ? 'active' : 'inactive'}"
-						style="background-color: #503099;"><a
-						href="#{request.contextPath}/pages/dashboard.xhtml"><i
-							class="icon-home"></i><span class="sidebar-text">Inicio</span></a></li>
-					<ui:fragment
-						rendered="#{sessionMain.verificarPermiso('USUARIO') or sessionMain.verificarPermiso('ROL') or sessionMain.verificarPermiso('PERMISO')}">
-						<li
-							class="#{(view.viewId.equals('/pages/seguridad/usuario.xhtml')) ? 'active' : (view.viewId.equals('/pages/seguridad/rol.xhtml')) ? 'active' : (view.viewId.equals('/pages/seguridad/permiso.xhtml')) ? 'active' : 'inactive'}">
-							<a href="#"> <i class="icon-lock"></i> <span
-								class="sidebar-text">Seguridad</span>
-						</a>
-							<ul class="nav nav-second-level">
-								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('USUARIO')}">
-									<li
-										class="#{(view.viewId.equals('/pages/seguridad/usuario.xhtml')) ? 'active' : 'inactive'}">
-										<a href="#{request.contextPath}/pages/seguridad/usuario.xhtml">
-											<i class="icon-user"></i> <span class="sidebar-text">Usuario</span>
-									</a>
-									</li>
-								</ui:fragment>
-								<ui:fragment rendered="#{sessionMain.verificarPermiso('ROL')}">
-									<li
-										class="#{(view.viewId.equals('/pages/seguridad/rol.xhtml')) ? 'active' : 'inactive'}"><a
-										href="#{request.contextPath}/pages/seguridad/rol.xhtml"><i
-											class="icon-users"></i><span class="sidebar-text">Rol</span></a></li>
-								</ui:fragment>
-								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('PERMISO')}">
-									<li
-										class="#{(view.viewId.equals('/pages/seguridad/permiso.xhtml')) ? 'active' : 'inactive'}"><a
-										href="#{request.contextPath}/pages/seguridad/permiso.xhtml"><i
-											class="icon-shield"></i><span class="sidebar-text">Permiso</span></a></li>
-								</ui:fragment>
-							</ul>
-						</li>
-					</ui:fragment>
+<!-- 					<li -->
+<!-- 						class="#{(view.viewId.equals('/pages/dashboard.xhtml')) ? 'active' : 'inactive'}" -->
+<!-- 						style="background-color: #503099;"><a -->
+<!-- 						href="#{request.contextPath}/pages/dashboard.xhtml"><i -->
+<!-- 							class="icon-home"></i><span class="sidebar-text">Inicio</span></a></li> -->
+<!-- 					<ui:fragment -->
+<!-- 						rendered="#{sessionMain.verificarPermiso('USUARIO') or sessionMain.verificarPermiso('ROL') or sessionMain.verificarPermiso('PERMISO')}"> -->
+<!-- 						<li -->
+<!-- 							class="#{(view.viewId.equals('/pages/seguridad/usuario.xhtml')) ? 'active' : (view.viewId.equals('/pages/seguridad/rol.xhtml')) ? 'active' : (view.viewId.equals('/pages/seguridad/permiso.xhtml')) ? 'active' : 'inactive'}"> -->
+<!-- 							<a href="#"> <i class="icon-lock"></i> <span -->
+<!-- 								class="sidebar-text">Seguridad</span> -->
+<!-- 						</a> -->
+<!-- 							<ul class="nav nav-second-level"> -->
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{sessionMain.verificarPermiso('USUARIO')}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/seguridad/usuario.xhtml')) ? 'active' : 'inactive'}"> -->
+<!-- 										<a href="#{request.contextPath}/pages/seguridad/usuario.xhtml"> -->
+<!-- 											<i class="icon-user"></i> <span class="sidebar-text">Usuario</span> -->
+<!-- 									</a> -->
+<!-- 									</li> -->
+<!-- 								</ui:fragment> -->
+<!-- 								<ui:fragment rendered="#{sessionMain.verificarPermiso('ROL')}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/seguridad/rol.xhtml')) ? 'active' : 'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/seguridad/rol.xhtml"><i -->
+<!-- 											class="icon-users"></i><span class="sidebar-text">Rol</span></a></li> -->
+<!-- 								</ui:fragment> -->
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{sessionMain.verificarPermiso('PERMISO')}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/seguridad/permiso.xhtml')) ? 'active' : 'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/seguridad/permiso.xhtml"><i -->
+<!-- 											class="icon-shield"></i><span class="sidebar-text">Permiso</span></a></li> -->
+<!-- 								</ui:fragment> -->
+<!-- 							</ul> -->
+<!-- 						</li> -->
+<!-- 					</ui:fragment> -->
 
-					<ui:fragment
-						rendered="#{sessionMain.verificarPermiso('EMPRESA') or sessionMain.verificarPermiso('SUCURSAL') or sessionMain.verificarPermiso('GESTION')}">
-						<li
-							class="#{(view.viewId.equals('/pages/parametrizacion/sucursal.xhtml')) ? 'active' : (view.viewId.equals('/pages/parametrizacion/empresa.xhtml')) ? 'active' : (view.viewId.equals('/pages/parametrizacion/gestion.xhtml')) ? 'active' :(view.viewId.equals('/pages/parametrizacion/sucursal.xhtml')) ? 'active' :(view.viewId.equals('/pages/parametrizacion/tipo_cambio/index.xhtml')) ? 'active' :'inactive'}"><a
-							href="#"><i class="icon-equalizer"></i><span
-								class="sidebar-text">Parametrización</span></a>
-							<ul class="nav nav-second-level">
-								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('EMPRESA')}">
-									<li
-										class="#{(view.viewId.equals('/pages/parametrizacion/empresa.xhtml')) ? 'active' :'inactive'}"><a
-										href="#{request.contextPath}/pages/parametrizacion/empresa.xhtml">
-											<i class="icon-globe"></i><span class="sidebar-text">Empresa</span>
-									</a></li>
-								</ui:fragment>
-								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('SUCURSAL')}">
-									<li
-										class="#{(view.viewId.equals('/pages/parametrizacion/sucursal.xhtml')) ? 'active' :'inactive'}"><a
-										href="#{request.contextPath}/pages/parametrizacion/sucursal.xhtml">
-											<i class="icon-globe"></i><span class="sidebar-text">Sucursal</span>
-									</a></li>
-								</ui:fragment>
+<!-- 					<ui:fragment -->
+<!-- 						rendered="#{sessionMain.verificarPermiso('EMPRESA') or sessionMain.verificarPermiso('SUCURSAL') or sessionMain.verificarPermiso('GESTION')}"> -->
+<!-- 						<li -->
+<!-- 							class="#{(view.viewId.equals('/pages/parametrizacion/sucursal.xhtml')) ? 'active' : (view.viewId.equals('/pages/parametrizacion/empresa.xhtml')) ? 'active' : (view.viewId.equals('/pages/parametrizacion/gestion.xhtml')) ? 'active' :(view.viewId.equals('/pages/parametrizacion/sucursal.xhtml')) ? 'active' :(view.viewId.equals('/pages/parametrizacion/tipo_cambio/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 							href="#"><i class="icon-equalizer"></i><span -->
+<!-- 								class="sidebar-text">Parametrización</span></a> -->
+<!-- 							<ul class="nav nav-second-level"> -->
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{sessionMain.verificarPermiso('EMPRESA')}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/parametrizacion/empresa.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/parametrizacion/empresa.xhtml"> -->
+<!-- 											<i class="icon-globe"></i><span class="sidebar-text">Empresa</span> -->
+<!-- 									</a></li> -->
+<!-- 								</ui:fragment> -->
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{sessionMain.verificarPermiso('SUCURSAL')}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/parametrizacion/sucursal.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/parametrizacion/sucursal.xhtml"> -->
+<!-- 											<i class="icon-globe"></i><span class="sidebar-text">Sucursal</span> -->
+<!-- 									</a></li> -->
+<!-- 								</ui:fragment> -->
 
-								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('GESTION')}">
-									<li
-										class="#{(view.viewId.equals('/pages/parametrizacion/gestion.xhtml')) ? 'active' :'inactive'}"><a
-										href="#{request.contextPath}/pages/parametrizacion/gestion.xhtml">
-											<i class="icon-globe"></i><span class="sidebar-text">Gestión</span>
-									</a></li>
-								</ui:fragment>
-								<li
-									class="#{(view.viewId.equals('/pages/parametrizacion/tipo_cambio/index.xhtml')) ? 'active' :'inactive'}"><a
-									href="#{request.contextPath}/pages/parametrizacion/tipo_cambio/index.xhtml">
-										<i class="icon-globe"></i><span class="sidebar-text">Tipo
-											Cambio</span>
-								</a></li>
-							</ul></li>
-					</ui:fragment>
-					<ui:fragment rendered="false">
-					<li
-						class="#{(view.viewId.equals('/pages/caja/list_movimiento.xhtml')) ? 'active':(view.viewId.equals('/pages/caja/comision/pagos/index.xhtml')) ? 'active':'inactive'}">
-						<a href="#"><i class="fa fa-dollar"></i><span
-							class="sidebar-text">Caja</span></a>
-						<ul class="nav nav-second-level">
-							<li
-								class="#{(view.viewId.equals('/pages/caja/list_movimiento.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/caja/list_movimiento.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Movimientos</span>
-							</a></li>
-							<li
-								class="#{(view.viewId.equals('/pages/caja/comision/pagos/index.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/caja/comision/pagos/index.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Pagos Comision</span>
-							</a></li>
-						</ul>
-					</li>
-					</ui:fragment>
-					<li
-						class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' : (view.viewId.equals('/pages/cliente/tipo_cliente.xhtml')) ? 'active' : (view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}">
-						<a href="#"><i class="fa fa-users"></i><span
-							class="sidebar-text">Cliente</span></a>
-						<ul class="nav nav-second-level">
-							<li
-								class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/cliente/index.xhtml"> <i
-									class="icon-globe"></i><span class="sidebar-text">Gestionar</span>
-							</a></li>
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{sessionMain.verificarPermiso('GESTION')}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/parametrizacion/gestion.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/parametrizacion/gestion.xhtml"> -->
+<!-- 											<i class="icon-globe"></i><span class="sidebar-text">Gestión</span> -->
+<!-- 									</a></li> -->
+<!-- 								</ui:fragment> -->
+<!-- 								<li -->
+<!-- 									class="#{(view.viewId.equals('/pages/parametrizacion/tipo_cambio/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 									href="#{request.contextPath}/pages/parametrizacion/tipo_cambio/index.xhtml"> -->
+<!-- 										<i class="icon-globe"></i><span class="sidebar-text">Tipo -->
+<!-- 											Cambio</span> -->
+<!-- 								</a></li> -->
+<!-- 							</ul></li> -->
+<!-- 					</ui:fragment> -->
+<!-- 					<ui:fragment rendered="false"> -->
+<!-- 					<li -->
+<!-- 						class="#{(view.viewId.equals('/pages/caja/list_movimiento.xhtml')) ? 'active':(view.viewId.equals('/pages/caja/comision/pagos/index.xhtml')) ? 'active':'inactive'}"> -->
+<!-- 						<a href="#"><i class="fa fa-dollar"></i><span -->
+<!-- 							class="sidebar-text">Caja</span></a> -->
+<!-- 						<ul class="nav nav-second-level"> -->
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/caja/list_movimiento.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/caja/list_movimiento.xhtml"> -->
+<!-- 									<i class="icon-globe"></i><span class="sidebar-text">Movimientos</span> -->
+<!-- 							</a></li> -->
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/caja/comision/pagos/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/caja/comision/pagos/index.xhtml"> -->
+<!-- 									<i class="icon-globe"></i><span class="sidebar-text">Pagos Comision</span> -->
+<!-- 							</a></li> -->
+<!-- 						</ul> -->
+<!-- 					</li> -->
+<!-- 					</ui:fragment> -->
+<!-- 					<li -->
+<!-- 						class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' : (view.viewId.equals('/pages/cliente/tipo_cliente.xhtml')) ? 'active' : (view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}"> -->
+<!-- 						<a href="#"><i class="fa fa-users"></i><span -->
+<!-- 							class="sidebar-text">Cliente</span></a> -->
+<!-- 						<ul class="nav nav-second-level"> -->
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/cliente/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/cliente/index.xhtml"> <i -->
+<!-- 									class="icon-globe"></i><span class="sidebar-text">Gestionar</span> -->
+<!-- 							</a></li> -->
 							
-							<li
-								class="#{(view.viewId.equals('/pages/cliente/tipo_cliente.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/cliente/tipo_cliente.xhtml"> <i
-									class="icon-globe"></i><span class="sidebar-text">Tipo Cliente</span>
-							</a></li>
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/cliente/tipo_cliente.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/cliente/tipo_cliente.xhtml"> <i -->
+<!-- 									class="icon-globe"></i><span class="sidebar-text">Tipo Cliente</span> -->
+<!-- 							</a></li> -->
 
-							<li
-								class="#{(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/cliente/kardex/index.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Kardex
-										Cliente</span>
-							</a></li>
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/cliente/kardex/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/cliente/kardex/index.xhtml"> -->
+<!-- 									<i class="icon-globe"></i><span class="sidebar-text">Kardex -->
+<!-- 										Cliente</span> -->
+<!-- 							</a></li> -->
 
-						</ul>
-					</li>
+<!-- 						</ul> -->
+<!-- 					</li> -->
 
-					<li
-						class="#{(view.viewId.equals('/pages/venta/nota_venta/reserva.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/encargado_venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/nota_venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/param.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/cotizacion.xhtml')) ? 'active' :'inactive'}">
-						<a href="#"><i class="icon-tag"></i><span class="sidebar-text">Venta</span></a>
-						<ul class="nav nav-second-level">
-							<li
-								class="#{(view.viewId.equals('/pages/venta/nota_venta/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/nota_venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/reserva.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/venta/nota_venta/index.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Nota
-										de Venta</span>
-							</a></li>
+<!-- 					<li -->
+<!-- 						class="#{(view.viewId.equals('/pages/venta/nota_venta/reserva.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/encargado_venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/nota_venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/param.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/cotizacion.xhtml')) ? 'active' :'inactive'}"> -->
+<!-- 						<a href="#"><i class="icon-tag"></i><span class="sidebar-text">Venta</span></a> -->
+<!-- 						<ul class="nav nav-second-level"> -->
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/venta/nota_venta/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/nota_venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/venta/nota_venta/reserva.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/venta/nota_venta/index.xhtml"> -->
+<!-- 									<i class="icon-globe"></i><span class="sidebar-text">Nota -->
+<!-- 										de Venta</span> -->
+<!-- 							</a></li> -->
 
-							<li
-								class="#{(view.viewId.equals('/pages/venta/encargado_venta.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/venta/encargado_venta.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Ejecutivo</span>
-							</a></li>
-							<li
-								class="#{(view.viewId.equals('/pages/ejecutivo/comision/index.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/ejecutivo/comision/index.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Comisiones</span>
-							</a></li>
-							<li
-								class="#{(view.viewId.equals('/pages/ejecutivo/kardex/index.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/ejecutivo/kardex/index.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">kardex Ejecutivo</span>
-							</a></li>
-							<li
-								class="#{(view.viewId.equals('/pages/venta/param.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/venta/param.xhtml"> <i
-									class="icon-globe"></i><span class="sidebar-text">Parámetros</span>
-							</a></li>
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/venta/encargado_venta.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/venta/encargado_venta.xhtml"> -->
+<!-- 									<i class="icon-globe"></i><span class="sidebar-text">Ejecutivo</span> -->
+<!-- 							</a></li> -->
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/ejecutivo/comision/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/ejecutivo/comision/index.xhtml"> -->
+<!-- 									<i class="icon-globe"></i><span class="sidebar-text">Comisiones</span> -->
+<!-- 							</a></li> -->
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/ejecutivo/kardex/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/ejecutivo/kardex/index.xhtml"> -->
+<!-- 									<i class="icon-globe"></i><span class="sidebar-text">kardex Ejecutivo</span> -->
+<!-- 							</a></li> -->
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/venta/param.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/venta/param.xhtml"> <i -->
+<!-- 									class="icon-globe"></i><span class="sidebar-text">Parámetros</span> -->
+<!-- 							</a></li> -->
 
-						</ul>
-					</li>
+<!-- 						</ul> -->
+<!-- 					</li> -->
 
-					<ui:fragment
-						rendered="#{sessionMain.verificarPermiso('NOTA DE VENTA') or sessionMain.verificarPermiso('CLIENTE') or sessionMain.verificarPermiso('COBROS') or sessionMain.verificarPermiso('PARAMETRIZACION COBRANZA')}">
-						<li
-							class="#{(view.viewId.equals('/pages/cobranza/cobranza.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/list_cobro.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/list-nota-venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/parametros.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/registro-cobro.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/mov_cli/index.xhtml')) ? 'active' :'inactive'}">
-							<a href="#"><i class="fa fa-money"></i><span
-								class="sidebar-text">Cobranzas</span></a>
-							<ul class="nav nav-second-level">
-								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('COBROS')}">
-									<li
-										class="#{(view.viewId.equals('/pages/cobranza/list_cobro.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/registro-cobro.xhtml')) ? 'active' :'inactive'}"><a
-										href="#{request.contextPath}/pages/cobranza/list_cobro.xhtml">
-											<i class="icon-globe"></i><span class="sidebar-text">Cobros
-												Cuota</span>
-									</a></li>
-								</ui:fragment>
-								<li
-									class="#{(view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :'inactive'}"><a
-									href="#{request.contextPath}/pages/cliente/cuenta_cobrar/index.xhtml">
-										<i class="icon-globe"></i><span class="sidebar-text">Cuentas
-											Por Cobrar</span>
-								</a></li>
-								<ui:fragment
-									rendered="#{sessionMain.verificarPermiso('PARAMETRIZACION COBRANZA')}">
-									<li
-										class="#{(view.viewId.equals('/pages/cobranza/parametros.xhtml')) ? 'active' :'inactive'}"><a
-										href="#{request.contextPath}/pages/cobranza/parametros.xhtml">
-											<i class="icon-globe"></i><span class="sidebar-text">Parámetros</span>
-									</a></li>
-								</ui:fragment>
-							</ul>
-						</li>
-					</ui:fragment>
-					<li
-						class="#{(view.viewId.equals('/pages/proveedor/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/proveedor/cuentas_pagar/index.xhtml')) ? 'active' :'inactive'}">
-						<a href="#"><i class="fa fa-truck"></i><span
-							class="sidebar-text">Proveedor</span></a>
-						<ul class="nav nav-second-level">
-							<li
-								class="#{(view.viewId.equals('/pages/proveedor/index.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/proveedor/index.xhtml"> <i
-									class="icon-globe"></i><span class="sidebar-text">Gestión</span>
-							</a></li>
-							<li
-								class="#{(view.viewId.equals('/pages/proveedor/cuentas_pagar/index.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/proveedor/cuentas_pagar/index.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Cuentas
-										Por Pagar</span>
-							</a></li>
-							<li
-								class="#{(view.viewId.equals('/pages/proveedor/kardex/index.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/proveedor/kardex/index.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Kardex
-										Proveedor</span>
-							</a></li>
+<!-- 					<ui:fragment -->
+<!-- 						rendered="#{sessionMain.verificarPermiso('NOTA DE VENTA') or sessionMain.verificarPermiso('CLIENTE') or sessionMain.verificarPermiso('COBROS') or sessionMain.verificarPermiso('PARAMETRIZACION COBRANZA')}"> -->
+<!-- 						<li -->
+<!-- 							class="#{(view.viewId.equals('/pages/cobranza/cobranza.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/list_cobro.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/list-nota-venta.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/parametros.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/registro-cobro.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/mov_cli/index.xhtml')) ? 'active' :'inactive'}"> -->
+<!-- 							<a href="#"><i class="fa fa-money"></i><span -->
+<!-- 								class="sidebar-text">Cobranzas</span></a> -->
+<!-- 							<ul class="nav nav-second-level"> -->
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{sessionMain.verificarPermiso('COBROS')}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/cobranza/list_cobro.xhtml')) ? 'active' :(view.viewId.equals('/pages/cobranza/registro-cobro.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/cobranza/list_cobro.xhtml"> -->
+<!-- 											<i class="icon-globe"></i><span class="sidebar-text">Cobros -->
+<!-- 												Cuota</span> -->
+<!-- 									</a></li> -->
+<!-- 								</ui:fragment> -->
+<!-- 								<li -->
+<!-- 									class="#{(view.viewId.equals('/pages/cliente/cuenta_cobrar/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 									href="#{request.contextPath}/pages/cliente/cuenta_cobrar/index.xhtml"> -->
+<!-- 										<i class="icon-globe"></i><span class="sidebar-text">Cuentas -->
+<!-- 											Por Cobrar</span> -->
+<!-- 								</a></li> -->
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{sessionMain.verificarPermiso('PARAMETRIZACION COBRANZA')}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/cobranza/parametros.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/cobranza/parametros.xhtml"> -->
+<!-- 											<i class="icon-globe"></i><span class="sidebar-text">Parámetros</span> -->
+<!-- 									</a></li> -->
+<!-- 								</ui:fragment> -->
+<!-- 							</ul> -->
+<!-- 						</li> -->
+<!-- 					</ui:fragment> -->
+<!-- 					<li -->
+<!-- 						class="#{(view.viewId.equals('/pages/proveedor/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/proveedor/cuentas_pagar/index.xhtml')) ? 'active' :'inactive'}"> -->
+<!-- 						<a href="#"><i class="fa fa-truck"></i><span -->
+<!-- 							class="sidebar-text">Proveedor</span></a> -->
+<!-- 						<ul class="nav nav-second-level"> -->
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/proveedor/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/proveedor/index.xhtml"> <i -->
+<!-- 									class="icon-globe"></i><span class="sidebar-text">Gestión</span> -->
+<!-- 							</a></li> -->
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/proveedor/cuentas_pagar/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/proveedor/cuentas_pagar/index.xhtml"> -->
+<!-- 									<i class="icon-globe"></i><span class="sidebar-text">Cuentas -->
+<!-- 										Por Pagar</span> -->
+<!-- 							</a></li> -->
+<!-- 							<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/proveedor/kardex/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/proveedor/kardex/index.xhtml"> -->
+<!-- 									<i class="icon-globe"></i><span class="sidebar-text">Kardex -->
+<!-- 										Proveedor</span> -->
+<!-- 							</a></li> -->
 
-						</ul>
-					</li>
-
-
-					<ui:fragment
-						rendered="#{sessionMain.verificarPermiso('CATALOGO') or sessionMain.verificarPermiso('KARDEX') or sessionMain.verificarPermiso('ORDEN INGRESO') or sessionMain.verificarPermiso('ORDEN SALIDA') or sessionMain.verificarPermiso('ORDEN TRASPASO') or sessionMain.verificarPermiso('TOMA INVENTARIO') or sessionMain.verificarPermiso('PROVEEDOR') or sessionMain.verificarPermiso('ALMACEN') or sessionMain.verificarPermiso('GRUPO PRODUCTO') or sessionMain.verificarPermiso('LINEA PRODUCTO') or sessionMain.verificarPermiso('PRODUCTO') or sessionMain.verificarPermiso('UNIDAD MEDIDA') or sessionMain.verificarPermiso('PARAMETROS INVENTARIO')}">
-
-						<li
-							class="#{(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/unidad_medida.xhtml')) ? 'active':(view.viewId.equals('/pages/inventario/proveedor.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/almacen.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/orden_ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/orden_salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/orden_traspaso.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/grupo-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/linea-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/parametros.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/toma_inventario.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-traspaso.xhtml')) ? 'active' :'inactive'}">
-							<a href="#"><i class="icon-social-dropbox"></i><span
-								class="sidebar-text">Inventario</span></a>
-							<ul class="nav nav-second-level">
-								<li
-									class="#{(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/inventarios.xhtml')) ? 'active' :'inactive'}"><a
-									href="#"><i class="icon-plus"></i><span
-										class="sidebar-text">Reportes</span></a>
-									<ul class="nav nav-third-level">
-										<li
-											class="#{(view.viewId.equals('/pages/inventario/inventarios.xhtml')) ? 'active' :'inactive'}"><a
-											href="#{request.contextPath}/pages/inventario/inventarios.xhtml">
-												<i class="icon-globe"></i><span class="sidebar-text">Inventarios</span>
-										</a></li>
-										<li
-											class="#{(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :'inactive'}"><a
-											href="#{request.contextPath}/pages/inventario/stock_producto.xhtml">
-												<i class="icon-globe"></i><span class="sidebar-text">Stock</span>
-										</a></li>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('CATALOGO')}">
-											<li
-												class="#{(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/inventario/catalogo_producto.xhtml">
-													<i class="icon-globe"></i><span class="sidebar-text">Catálogo</span>
-											</a></li>
-										</ui:fragment>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('KARDEX')}">
-											<li
-												class="#{(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/inventario/kardex_producto.xhtml">
-													<i class="icon-globe"></i><span class="sidebar-text">Kardex</span>
-											</a></li>
-										</ui:fragment>
-
-									</ul></li>
-
-								<li
-									class="#{(view.viewId.equals('/pages/proceso/orden_ingreso.xhtml')) ? 'active': (view.viewId.equals('/pages/proceso/orden_salida.xhtml')) ? 'active': (view.viewId.equals('/pages/proceso/orden_traspaso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/toma_inventario.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-traspaso.xhtml')) ? 'active' :'inactive'}"><a
-									href="#"><i class="icon-plus"></i><span
-										class="sidebar-text">Proceso</span></a>
-									<ul class="nav nav-third-level">
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('ORDEN INGRESO')}">
-											<li
-												class="#{(view.viewId.equals('/pages/proceso/orden_ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-ingreso.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/proceso/list-orden-ingreso.xhtml">
-													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Orden de Ingreso </span>
-											</a></li>
-										</ui:fragment>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('ORDEN SALIDA')}">
-											<li
-												class="#{(view.viewId.equals('/pages/proceso/orden_salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-salida.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/proceso/list-orden-salida.xhtml">
-													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Orden de Salida </span>
-											</a></li>
-										</ui:fragment>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('ORDEN TRASPASO')}">
-											<li
-												class="#{(view.viewId.equals('/pages/proceso/orden_traspaso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-traspaso.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/proceso/list-orden-traspaso.xhtml">
-													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Orden de Traspaso </span>
-											</a></li>
-										</ui:fragment>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('TOMA INVENTARIO')}">
-											<li
-												class="#{(view.viewId.equals('/pages/proceso/toma_inventario.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/proceso/toma_inventario.xhtml">
-													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Ajuste de Inventario</span>
-											</a></li>
-										</ui:fragment>
-
-									</ul></li>
-
-								<li
-									class="#{(view.viewId.equals('/pages/inventario/unidad_medida.xhtml')) ? 'active': (view.viewId.equals('/pages/inventario/almacen.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/grupo-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/linea-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/parametros.xhtml')) ? 'active' :'inactive'}"><a
-									href="#"><i class="icon-plus"></i><span
-										class="sidebar-text">Parametrización</span></a>
-									<ul class="nav nav-third-level">
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('ALMACEN')}">
-											<li
-												class="#{(view.viewId.equals('/pages/inventario/almacen.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/inventario/almacen.xhtml">
-													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Almacen</span>
-											</a></li>
-										</ui:fragment>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('GRUPO PRODUCTO')}">
-											<li
-												class="#{(view.viewId.equals('/pages/inventario/grupo-producto.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/inventario/grupo-producto.xhtml">
-													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Grupo Producto</span>
-											</a></li>
-										</ui:fragment>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('LINEA PRODUCTO')}">
-											<li
-												class="#{(view.viewId.equals('/pages/inventario/linea-producto.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/inventario/linea-producto.xhtml">
-													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Línea Producto</span>
-											</a></li>
-										</ui:fragment>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('PRODUCTO')}">
-											<li
-												class="#{(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/inventario/gestion-producto.xhtml">
-													<i class="icon-globe"></i><span class="sidebar-text">Producto</span>
-											</a></li>
-										</ui:fragment>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('UNIDAD MEDIDA')}">
-											<li
-												class="#{(view.viewId.equals('/pages/inventario/unidad_medida.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/inventario/unidad_medida.xhtml">
-													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Unidad Medida</span>
-											</a></li>
-										</ui:fragment>
-										<ui:fragment
-											rendered="#{sessionMain.verificarPermiso('PARAMETROS INVENTARIO')}">
-											<li
-												class="#{(view.viewId.equals('/pages/inventario/parametros.xhtml')) ? 'active' :'inactive'}"><a
-												href="#{request.contextPath}/pages/inventario/parametros.xhtml">
-													<i class="icon-social-dropbox"></i><span
-													class="sidebar-text">Parámetros</span>
-											</a></li>
-										</ui:fragment>
-									</ul></li>
-							</ul>
-						</li>
-					</ui:fragment>
+<!-- 						</ul> -->
+<!-- 					</li> -->
 
 
-					<ui:fragment
-						rendered="#{true}">
-						<li
-							class="#{(view.viewId.equals('/pages/caja/param/index.xhtml')) ? 'active' : (view.viewId.equals('/pages/caja/apertura/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/caja/cierre/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/caja/movimiento/index.xhtml')) ? 'active':'inactive'}">
-							<a href="#"><i class="fa fa-dollar"></i><span
-								class="sidebar-text">Caja</span></a>
-							<ul class="nav nav-second-level">
-								<ui:fragment
-									rendered="#{true}">
-									<li
-										class="#{(view.viewId.equals('/pages/caja/param/index.xhtml')) ? 'active' :'inactive'}"><a
-										href="#{request.contextPath}/pages/caja/param/index.xhtml">
-											<i class="icon-notebook"></i> <span class="sidebar-text">Parametros
-												Caja</span>
-									</a></li>
-								</ui:fragment>
-								<ui:fragment
-									rendered="#{true}">
-									<li
-										class="#{(view.viewId.equals('/pages/caja/apertura/index.xhtml')) ? 'active' :'inactive'}"><a
-										href="#{request.contextPath}/pages/caja/apertura/index.xhtml">
-											<i class="icon-notebook"></i> <span class="sidebar-text">Apertura
-												Caja</span>
-									</a></li>
-								</ui:fragment>
-								<ui:fragment
-									rendered="#{true}">
-									<li
-										class="#{(view.viewId.equals('/pages/caja/cierre/index.xhtml')) ? 'active' :'inactive'}"><a
-										href="#{request.contextPath}/pages/caja/cierre/index.xhtml">
-											<i class="icon-notebook"></i> <span class="sidebar-text">Cierre
-												Caja</span>
-									</a></li>
-								</ui:fragment>
-								<ui:fragment
-									rendered="#{true}">
-									<li
-										class="#{(view.viewId.equals('/pages/caja/movimiento/index.xhtml')) ? 'active' :'inactive'}"><a
-										href="#{request.contextPath}/pages/caja/movimiento/index.xhtml">
-											<i class="icon-notebook"></i> <span class="sidebar-text">Movimiento
-												Caja</span>
-									</a></li>
-								</ui:fragment>
-								<li
-								class="#{(view.viewId.equals('/pages/caja/comision/pagos/index.xhtml')) ? 'active' :'inactive'}"><a
-								href="#{request.contextPath}/pages/caja/comision/pagos/index.xhtml">
-									<i class="icon-globe"></i><span class="sidebar-text">Pagos Comision</span>
-							</a></li>
-							</ul>
-						</li>
-					</ui:fragment>
-					<ui:fragment
-						rendered="#{sessionMain.verificarPermiso('CUENTAS CLIENTE') or sessionMain.verificarPermiso('VENTAS')}">
-						<li
-							class="#{(view.viewId.equals('/pages/reportes/report.xhtml')) ? 'active' : (view.viewId.equals('/pages/reportes/exportacion-compras.xhtml')) ? 'active' :(view.viewId.equals('/pages/reportes/exportacion-ventas.xhtml')) ? 'active' :(view.viewId.equals('/pages/reportes/libro_diario.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/libro_mayor.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/sumas_saldos.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/balance_general.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/est_cue_cli.xhtml')) ? 'active' :'inactive'}">
-							<a href="#"><i class="icon-bar-chart"></i><span
-								class="sidebar-text">Reportes</span></a>
-							<ul class="nav nav-second-level">
-								<li
-									class="#{(view.viewId.equals('/pages/reportes/report.xhtml')) ? 'active' :'inactive'}"><a
-									href="#{request.contextPath}/pages/reportes/report.xhtml">
-										<i class="icon-notebook"></i> <span class="sidebar-text">Informes
-											Generales</span>
-								</a></li>
-							</ul>
-						</li>
-					</ui:fragment>
+<!-- 					<ui:fragment -->
+<!-- 						rendered="#{sessionMain.verificarPermiso('CATALOGO') or sessionMain.verificarPermiso('KARDEX') or sessionMain.verificarPermiso('ORDEN INGRESO') or sessionMain.verificarPermiso('ORDEN SALIDA') or sessionMain.verificarPermiso('ORDEN TRASPASO') or sessionMain.verificarPermiso('TOMA INVENTARIO') or sessionMain.verificarPermiso('PROVEEDOR') or sessionMain.verificarPermiso('ALMACEN') or sessionMain.verificarPermiso('GRUPO PRODUCTO') or sessionMain.verificarPermiso('LINEA PRODUCTO') or sessionMain.verificarPermiso('PRODUCTO') or sessionMain.verificarPermiso('UNIDAD MEDIDA') or sessionMain.verificarPermiso('PARAMETROS INVENTARIO')}"> -->
 
-					<ui:fragment rendered="false">
-						<li
-							class="#{(view.viewId.equals('/pages/ayuda/manual_usuario.xhtml')) ? 'active' : 'inactive'}">
-							<a href="#"><i class="icon-support"></i><span
-								class="sidebar-text">Ayuda</span></a>
-							<ul class="nav nav-second-level">
-								<li
-									class="#{(view.viewId.equals('/pages/ayuda/manual_usuario.xhtml')) ? 'active' :'inactive'}"><a
-									href="#{request.contextPath}/pages/ayuda/manual_usuario.xhtml">
-										<i class="icon-notebook"></i> <span class="sidebar-text">Manual
-											Usuario</span>
-								</a></li>
-							</ul>
-						</li>
-					</ui:fragment>
-				</ul>
-				</section> </aside>
-				<!--END SIDERBAR-->
+<!-- 						<li -->
+<!-- 							class="#{(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/unidad_medida.xhtml')) ? 'active':(view.viewId.equals('/pages/inventario/proveedor.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/almacen.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/orden_ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/orden_salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/orden_traspaso.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/grupo-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/linea-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/parametros.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/toma_inventario.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-traspaso.xhtml')) ? 'active' :'inactive'}"> -->
+<!-- 							<a href="#"><i class="icon-social-dropbox"></i><span -->
+<!-- 								class="sidebar-text">Inventario</span></a> -->
+<!-- 							<ul class="nav nav-second-level"> -->
+<!-- 								<li -->
+<!-- 									class="#{(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/inventarios.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 									href="#"><i class="icon-plus"></i><span -->
+<!-- 										class="sidebar-text">Reportes</span></a> -->
+<!-- 									<ul class="nav nav-third-level"> -->
+<!-- 										<li -->
+<!-- 											class="#{(view.viewId.equals('/pages/inventario/inventarios.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 											href="#{request.contextPath}/pages/inventario/inventarios.xhtml"> -->
+<!-- 												<i class="icon-globe"></i><span class="sidebar-text">Inventarios</span> -->
+<!-- 										</a></li> -->
+<!-- 										<li -->
+<!-- 											class="#{(view.viewId.equals('/pages/inventario/stock_producto.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 											href="#{request.contextPath}/pages/inventario/stock_producto.xhtml"> -->
+<!-- 												<i class="icon-globe"></i><span class="sidebar-text">Stock</span> -->
+<!-- 										</a></li> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('CATALOGO')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/inventario/catalogo_producto.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/inventario/catalogo_producto.xhtml"> -->
+<!-- 													<i class="icon-globe"></i><span class="sidebar-text">Catálogo</span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('KARDEX')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/inventario/kardex_producto.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/inventario/kardex_producto.xhtml"> -->
+<!-- 													<i class="icon-globe"></i><span class="sidebar-text">Kardex</span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
 
-				<!--BEGIN CONTENT-->
-				<ui:insert name="content">
-				</ui:insert>
-				<!--END CONTENT-->
-			</div>
+<!-- 									</ul></li> -->
+
+<!-- 								<li -->
+<!-- 									class="#{(view.viewId.equals('/pages/proceso/orden_ingreso.xhtml')) ? 'active': (view.viewId.equals('/pages/proceso/orden_salida.xhtml')) ? 'active': (view.viewId.equals('/pages/proceso/orden_traspaso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/toma_inventario.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-traspaso.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 									href="#"><i class="icon-plus"></i><span -->
+<!-- 										class="sidebar-text">Proceso</span></a> -->
+<!-- 									<ul class="nav nav-third-level"> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('ORDEN INGRESO')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/proceso/orden_ingreso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-ingreso.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/proceso/list-orden-ingreso.xhtml"> -->
+<!-- 													<i class="icon-social-dropbox"></i><span -->
+<!-- 													class="sidebar-text">Orden de Ingreso </span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('ORDEN SALIDA')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/proceso/orden_salida.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-salida.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/proceso/list-orden-salida.xhtml"> -->
+<!-- 													<i class="icon-social-dropbox"></i><span -->
+<!-- 													class="sidebar-text">Orden de Salida </span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('ORDEN TRASPASO')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/proceso/orden_traspaso.xhtml')) ? 'active' :(view.viewId.equals('/pages/proceso/list-orden-traspaso.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/proceso/list-orden-traspaso.xhtml"> -->
+<!-- 													<i class="icon-social-dropbox"></i><span -->
+<!-- 													class="sidebar-text">Orden de Traspaso </span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('TOMA INVENTARIO')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/proceso/toma_inventario.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/proceso/toma_inventario.xhtml"> -->
+<!-- 													<i class="icon-social-dropbox"></i><span -->
+<!-- 													class="sidebar-text">Ajuste de Inventario</span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+
+<!-- 									</ul></li> -->
+
+<!-- 								<li -->
+<!-- 									class="#{(view.viewId.equals('/pages/inventario/unidad_medida.xhtml')) ? 'active': (view.viewId.equals('/pages/inventario/almacen.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/grupo-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/linea-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :(view.viewId.equals('/pages/inventario/parametros.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 									href="#"><i class="icon-plus"></i><span -->
+<!-- 										class="sidebar-text">Parametrización</span></a> -->
+<!-- 									<ul class="nav nav-third-level"> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('ALMACEN')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/inventario/almacen.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/inventario/almacen.xhtml"> -->
+<!-- 													<i class="icon-social-dropbox"></i><span -->
+<!-- 													class="sidebar-text">Almacen</span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('GRUPO PRODUCTO')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/inventario/grupo-producto.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/inventario/grupo-producto.xhtml"> -->
+<!-- 													<i class="icon-social-dropbox"></i><span -->
+<!-- 													class="sidebar-text">Grupo Producto</span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('LINEA PRODUCTO')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/inventario/linea-producto.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/inventario/linea-producto.xhtml"> -->
+<!-- 													<i class="icon-social-dropbox"></i><span -->
+<!-- 													class="sidebar-text">Línea Producto</span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('PRODUCTO')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/inventario/gestion-producto.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/inventario/gestion-producto.xhtml"> -->
+<!-- 													<i class="icon-globe"></i><span class="sidebar-text">Producto</span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('UNIDAD MEDIDA')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/inventario/unidad_medida.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/inventario/unidad_medida.xhtml"> -->
+<!-- 													<i class="icon-social-dropbox"></i><span -->
+<!-- 													class="sidebar-text">Unidad Medida</span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+<!-- 										<ui:fragment -->
+<!-- 											rendered="#{sessionMain.verificarPermiso('PARAMETROS INVENTARIO')}"> -->
+<!-- 											<li -->
+<!-- 												class="#{(view.viewId.equals('/pages/inventario/parametros.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 												href="#{request.contextPath}/pages/inventario/parametros.xhtml"> -->
+<!-- 													<i class="icon-social-dropbox"></i><span -->
+<!-- 													class="sidebar-text">Parámetros</span> -->
+<!-- 											</a></li> -->
+<!-- 										</ui:fragment> -->
+<!-- 									</ul></li> -->
+<!-- 							</ul> -->
+<!-- 						</li> -->
+<!-- 					</ui:fragment> -->
+
+
+<!-- 					<ui:fragment -->
+<!-- 						rendered="#{true}"> -->
+<!-- 						<li -->
+<!-- 							class="#{(view.viewId.equals('/pages/caja/param/index.xhtml')) ? 'active' : (view.viewId.equals('/pages/caja/apertura/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/caja/cierre/index.xhtml')) ? 'active' :(view.viewId.equals('/pages/caja/movimiento/index.xhtml')) ? 'active':'inactive'}"> -->
+<!-- 							<a href="#"><i class="fa fa-dollar"></i><span -->
+<!-- 								class="sidebar-text">Caja</span></a> -->
+<!-- 							<ul class="nav nav-second-level"> -->
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{true}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/caja/param/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/caja/param/index.xhtml"> -->
+<!-- 											<i class="icon-notebook"></i> <span class="sidebar-text">Parametros -->
+<!-- 												Caja</span> -->
+<!-- 									</a></li> -->
+<!-- 								</ui:fragment> -->
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{true}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/caja/apertura/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/caja/apertura/index.xhtml"> -->
+<!-- 											<i class="icon-notebook"></i> <span class="sidebar-text">Apertura -->
+<!-- 												Caja</span> -->
+<!-- 									</a></li> -->
+<!-- 								</ui:fragment> -->
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{true}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/caja/cierre/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/caja/cierre/index.xhtml"> -->
+<!-- 											<i class="icon-notebook"></i> <span class="sidebar-text">Cierre -->
+<!-- 												Caja</span> -->
+<!-- 									</a></li> -->
+<!-- 								</ui:fragment> -->
+<!-- 								<ui:fragment -->
+<!-- 									rendered="#{true}"> -->
+<!-- 									<li -->
+<!-- 										class="#{(view.viewId.equals('/pages/caja/movimiento/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 										href="#{request.contextPath}/pages/caja/movimiento/index.xhtml"> -->
+<!-- 											<i class="icon-notebook"></i> <span class="sidebar-text">Movimiento -->
+<!-- 												Caja</span> -->
+<!-- 									</a></li> -->
+<!-- 								</ui:fragment> -->
+<!-- 								<li -->
+<!-- 								class="#{(view.viewId.equals('/pages/caja/comision/pagos/index.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 								href="#{request.contextPath}/pages/caja/comision/pagos/index.xhtml"> -->
+<!-- 									<i class="icon-globe"></i><span class="sidebar-text">Pagos Comision</span> -->
+<!-- 							</a></li> -->
+<!-- 							</ul> -->
+<!-- 						</li> -->
+<!-- 					</ui:fragment> -->
+<!-- 					<ui:fragment -->
+<!-- 						rendered="#{sessionMain.verificarPermiso('CUENTAS CLIENTE') or sessionMain.verificarPermiso('VENTAS')}"> -->
+<!-- 						<li -->
+<!-- 							class="#{(view.viewId.equals('/pages/reportes/report.xhtml')) ? 'active' : (view.viewId.equals('/pages/reportes/exportacion-compras.xhtml')) ? 'active' :(view.viewId.equals('/pages/reportes/exportacion-ventas.xhtml')) ? 'active' :(view.viewId.equals('/pages/reportes/libro_diario.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/libro_mayor.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/sumas_saldos.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/balance_general.xhtml')) ? 'active': (view.viewId.equals('/pages/reportes/est_cue_cli.xhtml')) ? 'active' :'inactive'}"> -->
+<!-- 							<a href="#"><i class="icon-bar-chart"></i><span -->
+<!-- 								class="sidebar-text">Reportes</span></a> -->
+<!-- 							<ul class="nav nav-second-level"> -->
+<!-- 								<li -->
+<!-- 									class="#{(view.viewId.equals('/pages/reportes/report.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 									href="#{request.contextPath}/pages/reportes/report.xhtml"> -->
+<!-- 										<i class="icon-notebook"></i> <span class="sidebar-text">Informes -->
+<!-- 											Generales</span> -->
+<!-- 								</a></li> -->
+<!-- 							</ul> -->
+<!-- 						</li> -->
+<!-- 					</ui:fragment> -->
+
+<!-- 					<ui:fragment rendered="false"> -->
+<!-- 						<li -->
+<!-- 							class="#{(view.viewId.equals('/pages/ayuda/manual_usuario.xhtml')) ? 'active' : 'inactive'}"> -->
+<!-- 							<a href="#"><i class="icon-support"></i><span -->
+<!-- 								class="sidebar-text">Ayuda</span></a> -->
+<!-- 							<ul class="nav nav-second-level"> -->
+<!-- 								<li -->
+<!-- 									class="#{(view.viewId.equals('/pages/ayuda/manual_usuario.xhtml')) ? 'active' :'inactive'}"><a -->
+<!-- 									href="#{request.contextPath}/pages/ayuda/manual_usuario.xhtml"> -->
+<!-- 										<i class="icon-notebook"></i> <span class="sidebar-text">Manual -->
+<!-- 											Usuario</span> -->
+<!-- 								</a></li> -->
+<!-- 							</ul> -->
+<!-- 						</li> -->
+<!-- 					</ui:fragment> -->
+<!-- 				</ul> -->
+<!-- 				</section> </aside> -->
+<!-- 				END SIDERBAR -->
+
+<!-- 				BEGIN CONTENT -->
+<!-- 				<ui:insert name="content"> -->
+<!-- 				</ui:insert> -->
+<!-- 				END CONTENT -->
+<!-- 			</div> -->
 			<!--END WRAPPER-->
 		</div>
 	</div>

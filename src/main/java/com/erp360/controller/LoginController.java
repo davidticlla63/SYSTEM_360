@@ -310,6 +310,7 @@ public class LoginController implements Serializable {
 		try{
 			HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 			com.erp360.model.UsuarioRol usuarioRol = usuarioRolDao.obtenerPorUsuario(usuarioSession);
+			sessionMain.setSelectedRol(usuarioRol.getRol());
 			List<Privilegio> listPrivilegio = privilegioDao.obtenerTodosPorRoles(usuarioRol.getRol());
 			for(Privilegio p : listPrivilegio){
 				session.setAttribute(p.getPermiso().getNombre(), "AC");

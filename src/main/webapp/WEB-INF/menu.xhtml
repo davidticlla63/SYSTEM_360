@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<aside class="page-sidebar sidebar-offcanvas" style="width: 100%" >
+		<section class="sidebar">
+			<ul  class="sidebar-menu"  >
+		
+				<!-- 												generar menu desde base de datos -->
+								<ui:repeat var="modulo" value="#{accesos2Controller.edMenus}">
+									<li style="#{modulo.styleDisplay()}" class="#{modulo.classPath()}"><a href="#"><i
+											class="#{modulo.modulo.moduloIcono}"></i><span class="sidebar-text">#{modulo.modulo.nombre}</span></a>
+										<ul class="nav nav-second-level">
+											<ui:repeat var="menu" value="#{modulo.menus}">
+												<li style="#{menu.styleDisplay()}" class="#{menu.classPath()}"><a
+													href="#{request.contextPath}#{menu.href()}"><i
+														class="#{menu.menuIcono}"></i><span class="sidebar-text">#{menu.nombre}</span></a></li>
+
+											</ui:repeat>
+										</ul></li>
+								</ui:repeat>
+
+				<p:separator />
+				<p:separator />
+				<p:separator
+					style="border:0px none; background-color:transparent; width: 100%;" />
+			</ul>
+		</section>
+	</aside>
+</ui:composition>
