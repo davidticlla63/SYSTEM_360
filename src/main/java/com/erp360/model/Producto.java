@@ -68,6 +68,9 @@ public class Producto implements Serializable {
 	@Column(name="precio_compra",nullable=true)
 	private double precioCompra;
 	
+	@Column(name="precio_almacen",nullable=true)
+	private double precioAlmacen;
+	
 	@Column(name="precio_compra_1",nullable=true)
 	private double precioCompra1;
 	
@@ -336,6 +339,14 @@ public class Producto implements Serializable {
 
 	public void setPrecioCompra6(double precioCompra6) {
 		this.precioCompra6 = precioCompra6;
+	}
+
+	public double getPrecioAlmacen() {
+		return precioAlmacen;
+	}
+
+	public void setPrecioAlmacen(double precioAlmacen) {
+		this.precioAlmacen = precioAlmacen;
 	}
 
 }

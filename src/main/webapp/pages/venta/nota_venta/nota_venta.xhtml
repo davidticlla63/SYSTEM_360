@@ -674,7 +674,7 @@
 									<div class="panel-body">
 										<p:tabView>
 											<p:tab title="Recibo de Pago"
-												rendered="false">
+												rendered="#{notaVentaController.urlReciboAmortizacion.length()!=0}">
 												<div class="row">
 													<div class="col-md-12">
 														<p:media player="pdf" rendered="true"
@@ -734,9 +734,11 @@
 												value="#{notaVentaController.notaVenta.formaPago}">
 												<p:ajax event="valueChange" update="formModalPlanPago"
 													listener="#{notaVentaController.changeWeyToPay()}" />
-												<f:selectItem itemValue="MENSUAL" itemLabel="MENSUAL" />
-												<f:selectItem itemValue="QUINCENAL" itemLabel="QUINCENAL" />
-												<f:selectItem itemValue="SEMANAL" itemLabel="SEMANAL" />
+													<f:selectItem itemValue="SEMANAL" itemLabel="SEMANAL" />
+													<f:selectItem itemValue="QUINCENAL" itemLabel="QUINCENAL" />
+													<f:selectItem itemValue="MENSUAL" itemLabel="MENSUAL" />
+												
+												
 											</h:selectOneMenu>
 										</div>
 									</div>

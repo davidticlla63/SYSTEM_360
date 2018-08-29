@@ -12,7 +12,23 @@
 			<div class="pull-left" style="padding-top: 8px; padding-left: 15px;">
 				<div class="btn-group-demo">
 					<div class="btn-group">
+					
+						<p:commandLink id="buttonAtras" value="&#160; Atras"
+							styleClass="btn btn-warning ion-minus-circled"
+							immediate="true"
+							rendered="#{kardexEjecutivoController.verReporte}"
+							style="height:31px; padding:center">
+							<p:ajax update="form001"
+								listener="#{kardexEjecutivoController.loadDefault()}" />
+						</p:commandLink>
 						
+						<p:commandLink id="buttonVerReporte"
+							value="&#160; Ver Reporte"
+							styleClass="btn btn-info ion-printer"
+							rendered="#{kardexEjecutivoController.ejecutivoComisiones.size() > 0}"
+							style="height:31px; padding:center" update="form001"
+							action="#{kardexEjecutivoController.cargarReporte()}">
+						</p:commandLink>
 						
 					</div>
 				</div>
@@ -32,7 +48,7 @@
 
 	<!-- BEGIN PANEL TABLE -->
 	<div class="row">
-
+	<ui:fragment rendered="#{ ! kardexEjecutivoController.verReporte}">
 		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -71,7 +87,7 @@
 									<br/>
 									<div class="row">
 					<p:dataTable id="comisionEjecutivoTable" var="item" value="#{kardexEjecutivoController.ejecutivoComisiones}"
-						paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+						paginator="true" rows="20" rowsPerPageTemplate="20,30,40"
 						selectionMode="single"
 						selection="#{kardexEjecutivoController.ejecutivoComision}" 
 						rowKey="#{item.id}" paginatorPosition="top" lazy="true"
@@ -101,11 +117,12 @@
 								<f:convertNumber type="number" groupingUsed="true"
 									minFractionDigits="2" pattern="#0.00" />
 							</h:outputText>
+							<h:outputText value="-" rendered="#{item.tipoMovimiento.equals('PAGO')}" />
 						</p:column>
 
 						<p:column headerText="%" width="7%" style="text-align:center;">
-							<h:outputText value="#{item.porcentaje}" >
-							</h:outputText>
+							<h:outputText value="#{item.porcentaje}" rendered="#{!item.tipoMovimiento.equals('PAGO')}"/>
+							<h:outputText value="-" rendered="#{item.tipoMovimiento.equals('PAGO')}" />
 						</p:column>
 
 						<p:column headerText="Ingreso" width="10%" style="text-align:center;">
@@ -121,7 +138,7 @@
 							<h:outputText value="-" rendered="#{item.tipoMovimiento.equals('VENTA') or item.tipoMovimiento.equals('CUOTA')}" >
 								
 							</h:outputText>
-							<h:outputText value="#{item.importe}" rendered="#{item.tipoMovimiento.equals('PAGO')}" >
+							<h:outputText value="#{item.egreso}" rendered="#{item.tipoMovimiento.equals('PAGO')}" >
 								<f:convertNumber type="number" groupingUsed="true"
 									minFractionDigits="2" pattern="#0.00" />
 							</h:outputText>
@@ -140,6 +157,19 @@
 				<div class="panel-body"></div>
 			</div>
 		</div>
+		</ui:fragment>
+		
+		<ui:fragment rendered="#{kardexEjecutivoController.verReporte}">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body" style="text-align: center;">
+						<p:media player="pdf" rendered="true"
+							value="#{kardexEjecutivoController.urlKardex}"
+							width="800px" height="1125px" />
+					</div>
+				</div>
+			</div>
+		</ui:fragment>
 
 	</div>
 	<!-- END PANEL TABLE -->

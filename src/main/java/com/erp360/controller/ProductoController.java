@@ -15,9 +15,11 @@ import javax.inject.Named;
 import org.primefaces.event.SelectEvent;
 import org.richfaces.cdi.push.Push;
 
+import com.erp360.dao.AlmacenProductoDao;
 import com.erp360.dao.LineaProductoDao;
 import com.erp360.dao.ProductoDao;
 import com.erp360.dao.UnidadMedidaDao;
+import com.erp360.model.AlmacenProducto;
 import com.erp360.model.LineaProducto;
 import com.erp360.model.Producto;
 import com.erp360.model.UnidadMedida;
@@ -48,6 +50,7 @@ public class ProductoController implements Serializable {
 	private @Inject UnidadMedidaDao unidadMedidaDao;
 	private @Inject ProductoDao productoDao;
 	private @Inject LineaProductoDao lineaProductoDao;
+	private @Inject AlmacenProductoDao almacenProductoDao;
 
 	//STATE
 	private boolean modificar = false;
@@ -173,6 +176,10 @@ public class ProductoController implements Serializable {
 			loadDefault();
 		}
 	}
+	
+	public void abrirDialogoEliminarProducto(){
+		FacesUtil.showDialog("dlgEliminar");
+	}
 
 	public void modificarProducto() {
 		boolean sw = productoDao.modificar(newProducto);
@@ -180,9 +187,16 @@ public class ProductoController implements Serializable {
 			loadDefault();
 		}
 	}
-
+	
 	public void eliminarProducto() {
-		boolean sw = false;
+		//verificar que el producto no tiene en stock en el inventario
+		List<AlmacenProducto> list = almacenProductoDao.findAllByProductoOrderByFecha(sessionMain.getGestionLogin(),newProducto);
+		if(! list.isEmpty()){
+			FacesUtil.infoMessage("No se puede Eliminar", "El producto tiene stock en Inventario");
+			return;
+		}
+		newProducto.setFechaModificacion(new Date());
+		boolean sw = productoDao.eliminar(newProducto);
 		if(sw){
 			loadDefault();
 		}

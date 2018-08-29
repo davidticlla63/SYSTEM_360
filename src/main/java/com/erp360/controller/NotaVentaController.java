@@ -19,14 +19,12 @@ import org.primefaces.event.CaptureEvent;
 import org.primefaces.event.SelectEvent;
 
 import com.erp360.dao.AlmacenProductoDao;
-import com.erp360.dao.ClienteAdicionalDao;
 import com.erp360.dao.ClienteDao;
 import com.erp360.dao.DetalleNotaVentaDao;
 import com.erp360.dao.EjecutivoClienteDao;
 import com.erp360.dao.NotaVentaDao;
 import com.erp360.dao.ParametroCobranzaDao;
 import com.erp360.dao.ParametroCuotaDao;
-import com.erp360.dao.ParametroEmpresaDao;
 import com.erp360.dao.ParametroInventarioDao;
 import com.erp360.dao.ParametroVentaDao;
 import com.erp360.dao.PlanCobranzaDao;
@@ -41,7 +39,6 @@ import com.erp360.model.Gestion;
 import com.erp360.model.NotaVenta;
 import com.erp360.model.ParametroCobranza;
 import com.erp360.model.ParametroCuota;
-import com.erp360.model.ParametroEmpresa;
 import com.erp360.model.ParametroInventario;
 import com.erp360.model.ParametroVenta;
 import com.erp360.model.PlanCobranza;
@@ -75,8 +72,6 @@ public class NotaVentaController implements Serializable {
 	private @Inject ProductoDao productoDao;
 	private @Inject EjecutivoClienteDao ejecutivoClienteDao;
 	private @Inject DetalleNotaVentaDao detalleNotaVentaDao;
-	private @Inject ParametroEmpresaDao parametroEmpresaDao;
-	private @Inject ClienteAdicionalDao clienteAdicionalDao;
 
 	//OBJECT
 	private NotaVenta notaVenta;
@@ -88,7 +83,6 @@ public class NotaVentaController implements Serializable {
 	private ParametroInventario selectedParametroInventario;
 	private ParametroCobranza selectedParametroCobranza;
 	private ParametroVenta selectedParametroVenta;
-	private ParametroEmpresa selectedParametroEmpresa;
 	private byte[] data;
 
 	//LIST
@@ -207,7 +201,7 @@ public class NotaVentaController implements Serializable {
 		selectedParametroInventario = parametroInventarioDao.obtenerParametroInventario();
 		selectedParametroVenta = parametroVentaDao.obtener();
 		selectedParametroCobranza = parametroCobranzaDao.obtenerParametroCobanza();
-		selectedParametroEmpresa = parametroEmpresaDao.obtener();
+		//selectedParametroEmpresa = parametroEmpresaDao.obtener();
 
 		if(FacesUtil.getSessionAttribute("pIdNotaVentaAnulada")!=null){
 			//1.- estados de los botones, para desabilitar opciones
@@ -614,7 +608,7 @@ public class NotaVentaController implements Serializable {
 			if(notaVenta.getEstadoPago().equals("CO")){
 			//pending
 			}else{
-				urlReciboAmortizacion = buildUrl("ReportReciboAmortizacionNotaVenta",map1);	
+				urlReciboAmortizacion = "";// buildUrl("ReportReciboAmortizacionNotaVenta",map1);	
 			}
 			//	mostrar proforma con su plan de pago al credito
 			Map<String,String> map2 = new HashMap<>();
@@ -630,13 +624,15 @@ public class NotaVentaController implements Serializable {
 			map2.put("pTipoRecibo", "ORIGINAL");
 			urlProformaAlCredito = buildUrl("ReportProformaAlCredito",map2);
 		}
+		System.out.println("urlReciboAmortizacion: "+urlReciboAmortizacion);
+		System.out.println("urlProformaAlCredito: "+urlProformaAlCredito);
 	}
 
 	//PROCESOS
 
 	public void registrarNotaVenta(){
 		//validaciones
-
+		NotaVenta nv = new NotaVenta();
 		if(notaVenta.getTipoVenta().equals("CONTADO")){
 			if( ! notaVenta.getEstadoPago().equals("CO")){
 				notaVenta.setEstadoPago("PR");//PROCESADO
@@ -649,20 +645,31 @@ public class NotaVentaController implements Serializable {
 			notaVenta.setNumeroCuotas(0);
 			notaVenta.setPorcentajeCuotaInicial(0);
 			listPlanPago = new ArrayList<>();
+			notaVenta.setGestion(gestionSesion);
+			notaVenta.setCliente(selectedCliente);
+			notaVenta.setEmpresa(empresaSession);
+			notaVenta.setCuotaIncialPagada(Boolean.TRUE);
+			notaVenta.setFechaRegistro(new Date());
+			notaVenta.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
+			notaVenta.setEjecutivo(ejecutivo);
+			nv = notaVentaDao.registrarContado(observacion,sessionMain.getUsuarioLogin(),notaVenta,listDetalleNotaVenta,gestionSesion,selectedParametroInventario,selectedParametroCobranza ,selectedParametroVenta);
+		
 		}else if(notaVenta.getTipoVenta().equals("CREDITO")){
 			if( ! notaVenta.getEstadoPago().equals("CO")){
 				notaVenta.setEstadoPago("PN");//PENDIENTE
 			}
 			notaVenta.setEstado("AC");
+		
+			notaVenta.setGestion(gestionSesion);
+			notaVenta.setCliente(selectedCliente);
+			notaVenta.setEmpresa(empresaSession);
+			notaVenta.setCuotaIncialPagada(Boolean.FALSE);
+			notaVenta.setFechaRegistro(new Date());
+			notaVenta.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
+			notaVenta.setEjecutivo(ejecutivo);
+			nv = notaVentaDao.registrarSinCuotaInicial(observacion,sessionMain.getUsuarioLogin(),notaVenta,listDetalleNotaVenta,listPlanPago,gestionSesion,selectedParametroInventario,selectedParametroCobranza ,selectedParametroVenta);
 		}
-		notaVenta.setGestion(gestionSesion);
-		notaVenta.setCliente(selectedCliente);
-		notaVenta.setEmpresa(empresaSession);
-		notaVenta.setCuotaIncialPagada(Boolean.FALSE);
-		notaVenta.setFechaRegistro(new Date());
-		notaVenta.setUsuarioRegistro(sessionMain.getUsuarioLogin().getLogin());
-		notaVenta.setEjecutivo(ejecutivo);
-		NotaVenta nv = notaVentaDao.registrarSinCuotaInicial(observacion,sessionMain.getUsuarioLogin(),notaVenta,listDetalleNotaVenta,listPlanPago,gestionSesion,selectedParametroInventario,selectedParametroCobranza ,selectedParametroVenta);
+		
 		if(nv != null){
 			//CajaMovimiento c=cajaMovimientoDao.registrar(cajaServicio.IngresoPorVenta(notaVenta));
 			cargarReporteAmortizacion();
@@ -1066,8 +1073,8 @@ public class NotaVentaController implements Serializable {
 						d.setPrecio(precio*tipoCambio);//credito nacional
 						d.setPrecioExtranjero(precio);//credito extranjero
 						//contado
-						d.setPrecioContadoNacional(ap.getPrecioVentaContado()*tipoCambio);//contado nacional
-						d.setPrecioContadoExtranjero(ap.getPrecioVentaContado());//contado extanjero
+						d.setPrecioContadoNacional(precio*tipoCambio);//contado nacional
+						d.setPrecioContadoExtranjero(precio);//contado extanjero
 						detalleNotaVentas.add(d);
 						cantidad = cantidad - ap.getStock();
 					}
@@ -1096,8 +1103,8 @@ public class NotaVentaController implements Serializable {
 				selectedDetalleNotaVenta.setPrecio(precio*tipoCambio);//credito nacional
 				selectedDetalleNotaVenta.setPrecioExtranjero(precio);//credito extranjero
 				//contado
-				selectedDetalleNotaVenta.setPrecioContadoNacional(i.getPrecioVentaContado()*tipoCambio);//contado nacional
-				selectedDetalleNotaVenta.setPrecioContadoExtranjero(i.getPrecioVentaContado());//contado extanjero
+				selectedDetalleNotaVenta.setPrecioContadoNacional(precio*tipoCambio);//contado nacional
+				selectedDetalleNotaVenta.setPrecioContadoExtranjero(precio);//contado extanjero
 			}
 		}
 	}
@@ -1107,7 +1114,6 @@ public class NotaVentaController implements Serializable {
 		for(AlmacenProducto ap: list){
 			cantidad = cantidad + ap.getStock();
 		}
-		// TODO Auto-generated method stub
 		return cantidad;
 	}
 

@@ -145,7 +145,7 @@ public class OrdenIngresoController implements Serializable {
 		precioPromedio = 0;
 
 		crear = true;
-		registrar = false;
+		registrar = true;
 		modificar = false;
 		verReport = false;
 
@@ -190,9 +190,14 @@ public class OrdenIngresoController implements Serializable {
 			listaDetalleOrdenIngreso = detalleOrdenIngresoDao.obtenerPorOrdenIngreso(selectedOrdenIngreso);
 			selectedProveedor = selectedOrdenIngreso.getProveedor();
 			selectedAlmacen = selectedOrdenIngreso.getAlmacen();
-			if(selectedOrdenIngreso.getEstado().equals("AC")){
+			if(selectedOrdenIngreso.getEstado().equals("PR")){
+				modificar = false;
+				ocultarProveedor = true;
+				registrar = false;
+			}else if(selectedOrdenIngreso.getEstado().equals("AC")){
 				modificar = true;
 				ocultarProveedor = false;
+				registrar = false;
 			}else{
 				modificar = false;	
 				ocultarProveedor = true;
@@ -505,6 +510,8 @@ public class OrdenIngresoController implements Serializable {
 			System.out.println("d.getPrecio1(): "+d.getPrecio1());
 			System.out.println("d.getPrecio2(): "+d.getPrecio2());
 			almProd.setPrecioAlmacen(d.getPrecioAlmacen());
+			almProd.setPrecioVentaContado(d.getPrecioVentaContado());
+			almProd.setPrecioVentaCredito(d.getPrecioVentaCredito());
 			almProd.setPrecio1(d.getPrecio1());
 			almProd.setPrecio2(d.getPrecio2());
 			almProd.setPrecio3(d.getPrecio3());
@@ -786,6 +793,9 @@ public class OrdenIngresoController implements Serializable {
 				selectedProducto = i;
 				//precios 1,2,3,4,5,6
 				selectedDetalleOrdenIngreso.setPrecioCompra(selectedProducto.getPrecioCompra());
+				selectedDetalleOrdenIngreso.setPrecioAlmacen(selectedProducto.getPrecioAlmacen());
+				selectedDetalleOrdenIngreso.setPrecioVentaContado(selectedProducto.getPrecioVentaContado());
+				selectedDetalleOrdenIngreso.setPrecioVentaCredito(selectedProducto.getPrecioVentaCredito());
 				selectedDetalleOrdenIngreso.setPrecio1(selectedProducto.getPrecioCompra1());
 				selectedDetalleOrdenIngreso.setPrecio2(selectedProducto.getPrecioCompra2());
 				selectedDetalleOrdenIngreso.setPrecio3(selectedProducto.getPrecioCompra3());

@@ -2,6 +2,7 @@ package com.erp360.dao;
 
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import com.erp360.model.CajaSesion;
 import com.erp360.model.Cliente;
 import com.erp360.model.Cobranza;
 import com.erp360.model.CuentaCobrar;
+import com.erp360.model.DetallePagoComision;
 import com.erp360.model.Ejecutivo;
 import com.erp360.model.EjecutivoComisiones;
 import com.erp360.model.Empresa;
@@ -42,14 +44,13 @@ import com.erp360.util.W;
  *
  */
 @Stateless
-public class PagoComisionDao extends DataAccessObjectJpa<PagoComision,PlanCobranza,NotaVenta,CajaMovimiento,O, P, Q, U, V, W> {
+public class PagoComisionDao extends DataAccessObjectJpa<PagoComision,PlanCobranza,NotaVenta,CajaMovimiento,DetallePagoComision, P, Q, U, V, W> {
 
 	public PagoComisionDao(){
-		super(PagoComision.class,PlanCobranza.class,NotaVenta.class,CajaMovimiento.class);
+		super(PagoComision.class,PlanCobranza.class,NotaVenta.class,CajaMovimiento.class,DetallePagoComision.class);
 	}
-	
+
 	private @Inject MovimientoCajaDao movimientoCajaDao;
-	private @Inject KardexClienteDao kardexClienteDao;
 	private @Inject CuentaCobrarDao deudaClienteDao;
 	private @Inject NotaVentaDao notaVentaDao;
 	private @Inject ICajaMovimientoDao cajaMovimientoDao;
@@ -58,10 +59,75 @@ public class PagoComisionDao extends DataAccessObjectJpa<PagoComision,PlanCobran
 	private @Inject EjecutivoComisionesDao ejecutivoComisionesDao;
 	private @Inject SessionMain sessionMain;
 
+	public PagoComision registrar(PagoComision pagoComision,List<DetallePagoComision> detallePagoComisiones,List<EjecutivoComisiones> ejecutivoComisiones){
+		try{
+			beginTransaction();
+			//registrar pago comision
+			pagoComision = create(pagoComision);
+			System.out.println("pagoComision: "+pagoComision);
+			//registrar detalle pago comision
+			for(DetallePagoComision dpc: detallePagoComisiones){
+				dpc.setPagoComision(pagoComision);
+				createO(dpc);
+				System.out.println("dpc: "+dpc);
+			}
+			//actualizar estado a pago en comisiones de ejecutivos
+			List<EjecutivoComisiones> temp = new ArrayList<>();
+			for(EjecutivoComisiones ec: ejecutivoComisiones){
+				if(ec.isPagado()){
+					ejecutivoComisionesDao.update(ec);
+					System.out.println("ec"+ec);
+				}
+			}
+			//registrar comision ejecutivo
+			EjecutivoComisiones ec = new EjecutivoComisiones();
+			ec.setNotaVenta(null);
+			ec.setCobranza(null);
+			ec.setPagoComision(pagoComision);
+			ec.setEstado("AC");
+			ec.setFechaRegistro(pagoComision.getFechaRegistro());
+			ec.setPagado(Boolean.TRUE);
+			ec.setUsuarioRegistro(pagoComision.getUsuarioRegistro());
+			ec.setPorcentaje(0d);
+			ec.setImporte(0d);
+			ec.setEgreso(pagoComision.getMontoExtranjero());
+			ec.setEjecutivo(pagoComision.getEjecutivo());
+			ejecutivoComisionesDao.registrar(ec);
+			//caja movimiento
+			CajaMovimiento cajaMovimiento=cajaServicio.egresoPorPagoEjecutivo(pagoComision);
+			CajaSesion cajaSesion=cajaSesionDao.RetornarPorId(cajaMovimiento.getCajaSesion().getId());
+
+			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+cajaMovimiento.getMonto());
+			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+cajaMovimiento.getMontoExtranjero());
+
+			cajaSesion=cajaSesionDao.update(cajaSesion);
+			sessionMain.setCajaSesion(cajaSesion);
+
+			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+cajaMovimiento.getMonto());
+			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+cajaMovimiento.getMontoExtranjero());
+			cajaSesionDao.update(cajaSesion);
+			cajaMovimiento.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
+			cajaMovimiento.setSaldoNacional(cajaSesion.getSaldoNacional());
+			CajaMovimiento c = cajaMovimientoDao.create(cajaMovimiento);
+			commitTransaction();
+			FacesUtil.infoMessage("", "Registro Correcto ");
+			return pagoComision;
+		}catch(Exception e){
+			String cause=e.getMessage();
+			if (cause.contains("org.hibernate.exception.ConstraintViolationException: could not execute statement")) {
+				FacesUtil.errorMessage("Ya existe un registro igual.");
+			}else{
+				FacesUtil.errorMessage("Error al registrar");
+			}
+			rollbackTransaction();
+			return null;
+		}
+	}
+
 	public Cobranza registrar(Usuario usuario,Cobranza cobranza,List<PlanCobranza> planCobranzas,Cliente cliente,int numeroCuotasPendientePorCobrar){
 		try{
 			beginTransaction();
-			
+
 			//crear movimiento a caja
 			MovimientoCaja movimientoCaja = new MovimientoCaja();
 			movimientoCaja.setCorrelativo(String.format("%06d",movimientoCajaDao.correlativoMovimiento(cobranza.getGestion())));
@@ -85,7 +151,7 @@ public class PagoComisionDao extends DataAccessObjectJpa<PagoComision,PlanCobran
 			//registro de cobranza
 			cobranza.setMovimientoCaja(movimientoCaja);
 			//cobranza = create(cobranza);
-			
+
 			//ejecutivo
 			//EjecutivoCliente ejecutivoCliente = ejecutivoClienteDao.getEjecutivoClienteByIdCliente(notaVenta.getCliente());
 			Ejecutivo ejecutivo = cobranza.getCuentaCobrar().getNotaVenta().getEjecutivo();
@@ -106,26 +172,26 @@ public class PagoComisionDao extends DataAccessObjectJpa<PagoComision,PlanCobran
 				ejecutivoComisionesDao.registrar(ejecutivoComisiones);
 			}
 			//caja movimiento
-			
+
 			//caja movimiento
 			CajaMovimiento cajaMovimiento=cajaServicio.IngresoPorCobranza(cobranza);
 			CajaSesion cajaSesion=cajaSesionDao.RetornarPorId(cajaMovimiento.getCajaSesion().getId());
-			
+
 			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+cajaMovimiento.getMonto());
 			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+cajaMovimiento.getMontoExtranjero());
-							
-			
+
+
 			cajaSesion=cajaSesionDao.update(cajaSesion);
 			sessionMain.setCajaSesion(cajaSesion);
-			
-//			cajaMovimiento.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
-//			cajaMovimiento.setSaldoNacional(cajaSesion.getSaldoNacional());
-//			
-//			CajaMovimiento c=cajaMovimientoDao.create(cajaMovimiento);
-//			
-//			CajaMovimiento cajaMovimiento=cajaServicio.IngresoPorCobranza(cobranza);
-//			CajaSesion cajaSesion=cajaSesionDao.RetornarPorId(cajaMovimiento.getCajaSesion().getId());
-			
+
+			//			cajaMovimiento.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
+			//			cajaMovimiento.setSaldoNacional(cajaSesion.getSaldoNacional());
+			//			
+			//			CajaMovimiento c=cajaMovimientoDao.create(cajaMovimiento);
+			//			
+			//			CajaMovimiento cajaMovimiento=cajaServicio.IngresoPorCobranza(cobranza);
+			//			CajaSesion cajaSesion=cajaSesionDao.RetornarPorId(cajaMovimiento.getCajaSesion().getId());
+
 			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+cajaMovimiento.getMonto());
 			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+cajaMovimiento.getMontoExtranjero());
 			cajaSesionDao.update(cajaSesion);
@@ -169,7 +235,7 @@ public class PagoComisionDao extends DataAccessObjectJpa<PagoComision,PlanCobran
 			return null;
 		}
 	}
-	
+
 
 	public PagoComision modificar(PagoComision usuario){
 		try{
@@ -199,5 +265,14 @@ public class PagoComisionDao extends DataAccessObjectJpa<PagoComision,PlanCobran
 		return findDescAllOrderedByParameter("id");
 	}
 
-	
+	public int obtenerCorrelativo(){
+		try{
+			String query = "select cast(MAX(em.codigo) as int) from  pago_comision em where (em.estado='AC' or em.estado='PR') ";
+			return ((Integer) executeNativeQuerySingleResult(query)).intValue()+1;
+		}catch (Exception e) {
+			return 1;
+		}
+	}
+
+
 }

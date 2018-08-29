@@ -36,37 +36,28 @@
 
 										<p:commandLink id="buttonAtras" value="&#160; Atras"
 											styleClass="btn btn-warning ion-minus-circled"
-											rendered="#{ ! ordenIngresoController.verReport}"
 											style="height:31px; padding:center" immediate="true"
 											onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/proceso/list-orden-ingreso.xhtml';">
 										</p:commandLink>
 
-										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
-											styleClass="btn btn-warning ion-minus-circled"
-											immediate="true"
-											rendered="#{ordenIngresoController.verReport}"
-											style="height:31px; padding:center" update="form001"
-											actionListener="#{ordenIngresoController.loadDefault()}">
-										</p:commandLink>
-
 										<p:commandLink id="buttonRegistrar" value="&#160; Registrar"
 											styleClass="btn btn-success ion-checkmark"
-											rendered="#{ ! ordenIngresoController.verReport and ordenIngresoController.modificar}"
+											rendered="#{ordenIngresoController.registrar}"
 											update="form001" style="height:31px; padding:center"
 											disabled="#{ ! ordenIngresoController.estaGestionIniciada()}"
 											action="#{ordenIngresoController.registrarOrdenIngreso()}">
 										</p:commandLink>
-
+										
 										<p:commandLink id="buttonModificar" value="&#160; Modificar"
 											styleClass="btn btn-primary ion-edit"
-											rendered="#{ordenIngresoController.modificar and ordenIngresoController.verProcesar}"
+											rendered="#{ordenIngresoController.modificar}"
 											style="height:31px; padding:center" update="form001"
 											action="#{ordenIngresoController.modificarOrdenIngreso()}">
 										</p:commandLink>
 
 										<p:commandLink id="buttonEliminar" value="&#160; Eliminar"
 											styleClass="btn btn-danger ion-close"
-											rendered="#{ordenIngresoController.selectedOrdenIngreso.id.intValue() != 0 and ordenIngresoController.crear and ordenIngresoController.verProcesar and ! ordenIngresoController.verReport }"
+											rendered="#{!ordenIngresoController.verProcesar}"
 											update="form001"
 											onclick="PF('dlgEliminarOrdenIngreso').show()"
 											style="height:31px; padding:center">
@@ -74,7 +65,7 @@
 
 										<p:commandLink id="buttonProcesar" value="&#160; Procesar"
 											styleClass="btn btn-info ion-ios7-loop-strong"
-											rendered="#{ordenIngresoController.selectedOrdenIngreso.id.intValue() != 0 and ordenIngresoController.crear and ordenIngresoController.verProcesar and ! ordenIngresoController.verReport}"
+											rendered="false"
 											style="height:31px; padding:center" update="form001"
 											action="#{ordenIngresoController.procesarOrdenIngreso()}">
 										</p:commandLink>
@@ -151,7 +142,7 @@
 													<div class="col-md-4">Motivo Ingreso</div>
 													<div class="col-md-8">
 														<h:selectOneMenu id="tipoID"
-															disabled="#{ordenIngresoController.newOrdenIngreso.motivoIngreso.equals('TOMA INVENTARIO INICIAL')}"
+															disabled="#{ordenIngresoController.newOrdenIngreso.motivoIngreso.equals('TOMA INVENTARIO INICIAL') or ordenIngresoController.ocultarProveedor}"
 															value="#{ordenIngresoController.newOrdenIngreso.motivoIngreso}"
 															styleClass="form-control" required="false"
 															requiredMessage="Tipo Requerido.">
@@ -172,7 +163,7 @@
 													<div class="col-md-4">Almacén</div>
 													<div class="col-md-8">
 
-														<p:autoComplete id="almacenID" style="width: 93%"
+														<p:autoComplete id="almacenID" style="width: 93%" disabled="#{ordenIngresoController.ocultarProveedor}"
 															inputStyle="width: 93%; color: #555555; background-image: none;padding: 4px 10px;"
 															value="#{ordenIngresoController.selectedAlmacen.nombre}"
 															completeMethod="#{ordenIngresoController.completeAlmacen}"
@@ -223,7 +214,7 @@
 												<div class="form-group ">
 													<div class="col-md-4">Tipo Documento</div>
 													<div class="col-md-8">
-														<h:selectOneMenu id="tipoDocProvID"
+														<h:selectOneMenu id="tipoDocProvID" disabled="#{ordenIngresoController.ocultarProveedor}"
 															value="#{ordenIngresoController.newOrdenIngreso.tipoDocumento}"
 															styleClass="form-control" required="false"
 															requiredMessage="Tipo Requerido.">
@@ -321,7 +312,7 @@
 												<p:commandLink id="buttonDlgTelefono"
 													value="&#160; Producto"
 													styleClass="btn btn-success btn-outlined ion-plus"
-													rendered="#{ ordenIngresoController.modificar}"
+													rendered="#{ordenIngresoController.registrar or ordenIngresoController.modificar}"
 													style="height:27px; padding-top: 5px" immediate="true"
 													update="form001"
 													actionListener="#{ordenIngresoController.actionLoadDialogProducto()}">
@@ -353,43 +344,119 @@
 												value="#{ordenIngresoController.listaDetalleOrdenIngreso}"
 												emptyMessage="No se encontraron Registros de ITEMS.">
 
-												<p:column width="5%" headerText="Código"
-													filterBy="#{_var.producto.codigo}"
-													filterStyle="width: 100%;" filterMatchMode="contains">
+												<p:column width="5%" headerText="Código">
 													<h:outputText value="#{_var.producto.codigo}" />
 												</p:column>
 
-												<p:column width="10%" headerText="Nombre"
-													filterBy="#{_var.producto.nombre}"
-													filterStyle="width: 100%;" filterMatchMode="contains">
+												<p:column width="10%" headerText="Nombre" >
 													<h:outputText value="#{_var.producto.nombre}" />
 												</p:column>
 
-												<p:column width="10%" headerText="Descripción"
-													filterBy="#{_var.producto.descripcion}"
-													filterStyle="width: 100%;" filterMatchMode="contains">
-													<h:outputText value="#{_var.producto.descripcion}" />
-												</p:column>
-
-												<p:column headerText="Cantidad" width="5%"
-													filterBy="#{_var.cantidad}" style="text-align:center;"
-													filterStyle="width: 100%;" filterMatchMode="contains">
+												<p:column headerText="Cantidad" width="5%" style="text-align:center;">
 													<h:outputText value="#{_var.cantidad}" />
 												</p:column>
 
 												<p:column headerText="Precio Compra" width="6%"
-													filterBy="#{_var.precioCompra}" style="text-align:center;"
-													filterStyle="width: 100%;" filterMatchMode="contains">
+													style="text-align:center;">
 													<h:outputText value="#{_var.precioCompra}">
 														<f:convertNumber pattern="#,##0.00" />
 													</h:outputText>
 													#{' '}
 														<h:outputText value="$us.-" />
 												</p:column>
+												
+												<p:column width="10%" headerText="Precios" >
+													<p:outputLabel id="outputLabelId" value="Ver Precios" />
+													<p:tooltip id="tooltipId1" for="outputLabelId" value="."
+																rendered="true" style="width: 400px">
 
-												<p:column headerText="Total" width="6%"
-													filterBy="#{_var.total}" style="text-align:center;"
-													filterStyle="width: 100%;" filterMatchMode="contains">
+																<div class="panel">
+																	<div class="panel-heading">
+																		<h3 class="panel-title">
+																			<strong class="text-uppercase text-orange">Información Precios</strong>
+																		</h3>
+																	</div>
+																	<div class="panel-body">
+																		<div class="row" >
+																			<div class="col-md-12">
+																				<div class="form-group ">
+																					<div class="col-md-6">Precio 1:</div>
+																					<div class="col-md-6">
+																						<h:outputText value="$" />
+																						#{' '}
+																						<h:outputText value="#{_var.precio1}">
+																							<f:convertNumber pattern="#,##0.00" />
+																						</h:outputText>
+																					</div>
+																				</div>
+																			</div>
+																			<div class="col-md-12">
+																				<div class="form-group ">
+																					<div class="col-md-6">Precio 2:</div>
+																					<div class="col-md-6">
+																						<h:outputText value="$" />
+																						#{' '}
+																						<h:outputText value="#{_var.precio2}">
+																							<f:convertNumber pattern="#,##0.00" />
+																						</h:outputText>
+																					</div>
+																				</div>
+																			</div>
+																			<div class="col-md-12">
+																				<div class="form-group ">
+																					<div class="col-md-6">Precio 3:</div>
+																					<div class="col-md-6">
+																						<h:outputText value="$" />
+																						#{' '}
+																						<h:outputText value="#{_var.precio3}">
+																							<f:convertNumber pattern="#,##0.00" />
+																						</h:outputText>
+																					</div>
+																				</div>
+																			</div>
+																			<div class="col-md-12">
+																				<div class="form-group ">
+																					<div class="col-md-6">Precio 4:</div>
+																					<div class="col-md-6">
+																						<h:outputText value="$" />
+																						#{' '}
+																						<h:outputText value="#{_var.precio4}">
+																							<f:convertNumber pattern="#,##0.00" />
+																						</h:outputText>
+																					</div>
+																				</div>
+																			</div>
+																			<div class="col-md-12">
+																				<div class="form-group ">
+																					<div class="col-md-6">Precio 5:</div>
+																					<div class="col-md-6">
+																						<h:outputText value="$" />
+																						#{' '}
+																						<h:outputText value="#{_var.precio5}">
+																							<f:convertNumber pattern="#,##0.00" />
+																						</h:outputText>
+																					</div>
+																				</div>
+																			</div>
+																			<div class="col-md-12">
+																				<div class="form-group ">
+																					<div class="col-md-6">Precio 6:</div>
+																					<div class="col-md-6">
+																						<h:outputText value="$" />
+																						#{' '}
+																						<h:outputText value="#{_var.precio6}">
+																							<f:convertNumber pattern="#,##0.00" />
+																						</h:outputText>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</p:tooltip>
+												</p:column>
+
+												<p:column headerText="Total" width="6%" style="text-align:center;">
 													<h:outputText value="#{_var.totalCompra}">
 														<f:convertNumber pattern="#,##0.00" />
 													</h:outputText>
@@ -398,8 +465,7 @@
 												</p:column>
 
 												<p:column width="12%" headerText="Obervación"
-													style="text-align:center;" filterBy="#{_var.observacion}"
-													filterStyle="width: 100%;" filterMatchMode="contains">
+													style="text-align:center;" >
 													<h:outputText value="#{_var.observacion}" />
 												</p:column>
 
@@ -408,12 +474,12 @@
 													<div class="row">
 														<div class="btn-group-demo">
 															<div class="btn-group">
-																<p:commandLink id="buttonModificarDetalle"
-																	value="&#160;" styleClass="btn ion-edit"
+																<p:commandLink id="buttonModificarDetalle" disabled="#{ordenIngresoController.ocultarProveedor}"
+																	value="&#160;" styleClass="btn ion-edit" rendered="false"
 																	style="padding-left: 5px; padding-right: 5px;"
 																	immediate="true"
 																	actionListener="#{ordenIngresoController.editarDetalleOrdenIngreso(_var.id)}" />
-																<p:commandLink id="buttonEliminarDetalle"
+																<p:commandLink id="buttonEliminarDetalle" disabled="#{ordenIngresoController.ocultarProveedor}"
 																	style="padding-left: 5px; padding-right: 5px;"
 																	value="&#160;" styleClass="btn ion-trash-b"
 																	immediate="true"

@@ -15,24 +15,17 @@
 								<div class="btn-group-demo">
 									<div class="btn-group">
 										<p:commandLink id="buttonAtras" value="&#160; Atras"
-											styleClass="btn btn-warning ion-minus-circled"
-											rendered="#{ ! registroCobroController.verReporte}"
-											style="height:31px; padding:center"
-											onclick="window.location='#{facesContext.externalContext.requestContextPath}/pages/cobranza/list_cobro.xhtml';">
-										</p:commandLink>
-										<p:commandLink id="buttonCancelar" value="&#160; Cancelar"
-											styleClass="btn btn-warning ion-minus-circled"
-											immediate="true"
-											rendered="#{registroCobroController.verReporte}"
+											styleClass="btn btn-warning ion-minus-circled" immediate="true"
 											style="height:31px; padding:center" update="form001"
-											action="#{registroCobroController.loadDefault()}">
+											action="#{pagoComisionController.loadDefault()}">
 										</p:commandLink>
+										
 										<p:commandLink id="buttonRegistrar"
-											value="&#160; Registrar Pago"
+											value="&#160; Registrar Pago" update="form001"
 											styleClass="btn btn-success ion-checkmark" immediate="true"
 											style="height:31px; padding:center"
-											rendered="#{ ! registroCobroController.verReporte}"
-											action="#{registroCobroController.loadDialogCollectMoney()}">
+											rendered="#{ ! pagoComisionController.verReport}"
+											action="#{pagoComisionController.registrarPago()}">
 										</p:commandLink>
 									</div>
 								</div>
@@ -52,7 +45,7 @@
 					</div>
 					<!-- BEGIN PANEL REGISTER -->
 					<div class="row" style="padding-top: 10px;">
-						<ui:fragment rendered="#{ ! registroCobroController.verReporte}">
+						<ui:fragment rendered="#{ ! pagoComisionController.verReport}">
 							<div class="col-md-12">
 								<div id="page-invoice">
 									<div class="invoice">
@@ -72,7 +65,7 @@
 																inputStyle="width: 100%; color: #555555; background-image: none; padding: 4px 10px;"
 																value="#{pagoComisionController.ejecutivo}"
 																completeMethod="#{pagoComisionController.completeEjecutivo}"
-																minQueryLength="1" required="true"
+																minQueryLength="1" required="false"
 																requiredMessage="Nombre Ejecutivo Requerido."
 																forceSelection="true" var="_var"
 																itemLabel="#{_var.nombres}"
@@ -179,9 +172,25 @@
 																	
 																	
 																	<p:column headerText="Aplicar Pago" width="8%" style="text-align:center;">
-																		<h:outputText value=" - " >
-																			
-																		</h:outputText>
+																		
+																			<p:commandLink id="buttonSelected1"
+																				value="&#160; Pagar"
+																				styleClass="btn btn-default"
+																				style="height:31px; padding:center"
+																				rendered="#{!item.pagado}">
+																				<p:ajax
+																					update="form001:msgs1,form001:comisionEjecutivoTable,form001:montoCuotaInicialSubTotalNacional,form001:totalCobro01"
+																					listener="#{pagoComisionController.aplicarPago(item)}" />
+																			</p:commandLink>
+																			<p:commandLink id="buttonSelected2"
+																				value="&#160; Quitar"
+																				styleClass="btn btn-success" immediate="true"
+																				style="height:31px; padding:center"
+																				rendered="#{item.pagado}">
+																				<p:ajax
+																					update="form001:msgs1,form001:comisionEjecutivoTable,form001:montoCuotaInicialSubTotalNacional,form001:totalCobro01"
+																					listener="#{pagoComisionController.quitarPago(item)}" />
+																			</p:commandLink>
 																	</p:column>
 																	
 																</p:dataTable>
@@ -202,7 +211,7 @@
 																</div>
 																<div class="col-md-2">
 																	<p:outputLabel id="montoCuotaInicialSubTotalNacional"
-																		value="#{registroCobroController.numeroCuotasACobrar}" />
+																		value="#{pagoComisionController.detallePagoComisiones.size()}" />
 																</div>
 															</div>
 														</div>
@@ -217,7 +226,7 @@
 														</div>
 														<div class="col-md-5" style="padding-left: 1px; width: 30px !important;">
 															<p:outputLabel id="totalCobro01"
-																value="#{registroCobroController.totalCobrarExtranjero}">
+																value="#{pagoComisionController.pagoComision.montoExtranjero}">
 																<f:convertNumber type="number" groupingUsed="true"
 																	minFractionDigits="2" pattern="#0.00" />
 															</p:outputLabel>
@@ -239,33 +248,24 @@
 							</div>
 						</ui:fragment>
 
-						<ui:fragment rendered="#{registroCobroController.verReporte}">
+						<ui:fragment rendered="#{pagoComisionController.verReport}">
 							<div class="col-md-12">
 								<div class="panel panel-default">
 									<div class="panel-heading">
-										<h3 class="panel-title">VISUALIZACIÓN COBRANZA</h3>
+										<h3 class="panel-title">VISUALIZACIÓN PAGO COMISION</h3>
 									</div>
 									<div class="panel-body">
 									
-										<ui:fragment rendered="#{registroCobroController.urlReciboAmortizacion.length()>0}">
+										<ui:fragment rendered="#{pagoComisionController.urlReportPago.length()>0}">
 												<div class="row">
 													<div class="col-md-12">
 														<p:media player="pdf" rendered="true"
-															value="#{registroCobroController.urlReciboAmortizacion}"
+															value="#{pagoComisionController.urlReportPago}"
 															width="800px" height="800px" />
 													</div>
 												</div>
 										</ui:fragment>
 										
-										<ui:fragment rendered="#{registroCobroController.urlReporteCobro.length()>0}">
-												<div class="row">
-													<div class="col-md-12">
-														<p:media player="pdf" rendered="true"
-															value="#{registroCobroController.urlReporteCobro}"
-															width="800px" height="800px" />
-													</div>
-												</div>
-										</ui:fragment>
 									</div>
 								</div>
 							</div>

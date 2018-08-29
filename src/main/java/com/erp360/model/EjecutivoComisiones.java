@@ -30,6 +30,10 @@ public class EjecutivoComisiones implements Serializable {
 	private NotaVenta notaVenta;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="id_pago_comision", nullable=true)
+	private PagoComision pagoComision;
+	
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_cobranza", nullable=true)
 	private Cobranza cobranza;
 	
@@ -38,6 +42,9 @@ public class EjecutivoComisiones implements Serializable {
 	
 	@Column(name = "importe", nullable = false)
 	private Double importe;
+	
+	@Column(name = "egreso", nullable = true)
+	private Double egreso;
 	
 	@Column(name = "porcentaje", nullable = false)
 	private Double porcentaje;
@@ -209,6 +216,22 @@ public class EjecutivoComisiones implements Serializable {
 
 	public void setTipoMovimiento(String tipoMovimiento) {
 		this.tipoMovimiento = tipoMovimiento;
+	}
+
+	public Double getEgreso() {
+		return egreso;
+	}
+
+	public void setEgreso(Double egreso) {
+		this.egreso = egreso;
+	}
+
+	public PagoComision getPagoComision() {
+		return pagoComision;
+	}
+
+	public void setPagoComision(PagoComision pagoComision) {
+		this.pagoComision = pagoComision;
 	}
 
 }

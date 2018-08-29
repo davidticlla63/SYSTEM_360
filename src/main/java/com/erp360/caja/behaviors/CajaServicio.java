@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import org.apache.xmlbeans.impl.inst2xsd.VenetianBlindStrategy;
+import org.olap4j.metadata.Measure.Aggregator;
 
 import com.erp360.dao.CajaSesionDao;
 import com.erp360.enums.TipoMovimiento;
@@ -14,6 +15,7 @@ import com.erp360.model.CajaMovimiento;
 import com.erp360.model.CajaMovimientoDetalle;
 import com.erp360.model.Cobranza;
 import com.erp360.model.NotaVenta;
+import com.erp360.model.PagoComision;
 import com.erp360.util.FacturacionUtil;
 import com.erp360.util.SessionMain;
 
@@ -111,6 +113,42 @@ public class CajaServicio {
 			 detalle.setFechaModificacion(new Date());
 			 detalle.setFechaRegistro(new Date());
 			 detalle.setCobranza(cobranza);
+			 detalle.setSucursal(cajaMovimiento.getSucursal());
+			 detalle.setUsuarioRegistro(cajaMovimiento.getUsuarioRegistro());
+			 detalle.setTipoCambio(cajaMovimiento.getTipoCambio());
+			 cajaMovimiento.getListaCajaMovimientoDetalles().add(detalle);
+			return cajaMovimiento;
+		}
+	 
+	 public CajaMovimiento egresoPorPagoEjecutivo(PagoComision pagoComision){
+			CajaMovimiento cajaMovimiento= new CajaMovimiento();
+			cajaMovimiento.setCajaSesion(sessionMain.getCajaSesion());		
+			cajaMovimiento.setTipo("E");
+			cajaMovimiento.setTipoMovimiento(TipoMovimiento.PAG);
+			cajaMovimiento.setTipoPago(TipoPago.EFE);
+			cajaMovimiento.setTipoCambio(sessionMain.getTipoCambio().getUnidad());
+			cajaMovimiento.setFechaModificacion(new Date());
+			cajaMovimiento.setFechaRegistro(new Date());
+			cajaMovimiento.setSucursal(sessionMain.getSucursalLogin());
+			cajaMovimiento.setRazonSocial(pagoComision.getGlosa());
+			
+			cajaMovimiento.setMontoExtranjero(pagoComision.getMontoExtranjero());
+			cajaMovimiento.setMonto(0d);
+			cajaMovimiento.setDescripcion("EGRESO POR PAGO COMISION A EJECUTIVO :"+pagoComision.getCodigo()+" "+sessionMain.getCajaSesion().getCaja().getNombre());
+			cajaMovimiento.setMontoLiteral(FacturacionUtil.obtenerMontoLiteral(cajaMovimiento.getMonto()));
+			cajaMovimiento.setDucumento(pagoComision.getCodigo());
+			
+			
+			
+			 CajaMovimientoDetalle detalle= new CajaMovimientoDetalle();
+			 detalle.setCajaMovimiento(cajaMovimiento);
+			 detalle.setDescripcion(cajaMovimiento.getDescripcion());
+			 detalle.setMonto(cajaMovimiento.getMonto());
+			 detalle.setMontoExtranjero(cajaMovimiento.getMontoExtranjero());
+			 detalle.setEstado("AC");
+			 detalle.setFechaModificacion(new Date());
+			 detalle.setFechaRegistro(new Date());
+			 detalle.setPagoComision(pagoComision);
 			 detalle.setSucursal(cajaMovimiento.getSucursal());
 			 detalle.setUsuarioRegistro(cajaMovimiento.getUsuarioRegistro());
 			 detalle.setTipoCambio(cajaMovimiento.getTipoCambio());

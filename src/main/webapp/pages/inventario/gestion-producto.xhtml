@@ -70,7 +70,7 @@
 										<p:commandLink id="buttonEliminar" value="&#160; Eliminar"
 											styleClass="btn btn-danger ion-close"
 											rendered="#{productoController.modificar=='true'}"
-											update="form001" onclick="PF('dlgEliminar').show()"
+											update="formDlgEliminar" actionListener="#{productoController.abrirDialogoEliminarProducto()}"
 											style="height:31px; padding:center">
 										</p:commandLink>
 									</div>
@@ -233,6 +233,20 @@
 															required="true" requiredMessage="Requerido.">
 															<p:ajax event="change" update="precioVentaContadoID,precioVentaCreditoID" listener="#{productoController.calcularPorcentajePrecio()}" />
 															<f:convertNumber pattern="#,##0.000" locale="en" />
+														</p:inputText>
+													</div>
+												</div>
+												
+												<div class="form-group ">
+													<div class="col-md-4">Precio Almacén</div>
+													<div class="col-md-8">
+														<p:inputText id="precioAlmacenID" autocomplete="off"
+															style=" color: #555555; background-image: none;padding: 0 10px;"
+															styleClass="input-sm form-control" size="40"
+															value="#{productoController.newProducto.precioAlmacen}"
+															required="true" requiredMessage="Requerido.">
+															<f:convertNumber pattern="#,##0.000" locale="en" />
+															<p:ajax event="change" />
 														</p:inputText>
 													</div>
 												</div>
@@ -466,8 +480,8 @@
 			minHeight="40" modal="true">
 			<h:form id="formDlgEliminar">
 				<h:panelGrid columns="2" cellpadding="5">
-					<p:outputLabel value="ID: " />
-					<p:outputLabel value="#{productoController.newProducto.id}"
+					<p:outputLabel value="Código: " />
+					<p:outputLabel value="#{productoController.newProducto.codigo}"
 						style="text-transform: uppercase" required="true" size="20">
 					</p:outputLabel>
 
@@ -481,7 +495,8 @@
 					actionListener="#{productoController.eliminarProducto()}"
 					icon="ui-icon-trash" style="width: 90px; text-color: white;"
 					update="form001" oncomplete="PF('dlgEliminar').hide()"
-					styleClass="btn btn-default" immediate="true" />
+					styleClass="btn btn-danger" immediate="true" />
+					
 				<p:commandButton value="No" style="width: 90px; text-color: white;"
 					update="form001" oncomplete="PF('dlgEliminar').hide()"
 					styleClass="btn btn-default" immediate="true" />

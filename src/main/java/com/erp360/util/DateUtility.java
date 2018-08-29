@@ -54,6 +54,29 @@ public class DateUtility {
 		return cal.getTime();
 	}
 
+	/**
+	 * Obtener una fecha concatenados el dia, mes y anio
+	 * @param Date = 2018/25/08 23:33:40
+	 * @return 25082018
+	 */
+	public static String getDDMMYYYY(Date date){
+		String value = "";
+		value = value + getDayOfMonth(date)+obtenerMesNumeralMM(date)+obtenerYearNumeral(date);
+		return value;
+		
+	}
+	
+	/**
+	 * Obtener una fecha concatenados el dia, mes y anio
+	 * @param Date = 2018/25/08 23:33:40
+	 * @return 25082018
+	 */
+	public static String getYYYYMMDD(Date date){
+		String value = "";
+		value = value +obtenerYearNumeral(date)+obtenerMesNumeralMM(date)+getDayOfMonth(date);
+		return value;
+		
+	}
 
 	/**
 	 * getDayOfMonth
@@ -81,6 +104,16 @@ public class DateUtility {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(fecha);
 		return cal.get(Calendar.MONTH) + 1 ;
+	}
+	
+	/**
+	 * Ej: date=22/02/2016  ->02
+	 */
+	public static String obtenerMesNumeralMM(Date fecha){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(fecha);
+		String value = String.valueOf( cal.get(Calendar.MONTH) + 1 );
+		return value.length()==1?"0"+value: value;
 	}
 
 	/**

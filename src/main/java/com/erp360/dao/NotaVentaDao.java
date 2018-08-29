@@ -477,6 +477,137 @@ public class NotaVentaDao extends DataAccessObjectJpa<NotaVenta,DetalleNotaVenta
 	 * @param param2
 	 * @return
 	 */
+	public NotaVenta registrarContado(String observacion,Usuario usuario,NotaVenta notaVenta,List<DetalleNotaVenta> listDetalleNotaVenta,Gestion gestionSesion,ParametroInventario param,ParametroCobranza param2,ParametroVenta param3){
+		try{
+			beginTransaction();
+			notaVenta = create(notaVenta);
+
+			double cant = 0;
+			double totalOrdenSalidaExtranjero = 0;
+			double totalOrdenSalidaNacional = 0;
+			for(DetalleNotaVenta dnv:listDetalleNotaVenta){
+				dnv.setId(0);
+				dnv.setEstado("AC");
+				dnv.setFechaRegistro(notaVenta.getFechaRegistro());
+				dnv.setNotaVenta(notaVenta);
+				dnv.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+				totalOrdenSalidaExtranjero = totalOrdenSalidaExtranjero + (dnv.getCantidad() * dnv.getPrecioExtranjero());
+				totalOrdenSalidaNacional = totalOrdenSalidaNacional + (dnv.getCantidad() * dnv.getPrecio());
+				createE(dnv);
+				cant = cant + dnv.getCantidad();
+			}
+			//ejecutivo
+			//ejecutivo
+			//EjecutivoCliente ejecutivoCliente = ejecutivoClienteDao.getEjecutivoClienteByIdCliente(notaVenta.getCliente());
+			Ejecutivo ejecutivo = notaVenta.getEjecutivo();
+			if(ejecutivo != null){
+				//Ejecutivo ejecutivo = ejecutivoCliente.getEncargadoVenta();
+				double comision = ejecutivo.getPorcentaje();
+				double importe = notaVenta.getMontoTotalExtranjero()*(comision/100);
+				EjecutivoComisiones ejecutivoComisiones = new EjecutivoComisiones();
+				ejecutivoComisiones.setNotaVenta(notaVenta);
+				ejecutivoComisiones.setCobranza(null);
+				ejecutivoComisiones.setEstado("AC");
+				ejecutivoComisiones.setFechaRegistro(notaVenta.getFechaRegistro());
+				ejecutivoComisiones.setPagado(Boolean.FALSE);
+				ejecutivoComisiones.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+				ejecutivoComisiones.setPorcentaje(comision);
+				ejecutivoComisiones.setImporte(importe);
+				ejecutivoComisiones.setEjecutivo(ejecutivo);
+				ejecutivoComisionesDao.registrar(ejecutivoComisiones);
+			}
+			//caja movimiento
+			CajaMovimiento cajaMovimiento=cajaServicio.IngresoPorVenta(notaVenta);
+			CajaSesion cajaSesion=cajaSesionDao.RetornarPorId(cajaMovimiento.getCajaSesion().getId());
+			
+			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+cajaMovimiento.getMonto());
+			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+cajaMovimiento.getMontoExtranjero());
+			
+			cajaSesion=cajaSesionDao.update(cajaSesion);
+			sessionMain.setCajaSesion(cajaSesion);
+			
+			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+cajaMovimiento.getMonto());
+			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+cajaMovimiento.getMontoExtranjero());
+			cajaSesionDao.update(cajaSesion);
+			cajaMovimiento.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
+			cajaMovimiento.setSaldoNacional(cajaSesion.getSaldoNacional());
+			CajaMovimiento c = cajaMovimientoDao.create(cajaMovimiento);
+			// OrdenSalida
+			OrdenSalida ordenSalida = new OrdenSalida();
+			ordenSalida.setAlmacen(param3.getAlmacenVenta());
+			ordenSalida.setEstado("AC");
+			ordenSalida.setGestion(gestionSesion);
+			ordenSalida.setObservacion("ninguna");
+			ordenSalida.setMotivoSalida("Salida por Venta Nº "+notaVenta.getCodigo());
+			ordenSalida.setTotalImporte(totalOrdenSalidaNacional);
+			ordenSalida.setTotalImporteExtranjero(totalOrdenSalidaExtranjero);
+			ordenSalida.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+			ordenSalida.setFechaRegistro(notaVenta.getFechaRegistro());
+			ordenSalida.setFechaPedido(notaVenta.getFechaRegistro());
+			ordenSalida.setFechaAprobacion(notaVenta.getFechaRegistro());
+			ordenSalida.setNotaVenta(notaVenta);
+			int numeroCorrelativo = ordenSalidaDao.obtenerNumeroOrdenSalida(gestionSesion);
+			ordenSalida.setCorrelativo(String.format("%06d", numeroCorrelativo));;
+			ordenSalida = createS(ordenSalida);
+			for(DetalleNotaVenta detalleNotaVenta : listDetalleNotaVenta){
+				AlmacenProducto almacenProducto = almacenProductoDao.findById(detalleNotaVenta.getAlmacenProductoId());
+				DetalleOrdenSalida detalleOrdenSalida = new DetalleOrdenSalida();
+				detalleOrdenSalida.setCantidadEntregada(detalleNotaVenta.getCantidad());
+				detalleOrdenSalida.setCantidadSolicitada(detalleNotaVenta.getCantidad());
+				detalleOrdenSalida.setEstado("AC");
+				detalleOrdenSalida.setObservacion("Ninguna");
+				detalleOrdenSalida.setOrdenSalida(ordenSalida);
+				detalleOrdenSalida.setPrecioUnitario(detalleNotaVenta.getPrecio());
+				detalleOrdenSalida.setProducto(detalleNotaVenta.getProducto());
+				detalleOrdenSalida.setTotal(detalleNotaVenta.getPrecio()*detalleNotaVenta.getCantidad());
+				detalleOrdenSalida.setFechaRegistro(notaVenta.getFechaRegistro());
+				detalleOrdenSalida.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+				createO(detalleOrdenSalida);
+				//actualizar stock AlmacenProducto
+				almacenProducto.setStock(almacenProducto.getStock()-detalleNotaVenta.getCantidad());
+				updateP(almacenProducto);
+				//kardex
+				KardexProducto kardex = new KardexProducto();
+				kardex.setEstado("AC");
+				kardex.setFechaRegistro(notaVenta.getFechaRegistro());
+				kardex.setOrdenSalida(ordenSalida);
+				kardex.setStockSaliente(detalleNotaVenta.getCantidad());
+				kardex.setTipoMovimiento("OS");//orden de ingreso
+				kardex.setTipoTransaccion("SALIDA X VENTA- Nº NOTA VENTA "+notaVenta.getCodigo());
+				kardex.setPrecioSalida(detalleNotaVenta.getPrecio());
+				kardex.setStockSaliente(detalleNotaVenta.getCantidad());
+				kardex.setUsuarioRegistro(notaVenta.getUsuarioRegistro());
+				kardex.setAlmacen(almacenProducto.getAlmacen());
+				kardex.setProducto(almacenProducto.getProducto());
+				createQ(kardex);
+			}
+			commitTransaction();
+			FacesUtil.infoMessage("Registro Correcto", "NotaVenta "+notaVenta.getCodigo());
+
+			return notaVenta;
+		}catch(Exception e){
+			String cause=e.getMessage();
+			System.out.println("error: "+cause);
+			if (cause.contains("org.hibernate.exception.ConstraintViolationException: could not execute statement")) {
+				FacesUtil.errorMessage("Ya existe un registro igual.");
+			}else{
+				FacesUtil.errorMessage("Error al modificar");
+			}
+			rollbackTransaction();
+			return null;
+		}
+	}
+
+	/**
+	 * Registrar Nota Venta, implica la disminucion de stock de los productos a traves de orden de salida
+	 * @param notaVenta
+	 * @param listDetalleNotaVenta
+	 * @param listPlanCobranza
+	 * @param gestionSesion
+	 * @param param
+	 * @param param2
+	 * @return
+	 */
 	public NotaVenta registrar(String observacion,Usuario usuario,NotaVenta notaVenta,List<DetalleNotaVenta> listDetalleNotaVenta,List<PlanCobranza> listPlanCobranza,Gestion gestionSesion,ParametroInventario param,ParametroCobranza param2,ParametroVenta param3){
 		double totalPlanPagoNacional = notaVenta.getMontoTotal() - notaVenta.getCuotaInicial();
 		double totalPlanPagoExtranjero = notaVenta.getMontoTotalExtranjero() - notaVenta.getCuotaInicialExtranjero();

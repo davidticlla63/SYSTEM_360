@@ -88,6 +88,10 @@ public class CajaMovimientoDetalle implements Serializable {
 	@JoinColumn(name = "id_cobranza", nullable = true)
 	private Cobranza cobranza;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_pago_comision", nullable = true)
+	private PagoComision pagoComision;
+	
 	public CajaMovimientoDetalle() {
 		this.id = 0;
 		this.estado = "AC";
@@ -234,6 +238,14 @@ public class CajaMovimientoDetalle implements Serializable {
 
 	public void setCobranza(Cobranza cobranza) {
 		this.cobranza = cobranza;
+	}
+
+	public PagoComision getPagoComision() {
+		return pagoComision;
+	}
+
+	public void setPagoComision(PagoComision pagoComision) {
+		this.pagoComision = pagoComision;
 	}
 
 	}

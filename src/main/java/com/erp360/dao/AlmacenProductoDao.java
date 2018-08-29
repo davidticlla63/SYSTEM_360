@@ -216,6 +216,23 @@ public class AlmacenProductoDao extends DataAccessObjectJpa<AlmacenProducto,E,R,
 			return null;
 		}
 	}
+	
+	/**
+	 * PEPS
+	 * Obtener List<AlmacenProducto> por fechas
+	 * @param almacen 
+	 * @param producto
+	 * @return List<AlmacenProducto>
+	 */
+	public List<AlmacenProducto> findAllByProductoOrderByFecha(Gestion gestion,Producto producto) {
+		try{
+			String query = "select em from AlmacenProducto em where em.estado='AC' and em.producto.id="
+					+ producto.getId() +" and em.gestion.id="+gestion.getId() +" and em.stock>0 order by em.fechaRegistro asc";
+			return executeQueryResulList(query);
+		}catch(Exception e){
+			return new ArrayList<>();
+		}
+	}
 
 	public List<AlmacenProducto> findByAlmacen(Gestion gestion,Almacen almacen) {
 		try{

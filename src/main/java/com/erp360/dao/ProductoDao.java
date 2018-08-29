@@ -52,6 +52,26 @@ public class ProductoDao extends DataAccessObjectJpa<Producto,E,R,S,O, P, Q, U, 
 		}
 	}
 
+	public boolean eliminar(Producto producto){
+		try{
+			beginTransaction();
+			producto.setEstado("RM");
+			 update(producto);
+			commitTransaction();
+			FacesUtil.infoMessage("Eliminación Correcta", "Producto "+producto.getNombre());
+			return true;
+		}catch(Exception e){
+			String cause=e.getMessage();
+			if (cause.contains("org.hibernate.exception.ConstraintViolationException: could not execute statement")) {
+				FacesUtil.errorMessage("Ya existe un registro igual.");
+			}else{
+				FacesUtil.errorMessage("Error al registrar");
+			}
+			rollbackTransaction();
+			return false;
+		}
+	}
+	
 	public boolean modificar(Producto usuario){
 		try{
 			beginTransaction();

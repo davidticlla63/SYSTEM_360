@@ -48,13 +48,19 @@ public class EjecutivoComisionesDao extends DataAccessObjectJpa<EjecutivoComisio
 	}
 	
 	public List<EjecutivoComisiones> obtenerTodos(){
-		String query = "select em from EjecutivoComisiones em where em.estado='AC' order by em.fechaRegistro asc";
+		String query = "SELECT em FROM EjecutivoComisiones em WHERE em.estado='AC' AND em.importe <> 0 ORDER BY em.fechaRegistro DESC";
 		return executeQueryResulList(query);
 	}
 	
 	
 	public List<EjecutivoComisiones> obtenerTodosByEjecutivo(Ejecutivo ejecutivo){
-		String query = "select em from EjecutivoComisiones em where em.estado='AC' and em.ejecutivo.id="+ejecutivo.getId()+" order by em.fechaRegistro asc";
+		String query = "select em from EjecutivoComisiones em where em.estado='AC' AND em.ejecutivo.id="+ejecutivo.getId()+" order by em.fechaRegistro asc";
+		return executeQueryResulList(query);
+	}
+	
+
+	public List<EjecutivoComisiones> obtenerTodosNoPagadorByEjecutivo(Ejecutivo ejecutivo){
+		String query = "select em from EjecutivoComisiones em where em.estado='AC' AND em.pagado=FALSE AND em.importe<>0 AND em.ejecutivo.id="+ejecutivo.getId()+" order by em.fechaRegistro asc";
 		return executeQueryResulList(query);
 	}
 }
