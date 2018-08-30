@@ -97,15 +97,15 @@ public class PagoComisionDao extends DataAccessObjectJpa<PagoComision,PlanCobran
 			CajaMovimiento cajaMovimiento=cajaServicio.egresoPorPagoEjecutivo(pagoComision);
 			CajaSesion cajaSesion=cajaSesionDao.RetornarPorId(cajaMovimiento.getCajaSesion().getId());
 
-			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+cajaMovimiento.getMonto());
-			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+cajaMovimiento.getMontoExtranjero());
+			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()-cajaMovimiento.getMonto());
+			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()-cajaMovimiento.getMontoExtranjero());
 
 			cajaSesion=cajaSesionDao.update(cajaSesion);
 			sessionMain.setCajaSesion(cajaSesion);
 
-			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()+cajaMovimiento.getMonto());
-			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()+cajaMovimiento.getMontoExtranjero());
-			cajaSesionDao.update(cajaSesion);
+//			cajaSesion.setSaldoNacional(cajaSesion.getSaldoNacional()-cajaMovimiento.getMonto());
+//			cajaSesion.setSaldoExtranjero(cajaSesion.getSaldoExtranjero()-cajaMovimiento.getMontoExtranjero());
+//			cajaSesionDao.update(cajaSesion);
 			cajaMovimiento.setSaldoExtranjero(cajaSesion.getSaldoExtranjero());
 			cajaMovimiento.setSaldoNacional(cajaSesion.getSaldoNacional());
 			CajaMovimiento c = cajaMovimientoDao.create(cajaMovimiento);

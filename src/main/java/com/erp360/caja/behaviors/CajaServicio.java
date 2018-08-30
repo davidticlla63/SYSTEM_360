@@ -133,7 +133,7 @@ public class CajaServicio {
 			cajaMovimiento.setRazonSocial(pagoComision.getGlosa());
 			
 			cajaMovimiento.setMontoExtranjero(pagoComision.getMontoExtranjero());
-			cajaMovimiento.setMonto(0d);
+			cajaMovimiento.setMonto(pagoComision.getMontoExtranjero()*sessionMain.getTipoCambio().getUnidad());
 			cajaMovimiento.setDescripcion("EGRESO POR PAGO COMISION A EJECUTIVO :"+pagoComision.getCodigo()+" "+sessionMain.getCajaSesion().getCaja().getNombre());
 			cajaMovimiento.setMontoLiteral(FacturacionUtil.obtenerMontoLiteral(cajaMovimiento.getMonto()));
 			cajaMovimiento.setDucumento(pagoComision.getCodigo());
